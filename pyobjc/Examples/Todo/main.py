@@ -5,7 +5,7 @@ print path
 path.extend(sys.path)
 sys.path = path
 import objc
-from Cocoa.AppKit import *
+from AppKit import *
 
 # Import all submodules,  to make sure all 
 # classes are known to the runtime

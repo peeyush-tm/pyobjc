@@ -1,5 +1,5 @@
-from Cocoa.AppKit import *
-from Cocoa.Foundation import *
+from AppKit import *
+from Foundation import *
 
 from objc import IBOutlet
 from objc import selector

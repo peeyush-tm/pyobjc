@@ -17,6 +17,12 @@ import buildtools
 import shutil
 import os
 
+try:
+	getattr(__builtins__, 'True')
+except AttributeError:
+	True=1
+	False=0
+
 def build_applet(app_name,
 		main_py, 
 		extra_src = [], 

@@ -1,4 +1,4 @@
-from Cocoa.Foundation import *
+from Foundation import *
 import objc
 
 

@@ -1,4 +1,4 @@
-from Cocoa.Foundation import NSObject, NSBundle
+from Foundation import NSObject, NSBundle
 from objc import selector, class_list, objc_object, IBOutlet
 
 WRAPPED={}

@@ -22,7 +22,7 @@
 
 import objc
 
-# We should import Cocoa.AppKit and Cocoa.Foundation, but don't do that
+# We should import AppKit and Foundation, but don't do that
 # here to show we're using just the basic objective-C bindings.
 NSBundle = objc.lookup_class('NSBundle')
 NSAutoreleasePool = objc.lookup_class('NSAutoreleasePool')
@@ -37,7 +37,6 @@ class AppDelegate (NSObject):
         print "Hello, World!"
 
 def main():
-    #NSAutoreleasePool.alloc().init()
 
     # Load Application Framework:
     NSBundle.bundleWithPath_(

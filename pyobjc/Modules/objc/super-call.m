@@ -265,7 +265,6 @@ IMP ObjC_FindIMP(Class class, SEL sel)
 {
 	struct registry* generic;
 	struct registry* special;
-	Method           m;
 	PyObject*        objc_class;
 	PyObject*        objc_sel;
 

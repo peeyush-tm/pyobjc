@@ -16,9 +16,15 @@
 
 #include "objc_support.h"
 #include "abstract.h"
-/* the def below is to fix Python2.2 bug
+
+#if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 2 && PY_MICRO_VERSION == 0
+ /* Python 2.2.0 forgets to define PyMapping_DelItem */
+#undef PyMapping_DelItem
 #define PyMapping_DelItem(O,K) PyDict_DelItem((O),(K))
-*/
+#undef PyMapping_DelItemString
+#define PyMapping_DelItemString(O,K) PyDict_DelItemString((O),(K))
+#endif
+
 #include "compile.h"
 
 #include <stdarg.h>

@@ -1,10 +1,23 @@
 #!/usr/bin/env python
 
-from distutils.core import setup, Extension
-import os
 import sys
 
-# We need at least Python 2.3
+if sys.platform == 'darwin':
+	# Apple has used build options that don't work with a 'normal' system
+	# we remove '-arch i386' from the LDFLAGS
+	import distutils.sysconfig
+	distutils.sysconfig.get_config_vars()
+	x = distutils.sysconfig._config_vars['LDSHARED']
+	y = x.replace('-arch i386', '')
+	if y != x:
+		print "Fixing Apple strangeness"
+		distutils.sysconfig._config_vars['LDSHARED'] = y
+
+from distutils.core import setup, Extension
+import os
+
+
+# We need at least Python 2.2
 req_ver = [ 2, 2]
 
 if sys.platform == 'darwin' and \
@@ -18,7 +31,10 @@ if sys.platform == 'darwin' and \
 			os.readlink(sys.executable));
 	else:
 		path = sys.executable
-	path = os.path.normpath(path).lower()
+
+#XXX: the module seems to work just fine without a framework install
+#
+#	path = os.path.normpath(path).lower()
 #	if path.find('python.framework') == -1:
 #		sys.stderr.write('PyObjC: Need framework install of python\n')
 #		sys.exit(1)
@@ -75,9 +91,9 @@ CoreExtensions =  [
 			'-g', '-framework', 'AppKit'
 		   ]),
 	]
-CocoaPackages = [ 'Cocoa', 'Cocoa.Foundation', 'Cocoa.AppKit' ]
+CocoaPackages = [ 'Foundation', 'AppKit' ]
 CocoaExtensions = [
-	  Extension("Cocoa.Foundation._Foundation", 
+	  Extension("Foundation._Foundation", 
 		   ["Modules/Cocoa/_Foundation.m"],
 		   extra_compile_args=[
 			"-g", "-IModules/objc",  
@@ -85,7 +101,7 @@ CocoaExtensions = [
 		   extra_link_args=[
 			'-framework', 'Foundation',
 		   ]),
-	  Extension("Cocoa.AppKit._AppKit", 
+	  Extension("AppKit._AppKit", 
 		   ["Modules/Cocoa/_AppKit.m"],
 		   extra_compile_args=[
 			"-g", "-IModules/objc", 
@@ -110,10 +126,10 @@ AddressBookPackages, AddressBookExtensions = \
 
 try:
     setup (name = "pyobjc",
-           version = "$Id: setup.py,v 1.4.2.4 2002/09/23 15:59:54 bbum Exp $",
+           version = "0.7.0",
            description = "Python<->ObjC Interoperability Module",
            author = "bbum, SteveM, many others stretching back through the reachtes of time...",
-           author_email = "oussoren@cistron.nl", 
+           author_email = "pyobjc-dev@lists.sourceforge.net",
 	   url = "http://pyobjc.sourceforge.net/",
            ext_modules = (
 	     		   CoreExtensions 

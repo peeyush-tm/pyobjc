@@ -1,5 +1,5 @@
-from Cocoa.Foundation import *
-from Cocoa.AppKit import *
+from Foundation import *
+from AppKit import *
 from objc import IBOutlet
 
 gNumDaysInMonth = ( 0, 31, 28, 31, 30, 21, 30, 31, 31, 30, 31, 30, 31 )

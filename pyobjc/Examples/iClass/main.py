@@ -1,7 +1,7 @@
 """
 """
-from Cocoa.AppKit import NSApplicationMain
-from Cocoa.Foundation import NSBundle
+from AppKit import NSApplicationMain
+from Foundation import NSBundle
 import sys
 import os
 

@@ -1,4 +1,6 @@
-from Cocoa.Foundation import NSObject
+from Foundation import NSObject
+from Foundation import NSProcessInfo
+from AppKit import NSApplicationMain
 from objc import selector
 import sys
 

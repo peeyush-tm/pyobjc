@@ -1,5 +1,5 @@
-from Cocoa.Foundation import NSObject
-from Cocoa.AppKit import NSApplicationMain
+from Foundation import NSObject
+from AppKit import NSApplicationMain
 from objc import selector
 import sys
 

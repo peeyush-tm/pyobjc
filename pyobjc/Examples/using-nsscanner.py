@@ -5,7 +5,7 @@
 #
 # 
 
-from Cocoa.Foundation import NSScanner
+from Foundation import NSScanner
 
 obj = NSScanner.scannerWithString_(u"1.2 2.4")
 converted, value =  obj.scanDouble_()

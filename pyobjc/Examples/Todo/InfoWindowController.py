@@ -1,4 +1,4 @@
-from Cocoa.AppKit import *
+from AppKit import *
 from objc import selector, IBOutlet
 from ToDoDocument import *
 

@@ -6,8 +6,8 @@ documentation for details on how to use these functions and classes.
 """
 
 # Load the AddressBook bundle, and gather all classes defined there
-import Cocoa.Foundation
-class_list = Cocoa.Foundation.load_bundle(
+import Foundation
+class_list = Foundation.load_bundle(
 	'/System/Library/Frameworks/AddressBook.framework')
 gl = globals()
 for cls in class_list:
@@ -17,6 +17,6 @@ for cls in class_list:
 del class_list
 del cls
 del gl
-del Cocoa.Foundation
+del Foundation
 
 # Define usefull utility methods here

@@ -239,9 +239,9 @@ class ClassNibGenerator:
 
 		path = NSBundle.bundleForClass_(cls).bundlePath()
 		if path == '/System/Library/Frameworks/Foundation.framework':
-			return 'Cocoa.Foundation'
+			return 'Foundation'
 		elif path == '/System/Library/Frameworks/AppKit.framework':
-			return 'Cocoa.AppKit'
+			return 'AppKit'
 		else:
 			return ''
 

@@ -3,6 +3,13 @@ new-style pyobjc
 """
 from _objc import *
 
+# Backward compat stuff, Python 2.2.0 doesn't have 'True' and 'False'
+try:
+	getattr(__builtins__, 'True')
+except AttributeError:
+	True=1
+	False=0
+
 # This is a hack, should probably patch python:
 # - We want the resources directory to be on the python search-path
 # - It must be at the start of the path

@@ -1,4 +1,4 @@
-from Cocoa.Foundation import NSObject
+from Foundation import NSObject
 from WSTConnectionWindowControllerClass import WSTConnectionWindowController
 
 class WSTApplicationDelegate (NSObject):
