@@ -346,7 +346,7 @@ obj_repr(ObjCMethodAccessor* self)
 PyTypeObject PyObjCMethodAccessor_Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,					/* ob_size */
-	"objc.method_acces",			/* tp_name */
+	"objc.method_accessor",			/* tp_name */
 	sizeof(ObjCMethodAccessor),		/* tp_basicsize */
 	0,					/* tp_itemsize */
 	/* methods */
