@@ -16,7 +16,7 @@ Building the Module
 *** NOTE1: On MacOS X you must build and install Python as a framework
 ***	  (check Mac/OSX/README in the Python tree on how to do this).
 ***
-*** NOTE2: You'll need Python 2.3 or better.
+*** NOTE2: You'll need Python 2.3 or later, Python 2.2 is NOT good enough!
 ***
 
 The module uses the distutils package included with Python 2.0 and

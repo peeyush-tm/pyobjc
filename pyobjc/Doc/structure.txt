@@ -86,3 +86,20 @@ transparent for the user of the module. This is mostly solved in
 transfer ownership of their return value (as described above) and when updating
 a instance variable in an Objective-C object (retain new and release old, 
 in that order). Both are implemented.
+
+Strings
+-------
+
+We currently automaticly convert from Python strings to NSStrings (and back). 
+This may not be the smartest thing to do because NSString has a number of 
+methods that don't have an equivalent in Python. 
+
+Converting a Python string to objective-C and back currently converts the 
+string to Unicode. If may be usefull to try to convert to a normal string
+(using [NSString dataUsingEncoding:allowLossyConversion:]) and only return
+a Unicode object if that fails.
+
+When translating from NSString to a Python unicode object (and back) we first 
+translate to a UTF8 encoding. This way we don't have to worry about any
+differences in the representation of Unicode strings in Python and objective-C
+(Python has two different represenations, selection is at compile-time)

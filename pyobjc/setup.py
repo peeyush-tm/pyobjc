@@ -1,7 +1,36 @@
-#!/usr/bin/env python.exe
+#!/usr/bin/env python
 
 from distutils.core import setup, Extension
 import os
+import sys
+
+# We need at least Python 2.3
+req_ver = [ 2, 3]
+
+if sys.platform == 'darwin' and \
+   os.path.exists('/System/Library/Frameworks/Foundation.framework'):
+	#
+	# We're probably on MacOS X. We need a framework install of Python
+	# to do anything remotely usefull, might as well check for that.
+	#
+	if os.path.islink(sys.executable):
+		path = os.path.join(sys.executable,
+			os.readlink(sys.executable));
+	else:
+		path = sys.executable
+	path = os.path.normpath(path).lower()
+	if path.find('python.framework') == -1:
+		sys.stderr.write('PyObjC: Need framework install of python\n')
+		sys.exit(1)
+
+if sys.version_info[0] < req_ver[0] or (
+		sys.version_info[0] == req_ver[0] 
+		and sys.version_info[1] < req_ver[1]):
+
+	sys.stderr.write('PyObjC: Need at least Python %s\n'%(
+		'.'.join(req_ver)))
+	sys.exit(1)
+
 
 sourceFiles = [
 	"Modules/objc/objc_util.m",
@@ -82,7 +111,7 @@ AddressBookPackages, AddressBookExtensions = \
 
 try:
     setup (name = "pyobjc",
-           version = "$Id: setup.py,v 1.4.2.2 2002/09/08 16:40:47 ronaldoussoren Exp $",
+           version = "$Id: setup.py,v 1.4.2.3 2002/09/23 13:01:58 ronaldoussoren Exp $",
            description = "Python<->ObjC Interoperability Module",
            author = "bbum, SteveM, many others stretching back through the reachtes of time...",
            author_email = "oussoren@cistron.nl", 
