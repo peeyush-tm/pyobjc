@@ -1,0 +1,53 @@
+Structure of the PyObjC package
+===============================
+
+.. This document is in structured text markup to enable easy translation to 
+   HTML.
+
+Introduction
+------------
+
+This document gives an overview of the PyObjC for developers (of the package).
+
+One of the sections describes how all of it works, and some of the limitation.
+
+
+Methods
+-------
+
+Classes are scanned for methods when the python wrapper for a class is created.
+We then create python wrappers for those methods. This way users can use the
+normal python introspection methods to check which methods are available.
+
+Sadly enough some classes in the Cocoa frameworks on Mac OSX grow new methods
+when the first instance of those classes is created. We therefore have added 
+some additional code that rescans the method tables on several occasions.
+
+Subclassing
+-----------
+
+It is possible to subclass objective-C classes in python and this results in a hybrid Python/Objective-C class. Instances of these classes consist of a cluster of 2 objects, a Python object and an Objective-C object.
+
+The reference count (or retainCount in objective-C speak) is stored in the 
+Python object, mostly because that is the only way to maintain a single 
+reference count for the cluster. The pointers from the python half of the 
+cluster to the objective-C half, and the pointers the other way around, are
+not counted in the reference count. If those would be counted we would
+introduce cycles that are not detectable by the cycle-breaking garbage 
+collector in python and all python/objective-C hybrids would be immortal.
+
+The first python subclass of an objective-C class introduces a new instance
+variable in the objective-C object to store the pointer to the python half of
+the cluster. This variable is always referenced by name.  The python half is 
+a subclass of objc_object that already contains a pointer to an objective-C 
+object. 
+
+The first python subclass of an objective-C class also introduces a number of
+methods (both class methods and instance methods) that allow us to maintain the
+illusion of a single object. Check class-builder.m for details.
+
+
+Directory structure
+-------------------
+
+Todo. Currently different from the official sources, but that will change.

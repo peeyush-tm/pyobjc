@@ -1,9 +1,16 @@
-* NSAutoreleasePool raises an exception when you use 'retain'. Sadly enough,
-  NSInvocation calls 'retain' on the receiver (at least in the way we use it...)
+* [ronald] Check all compiler warnings on MacOS X
+
+* [ronald] Restructure header files in Modules/objc
+
+* [ronald] Contents MANIFEST is no longer valid
+
+* [ronald] NSAutoreleasePool raises an exception when you use 'retain'. Sadly 
+  enough, NSInvocation calls 'retain' on the receiver (at least in the way we 
+  use it...)
 
   Luckily users normally don't have to create an autorelease pool.
 
-* pyobjc-0.6.1 and earlier contain some code that is questionable in
+* [ronald] pyobjc-0.6.1 and earlier contain some code that is questionable in
   newer releases of Python. Need to check if all code, and repair where 
   necessary.
 

@@ -37,7 +37,7 @@ class AppDelegate (NSObject):
         print "Hello, World!"
 
 def main():
-
+    #NSAutoreleasePool.alloc().init()
 
     # Load Application Framework:
     NSBundle.bundleWithPath_(

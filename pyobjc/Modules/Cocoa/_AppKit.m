@@ -1,0 +1,467 @@
+/*
+ * Mapping of static items in the AppKit kit:
+ * 
+ * - constants  (mostly done)
+ * - data types (TODO)
+ * - enumerations
+ * - exceptions 
+ * - global functions (TODO)
+ */
+#include <Python.h>
+#import <AppKit/AppKit.h>
+#import <AppKit/NSGraphics.h>
+#include "pyobjc-api.h"
+#include "OC_PythonObject.h"
+#include "const-table.h"
+#include <objc/objc-runtime.h>
+#include <AppKit/NSTypesetter.h>
+
+/** Functions */
+
+/* The headings below refer to the reference pages on developer.apple.com */
+
+/* 'Applications' */
+
+static PyObject* 
+objc_NSApplicationMain(PyObject* self, PyObject* args, PyObject* kwds)
+{
+static	char* keywords[] = { "argv", NULL };
+	char** argv = NULL;
+	int    argc;
+	PyObject* arglist;
+	int       i;
+	PyObject* v;
+	int       res;
+
+	if (!PyArg_ParseTupleAndKeywords(args, kwds, "O:NSApplicationMain",
+			keywords, &arglist)) {
+		return NULL;
+	}
+
+	if (!PySequence_Check(arglist)) {
+		PyErr_SetString(PyExc_TypeError, 
+			"NSApplicationMain: need list of strings as argument");
+		return NULL;
+	}
+
+	argc = PySequence_Size(arglist);
+	argv = calloc((argc + 1), sizeof(char**));
+	if (argv == NULL) {
+		PyErr_SetString(PyExc_MemoryError,
+			"Out of memory");
+		return NULL;
+	}
+
+	for  (i = 0; i < argc; i++) {
+		v = PySequence_GetItem(arglist, i);
+		if (v == NULL) {
+			goto error_cleanup;
+		}
+		if (!PyString_Check(v)) {
+			PyErr_SetString(PyExc_TypeError, 
+				"NSApplicationMain: need list of strings "
+				"as argument");
+			goto error_cleanup;
+		}
+
+		argv[i] = strdup(PyString_AsString(v));
+		if (argv[i] == NULL) {
+			PyErr_SetString(PyExc_MemoryError,
+				"Out of memory");
+			goto error_cleanup;
+		}
+	}
+
+	argv[argc] = NULL;
+
+	res = NSApplicationMain(argc, argv);
+
+	for (i = 0; i < argc; i++) {
+		free(argv[i]);
+	}
+	free(argv);
+
+	return PyInt_FromLong(res);
+
+error_cleanup:
+	if (argv != NULL) {
+		for (i = 0; i < argc; i++) {\
+			if (argv[i] != NULL) {
+				free(argv[i]);
+				argv[i] = NULL;
+			}
+		}
+		free(argv);
+		argv = NULL;
+	}
+
+	return NULL;
+}
+
+static PyObject*
+objc_NSApp(PyObject* self, PyObject* args, PyObject* kwds)
+{
+static  char* keywords[] = { NULL };
+        PyObject* result;
+
+	if (!PyArg_ParseTupleAndKeywords(args, kwds, ":NSApp", keywords)) {
+		return NULL;
+	}
+
+	result = ObjC_IdToPython(NSApp);
+
+	return result;                               
+}
+
+static PyObject*
+objc_NSCountWindows(PyObject* self, PyObject* args, PyObject* kwds)
+{
+static  char* keywords[] = { NULL };
+	int       count;
+
+	if (!PyArg_ParseTupleAndKeywords(args, kwds, ":NSCountWindows", keywords)) {
+		return NULL;
+	}
+
+	NS_DURING
+		NSCountWindows(&count);
+	NS_HANDLER
+		ObjCErr_FromObjC(localException);
+	NS_ENDHANDLER
+	if (PyErr_Occurred()) return NULL;
+
+	return PyInt_FromLong(count);
+}
+
+static PyObject*
+objc_NSCountWindowsForContext(PyObject* self, PyObject* args, PyObject* kwds)
+{
+static  char* keywords[] = { "context", NULL };
+	int       count;
+	int	  context;
+
+	if (!PyArg_ParseTupleAndKeywords(args, kwds, ":NSCountWindows", keywords, &context)) {
+		return NULL;
+	}
+
+	NS_DURING
+		NSCountWindowsForContext(context, &count);
+	NS_HANDLER
+		ObjCErr_FromObjC(localException);
+	NS_ENDHANDLER
+	if (PyErr_Occurred()) return NULL;
+
+	return PyInt_FromLong(count);
+}
+
+/* NSGet{Alert,Information,CriticalAlert}Panel */
+
+#define GetXPanel(PANELTYPE) \
+	static PyObject* \
+	objc_##PANELTYPE(PyObject* self, PyObject* args, PyObject* kwds) \
+	{ \
+	static  char* keywords[] = { "title", "msg", "defaultButton", "alternateButton", "otherButton", NULL }; \
+		char*     title = NULL; \
+		char*     msg = NULL; \
+		char*     defaultButton = NULL; \
+		char*     alternateButton = NULL; \
+		char*     otherButton = NULL; \
+		id        objc_title = nil; \
+		id        objc_msg = nil; \
+		id        objc_defaultButton = nil; \
+		id        objc_alternateButton = nil; \
+		id        objc_otherButton = nil; \
+		id	  objc_result = nil; \
+ \
+		if (!PyArg_ParseTupleAndKeywords(args, kwds, "sssss:" STR(PANELTYPE), keywords, \
+				&title, &msg, &defaultButton, &alternateButton, &otherButton)) { \
+			return NULL; \
+		} \
+ \
+		objc_title = [NSString stringWithCString:title]; \
+		if (objc_title == nil) goto error_handler; \
+		objc_msg = [NSString stringWithCString:msg]; \
+		if (objc_msg == nil) goto error_handler; \
+		objc_defaultButton = [NSString stringWithCString:defaultButton]; \
+		if (objc_defaultButton == nil) goto error_handler; \
+		objc_alternateButton = [NSString stringWithCString:alternateButton]; \
+		if (objc_alternateButton == nil) goto error_handler; \
+		objc_otherButton = [NSString stringWithCString:otherButton]; \
+		if (objc_otherButton == nil) goto error_handler; \
+ \
+		NS_DURING \
+			objc_result = PANELTYPE(objc_title, @"%@", objc_defaultButton, \
+				objc_alternateButton, objc_otherButton, objc_msg); \
+		NS_HANDLER \
+			ObjCErr_FromObjC(localException); \
+			objc_result = nil; \
+		NS_ENDHANDLER \
+ \
+		[objc_title release]; \
+		objc_title = nil; \
+		[objc_msg release]; \
+		objc_msg = nil; \
+		[objc_defaultButton release]; \
+		objc_defaultButton = nil; \
+		[objc_alternateButton release]; \
+		objc_alternateButton = nil; \
+		[objc_otherButton release]; \
+		objc_otherButton = nil; \
+ \
+		if (PyErr_Occurred()) return NULL; \
+ \
+		return ObjC_IdToPython(objc_result);\
+\
+	error_handler:\
+		if (objc_title) [objc_title release];\
+		if (objc_msg) [objc_msg release];\
+		if (objc_defaultButton) [objc_defaultButton release];\
+		if (objc_alternateButton) [objc_alternateButton release];\
+		if (objc_otherButton) [objc_otherButton release];\
+		return NULL;\
+	}\
+
+GetXPanel(NSGetAlertPanel)
+GetXPanel(NSGetInformationalAlertPanel)
+GetXPanel(NSGetCriticalAlertPanel)
+
+
+/* NSRun{Alert,Information,CriticalAlert}Panel */
+
+#define RunXPanel(PANELTYPE) \
+	static PyObject* \
+	objc_##PANELTYPE(PyObject* self, PyObject* args, PyObject* kwds) \
+	{ \
+	static  char* keywords[] = { "title", "msg", "defaultButton", "alternateButton", "otherButton", NULL }; \
+		char*     title = NULL; \
+		char*     msg = NULL; \
+		char*     defaultButton = NULL; \
+		char*     alternateButton = NULL; \
+		char*     otherButton = NULL; \
+		id        objc_title = nil; \
+		id        objc_msg = nil; \
+		id        objc_defaultButton = nil; \
+		id        objc_alternateButton = nil; \
+		id        objc_otherButton = nil; \
+		int	  objc_result; \
+ \
+		if (!PyArg_ParseTupleAndKeywords(args, kwds, "sszzz:" STR(PANELTYPE), keywords, \
+				&title, &msg, &defaultButton, &alternateButton, &otherButton)) { \
+			return NULL; \
+		} \
+		\
+		if (title) {\
+			objc_title = [NSString stringWithCString:title]; \
+			if (objc_title == nil) goto error_handler; \
+		}\
+		\
+		if (msg) {\
+			objc_msg = [NSString stringWithCString:msg]; \
+			if (objc_msg == nil) goto error_handler; \
+		}\
+		\
+		if (defaultButton) {\
+			objc_defaultButton = [NSString stringWithCString:defaultButton]; \
+			if (objc_defaultButton == nil) goto error_handler; \
+		}\
+		if (alternateButton) {\
+			objc_alternateButton = [NSString stringWithCString:alternateButton]; \
+			if (objc_alternateButton == nil) goto error_handler; \
+		}\
+		if (otherButton) {\
+			objc_otherButton = [NSString stringWithCString:otherButton]; \
+			if (objc_otherButton == nil) goto error_handler; \
+		}\
+ \
+		NS_DURING \
+			objc_result = PANELTYPE(objc_title, @"%@", objc_defaultButton, \
+				objc_alternateButton, objc_otherButton, objc_msg); \
+		NS_HANDLER \
+			ObjCErr_FromObjC(localException); \
+			objc_result = nil; \
+		NS_ENDHANDLER \
+ \
+	/*WHY ARE THESE ALREADY RELEASED?	[objc_title release]; \
+		objc_title = nil; \
+		[objc_msg release]; \
+		objc_msg = nil; \
+		[objc_defaultButton release]; \
+		objc_defaultButton = nil; \
+		[objc_alternateButton release]; \
+		objc_alternateButton = nil; \
+		[objc_otherButton release]; \
+		objc_otherButton = nil; */\
+ \
+		if (PyErr_Occurred()) return NULL; \
+ \
+		return PyInt_FromLong(objc_result);\
+\
+	error_handler:\
+		if (objc_title) [objc_title release];\
+		if (objc_msg) [objc_msg release];\
+		if (objc_defaultButton) [objc_defaultButton release];\
+		if (objc_alternateButton) [objc_alternateButton release];\
+		if (objc_otherButton) [objc_otherButton release];\
+		return NULL;\
+	}\
+
+RunXPanel(NSRunAlertPanel)
+RunXPanel(NSRunInformationalAlertPanel)
+RunXPanel(NSRunCriticalAlertPanel)
+
+#include "_App_Functions.inc"
+
+static PyMethodDef appkit_methods[] = {
+	{ 
+		"NSApplicationMain", 
+		(PyCFunction)objc_NSApplicationMain, 
+		METH_VARARGS|METH_KEYWORDS, 
+		NULL
+	},
+	{ 
+		"NSApp", 
+		(PyCFunction)objc_NSApp, 
+		METH_VARARGS|METH_KEYWORDS, 
+		NULL
+	},
+	{ 
+		"NSRunAlertPanel", 
+		(PyCFunction)objc_NSRunAlertPanel, 
+		METH_VARARGS|METH_KEYWORDS, 
+		NULL
+	},
+	{ 
+		"NSRunInformationPanel", 
+		(PyCFunction)objc_NSRunInformationalAlertPanel, 
+		METH_VARARGS|METH_KEYWORDS, 
+		NULL
+	},
+	{ 
+		"NSRunCriticalAlertPanel", 
+		(PyCFunction)objc_NSRunCriticalAlertPanel, 
+		METH_VARARGS|METH_KEYWORDS, 
+		NULL
+	},
+	{ 
+		"NSGetAlertPanel", 
+		(PyCFunction)objc_NSGetAlertPanel, 
+		METH_VARARGS|METH_KEYWORDS, 
+		NULL
+	},
+	{ 
+		"NSGetInformationPanel", 
+		(PyCFunction)objc_NSGetInformationalAlertPanel, 
+		METH_VARARGS|METH_KEYWORDS, 
+		NULL
+	},
+	{ 
+		"NSGetCriticalAlertPanel", 
+		(PyCFunction)objc_NSGetCriticalAlertPanel, 
+		METH_VARARGS|METH_KEYWORDS, 
+		NULL
+	},
+	{ 
+		"NSCountWindows", 
+		(PyCFunction)objc_NSCountWindows, 
+		METH_VARARGS|METH_KEYWORDS, 
+		NULL
+	},
+	{ 
+		"NSCountWindowsForContext", 
+		(PyCFunction)objc_NSCountWindowsForContext, 
+		METH_VARARGS|METH_KEYWORDS, 
+		NULL
+	},
+
+	METHOD_TABLE_ENTRIES
+
+	{ 0, 0, 0, 0 } /* sentinel */
+};
+
+PyDoc_STRVAR(appkit_doc,
+"Cocoa._Foundation defines constants, types and global functions used by "
+"Cocoa.Foundation."
+);
+
+
+/* TODO:
+ * actual variables: 
+ * - NSApp
+ *
+ * floats:
+ NSColor-Grayscale Values
+
+ const float NSWhite;
+ const float NSLightGray;
+ const float NSDarkGray;
+ const float NSBlack;
+
+ NSFont-PostScript Transformation Matrix
+
+ const float *NSFontIdentityMatrix;
+
+ Discussion
+
+ NSFontIdentityMatrix is a transformation matrix useful as a parameter to the NSFont method fontWithName:matrix: .
+
+ NSWindow-Sizes
+
+ NSSize NSIconSize;
+ NSSize NSTokenSize;
+
+
+ */
+
+
+#include "_App_Enum.inc"
+#include "_App_Str.inc"
+
+
+
+void init_AppKit(void)
+{
+	PyObject *m, *d;
+
+	m = Py_InitModule4("_AppKit", appkit_methods, appkit_doc, 
+		NULL, PYTHON_API_VERSION);
+	if (!m) return;
+
+	d = PyModule_GetDict(m);
+	if (!d) return;
+
+	if (ObjC_ImportModule(m) < 0) {
+		return;
+	}
+
+	if (register_ints(d, enum_table) < 0) return;
+	if (register_strings(d, string_table) < 0) return;
+#	include "_App_Var.inc"
+
+	/* And some troublesome definitions 
+	 * All of these found by 'grep #define *.h' in the AppKit header 
+	 * directory
+	 */
+
+	/* NSOpenGL.h */
+	INT_VAR(NSOPENGL_CURRENT_VERSION);
+
+	/* NSStatusBar.h */
+	INT_VAR(NSVariableStatusItemLength);
+	INT_VAR(NSSquareStatusItemLength);
+
+	/* NSTypesetter.h */
+	INT_VAR(NSBaselineNotSet);
+	INT_VAR(NumGlyphsToGetEachTime);
+
+	/* NSWindow.h */
+	INT_VAR(NSNormalWindowLevel);
+	INT_VAR(NSFloatingWindowLevel);
+	INT_VAR(NSSubmenuWindowLevel);
+	INT_VAR(NSTornOffMenuWindowLevel);
+	INT_VAR(NSMainMenuWindowLevel);
+	INT_VAR(NSStatusWindowLevel);
+	INT_VAR(NSModalPanelWindowLevel);
+	INT_VAR(NSPopUpMenuWindowLevel);
+	INT_VAR(NSScreenSaverWindowLevel);
+
+}
