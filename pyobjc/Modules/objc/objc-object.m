@@ -588,7 +588,7 @@ PyObjCClassObject PyObjCObject_Type = {
      {
 	PyObject_HEAD_INIT(&PyObjCClass_Type)
 	0,					/* ob_size */
-	"objc_object",				/* tp_name */
+	"objc.objc_object",				/* tp_name */
 	sizeof(PyObjCObject),			/* tp_basicsize */
 	0,					/* tp_itemsize */
 	/* methods */

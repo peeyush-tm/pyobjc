@@ -76,7 +76,7 @@ PyTypeObject PyObjCPointer_Type =
 {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,					/* ob_size */
-	"PyObjCPointer",			/* tp_name */
+	"objc.PyObjCPointer",			/* tp_name */
 	sizeof (PyObjCPointer),			/* tp_basicsize */
 	sizeof (char),				/* tp_itemsize */
   

@@ -203,7 +203,7 @@ static PyGetSetDef Zone_getset[] = {
 PyTypeObject PyObjCZoneWrapper_Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,					/* ob_size */
-	"NSZone",				/* tp_name */
+	"objc.NSZone",				/* tp_name */
 	sizeof(ZoneWrapper),			/* tp_basicsize */
 	0,					/* tp_itemsize */
 	/* methods */
