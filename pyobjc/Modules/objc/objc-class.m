@@ -746,7 +746,7 @@ static PyMemberDef class_members[] = {
 PyTypeObject PyObjCClass_Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,					/* ob_size */
-	"objc_class",				/* tp_name */
+	"objc.objc_class",				/* tp_name */
 	sizeof (PyObjCClassObject),		/* tp_basicsize */
 	0,					/* tp_itemsize */
 	/* methods */
