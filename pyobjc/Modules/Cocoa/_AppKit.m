@@ -8,13 +8,16 @@
  * - global functions (TODO)
  */
 #include <Python.h>
+
 #import <AppKit/AppKit.h>
 #import <AppKit/NSGraphics.h>
+#import <AppKit/NSAccessibility.h>
+#import <AppKit/NSTypesetter.h>
+
 #include "pyobjc-api.h"
 #include "OC_PythonObject.h"
 #include "const-table.h"
 #include <objc/objc-runtime.h>
-#include <AppKit/NSTypesetter.h>
 
 /** Functions */
 

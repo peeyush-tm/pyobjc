@@ -8,9 +8,13 @@ struct inttable enum_table[] = {
 
 	/* From: AppKitDefines.h */
 
+	/* From: NSAccessibility.h */
+
 	/* From: NSActionCell.h */
 
 	/* From: NSAffineTransform.h */
+
+	/* From: NSAppleScriptExtensions.h */
 
 	/* From: NSApplication.h */
 	 { "NSCriticalRequest", NSCriticalRequest },
@@ -51,6 +55,12 @@ struct inttable enum_table[] = {
 	 { "NSGIFFileType", NSGIFFileType },
 	 { "NSJPEGFileType", NSJPEGFileType },
 	 { "NSPNGFileType", NSPNGFileType },
+	 { "NSImageRepLoadStatusUnknownType", NSImageRepLoadStatusUnknownType },
+	 { "NSImageRepLoadStatusReadingHeader", NSImageRepLoadStatusReadingHeader },
+	 { "NSImageRepLoadStatusWillNeedAllData", NSImageRepLoadStatusWillNeedAllData },
+	 { "NSImageRepLoadStatusInvalidData", NSImageRepLoadStatusInvalidData },
+	 { "NSImageRepLoadStatusUnexpectedEOF", NSImageRepLoadStatusUnexpectedEOF },
+	 { "NSImageRepLoadStatusCompleted", NSImageRepLoadStatusCompleted },
 
 	/* From: NSBox.h */
 	 { "NSNoTitle", NSNoTitle },
@@ -234,6 +244,14 @@ struct inttable enum_table[] = {
 
 	/* From: NSFormCell.h */
 
+	/* From: NSGlyphInfo.h */
+	 { "NSIdentityMappingCharacterCollection", NSIdentityMappingCharacterCollection },
+	 { "NSAdobeCNS1CharacterCollection", NSAdobeCNS1CharacterCollection },
+	 { "NSAdobeGB1CharacterCollection", NSAdobeGB1CharacterCollection },
+	 { "NSAdobeJapan1CharacterCollection", NSAdobeJapan1CharacterCollection },
+	 { "NSAdobeJapan2CharacterCollection", NSAdobeJapan2CharacterCollection },
+	 { "NSAdobeKorea1CharacterCollection", NSAdobeKorea1CharacterCollection },
+
 	/* From: NSGraphics.h */
 	 { "NSCompositeClear", NSCompositeClear },
 	 { "NSCompositeCopy", NSCompositeCopy },
@@ -268,6 +286,15 @@ struct inttable enum_table[] = {
 	/* From: NSHelpManager.h */
 
 	/* From: NSImage.h */
+	 { "NSImageLoadStatusCompleted", NSImageLoadStatusCompleted },
+	 { "NSImageLoadStatusCancelled", NSImageLoadStatusCancelled },
+	 { "NSImageLoadStatusInvalidData", NSImageLoadStatusInvalidData },
+	 { "NSImageLoadStatusUnexpectedEOF", NSImageLoadStatusUnexpectedEOF },
+	 { "NSImageLoadStatusReadError", NSImageLoadStatusReadError },
+	 { "NSImageCacheDefault", NSImageCacheDefault },
+	 { "NSImageCacheAlways", NSImageCacheAlways },
+	 { "NSImageCacheBySize", NSImageCacheBySize },
+	 { "NSImageCacheNever", NSImageCacheNever },
 
 	/* From: NSImageCell.h */
 	 { "NSScaleProportionally", NSScaleProportionally },
@@ -308,6 +335,10 @@ struct inttable enum_table[] = {
 	 { "NSGlyphInscribeAbove", NSGlyphInscribeAbove },
 	 { "NSGlyphInscribeOverstrike", NSGlyphInscribeOverstrike },
 	 { "NSGlyphInscribeOverBelow", NSGlyphInscribeOverBelow },
+	 { "NSTypesetterLatestBehavior", NSTypesetterLatestBehavior },
+	 { "NSTypesetterOriginalBehavior", NSTypesetterOriginalBehavior },
+	 { "NSTypesetterBehavior_10_2_WithCompatibility", NSTypesetterBehavior_10_2_WithCompatibility },
+	 { "NSTypesetterBehavior_10_2", NSTypesetterBehavior_10_2 },
 
 	/* From: NSMatrix.h */
 	 { "NSRadioModeMatrix", NSRadioModeMatrix },
@@ -358,6 +389,9 @@ struct inttable enum_table[] = {
 	 { "NSOpenGLPFAMaximumPolicy", NSOpenGLPFAMaximumPolicy },
 	 { "NSOpenGLPFAOffScreen", NSOpenGLPFAOffScreen },
 	 { "NSOpenGLPFAFullScreen", NSOpenGLPFAFullScreen },
+	 { "NSOpenGLPFASampleBuffers", NSOpenGLPFASampleBuffers },
+	 { "NSOpenGLPFASamples", NSOpenGLPFASamples },
+	 { "NSOpenGLPFAAuxDepthStencil", NSOpenGLPFAAuxDepthStencil },
 	 { "NSOpenGLPFARendererID", NSOpenGLPFARendererID },
 	 { "NSOpenGLPFASingleRenderer", NSOpenGLPFASingleRenderer },
 	 { "NSOpenGLPFANoRecovery", NSOpenGLPFANoRecovery },
@@ -370,10 +404,13 @@ struct inttable enum_table[] = {
 	 { "NSOpenGLPFAMultiScreen", NSOpenGLPFAMultiScreen },
 	 { "NSOpenGLPFACompliant", NSOpenGLPFACompliant },
 	 { "NSOpenGLPFAScreenMask", NSOpenGLPFAScreenMask },
+	 { "NSOpenGLPFAVirtualScreenCount", NSOpenGLPFAVirtualScreenCount },
 	 { "NSOpenGLCPSwapRectangle", NSOpenGLCPSwapRectangle },
 	 { "NSOpenGLCPSwapRectangleEnable", NSOpenGLCPSwapRectangleEnable },
 	 { "NSOpenGLCPRasterizationEnable", NSOpenGLCPRasterizationEnable },
 	 { "NSOpenGLCPSwapInterval", NSOpenGLCPSwapInterval },
+	 { "NSOpenGLCPSurfaceOrder", NSOpenGLCPSurfaceOrder },
+	 { "NSOpenGLCPSurfaceOpacity", NSOpenGLCPSurfaceOpacity },
 	 { "NSOpenGLCPStateValidation", NSOpenGLCPStateValidation },
 
 	/* From: NSOpenGLView.h */
@@ -398,6 +435,8 @@ struct inttable enum_table[] = {
 	 { "NSLineBreakByTruncatingHead", NSLineBreakByTruncatingHead },
 	 { "NSLineBreakByTruncatingTail", NSLineBreakByTruncatingTail },
 	 { "NSLineBreakByTruncatingMiddle", NSLineBreakByTruncatingMiddle },
+	 { "NSWritingDirectionLeftToRight", NSWritingDirectionLeftToRight },
+	 { "NSWritingDirectionRightToLeft", NSWritingDirectionRightToLeft },
 
 	/* From: NSPasteboard.h */
 
@@ -437,6 +476,8 @@ struct inttable enum_table[] = {
 	 { "NSProgressIndicatorPreferredSmallThickness", NSProgressIndicatorPreferredSmallThickness },
 	 { "NSProgressIndicatorPreferredLargeThickness", NSProgressIndicatorPreferredLargeThickness },
 	 { "NSProgressIndicatorPreferredAquaThickness", NSProgressIndicatorPreferredAquaThickness },
+	 { "NSProgressIndicatorBarStyle", NSProgressIndicatorBarStyle },
+	 { "NSProgressIndicatorSpinningStyle", NSProgressIndicatorSpinningStyle },
 
 	/* From: NSQuickDrawView.h */
 
@@ -549,6 +590,8 @@ struct inttable enum_table[] = {
 	/* From: NSTextField.h */
 
 	/* From: NSTextFieldCell.h */
+	 { "NSTextFieldSquareBezel", NSTextFieldSquareBezel },
+	 { "NSTextFieldRoundedBezel", NSTextFieldRoundedBezel },
 
 	/* From: NSTextStorage.h */
 
@@ -566,6 +609,9 @@ struct inttable enum_table[] = {
 	 { "NSToolbarDisplayModeIconAndLabel", NSToolbarDisplayModeIconAndLabel },
 	 { "NSToolbarDisplayModeIconOnly", NSToolbarDisplayModeIconOnly },
 	 { "NSToolbarDisplayModeLabelOnly", NSToolbarDisplayModeLabelOnly },
+	 { "NSToolbarSizeModeDefault", NSToolbarSizeModeDefault },
+	 { "NSToolbarSizeModeRegular", NSToolbarSizeModeRegular },
+	 { "NSToolbarSizeModeSmall", NSToolbarSizeModeSmall },
 
 	/* From: NSToolbarItem.h */
 
@@ -592,6 +638,11 @@ struct inttable enum_table[] = {
 	 { "NSDirectSelection", NSDirectSelection },
 	 { "NSSelectingNext", NSSelectingNext },
 	 { "NSSelectingPrevious", NSSelectingPrevious },
+	 { "NSWindowCloseButton", NSWindowCloseButton },
+	 { "NSWindowMiniaturizeButton", NSWindowMiniaturizeButton },
+	 { "NSWindowZoomButton", NSWindowZoomButton },
+	 { "NSWindowToolbarButton", NSWindowToolbarButton },
+	 { "NSWindowDocumentIconButton", NSWindowDocumentIconButton },
 
 	/* From: NSWindowController.h */
 
