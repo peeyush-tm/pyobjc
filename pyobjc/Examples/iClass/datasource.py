@@ -4,8 +4,8 @@ from objc import selector, class_list, objc_object, IBOutlet
 WRAPPED={}
 class Wrapper (NSObject):
 	"""
-	NSOutlineView doesn't retain values, need this class exploits a
-	bug in pyobjc to satisfy the NSOutlineView
+	NSOutlineView doesn't retain values, which means we cannot use normal
+	python values as values in an outline view.
 	"""
 	def init_(self, value):
 		self.value = value

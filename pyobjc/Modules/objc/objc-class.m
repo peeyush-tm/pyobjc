@@ -325,6 +325,7 @@ class_getattro(PyObject* self, PyObject* name)
 static int
 class_compare(PyObject* self, PyObject* other)
 {
+        Class self_class, other_class;
 	if (!ObjCClass_Check(other)) {
 		PyErr_SetString(PyExc_NotImplementedError, "Cmp with other");
 		return -1;
@@ -333,9 +334,22 @@ class_compare(PyObject* self, PyObject* other)
 	/* This is as arbitrary as the default tp_compare, but nicer for
 	 * the user
 	 */
-	return strcmp(
-		ObjCClass_GetClass(self)->name, 
-		ObjCClass_GetClass(other)->name);
+	self_class  = ObjCClass_GetClass(self);
+	other_class = ObjCClass_GetClass(other);
+
+	if (self_class) {
+		if (other_class) {
+			return strcmp(self_class->name, other_class->name);
+		} else {
+			return 1;
+		}
+	} else {
+		if (other_class) {
+			return -1;
+		} else {
+			return 0;
+		}
+	}
 }
 
 static long
