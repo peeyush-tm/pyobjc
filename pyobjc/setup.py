@@ -5,7 +5,7 @@ import os
 import sys
 
 # We need at least Python 2.3
-req_ver = [ 2, 3]
+req_ver = [ 2, 2]
 
 if sys.platform == 'darwin' and \
    os.path.exists('/System/Library/Frameworks/Foundation.framework'):
@@ -19,16 +19,15 @@ if sys.platform == 'darwin' and \
 	else:
 		path = sys.executable
 	path = os.path.normpath(path).lower()
-	if path.find('python.framework') == -1:
-		sys.stderr.write('PyObjC: Need framework install of python\n')
-		sys.exit(1)
+#	if path.find('python.framework') == -1:
+#		sys.stderr.write('PyObjC: Need framework install of python\n')
+#		sys.exit(1)
 
 if sys.version_info[0] < req_ver[0] or (
 		sys.version_info[0] == req_ver[0] 
 		and sys.version_info[1] < req_ver[1]):
 
-	sys.stderr.write('PyObjC: Need at least Python %s\n'%(
-		'.'.join(req_ver)))
+	sys.stderr.write('PyObjC: Need at least Python %s\n'%('.'.join(req_ver)))
 	sys.exit(1)
 
 
@@ -111,7 +110,7 @@ AddressBookPackages, AddressBookExtensions = \
 
 try:
     setup (name = "pyobjc",
-           version = "$Id: setup.py,v 1.4.2.3 2002/09/23 13:01:58 ronaldoussoren Exp $",
+           version = "$Id: setup.py,v 1.4.2.4 2002/09/23 15:59:54 bbum Exp $",
            description = "Python<->ObjC Interoperability Module",
            author = "bbum, SteveM, many others stretching back through the reachtes of time...",
            author_email = "oussoren@cistron.nl", 
