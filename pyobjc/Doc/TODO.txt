@@ -1,0 +1,328 @@
+=========
+TODO list
+=========
+
+.. contents::
+
+Introduction
+------------
+
+This document contains an (incomplete) list of work items. 
+
+Important items
+---------------
+
+Better documentation
+....................
+
+* There should be more developer and and end-user documentation.
+
+* The tutorials should have screenshots for the website.
+
+* There should be a document containing references to "third party" tutorials,
+  articles, and information about PyObjC.
+
+* The documentation should be updated to take advantage of reStructuredText
+  features.  Currently, documentation doesn't refer to itself consistently
+  (usually without hyperlink), and most documents are missing metadata.
+
+* build_html should include a step that performs syntax highlighting for
+  Python and Objective-C code snippets.
+
+Test suite
+..........
+
+The test suite needs to be enhanced. 
+
+* Somehow find a way to check code-coverage of the unittests.
+
+* Tests that exercise Key-Value Observing in a way that crashes older versions
+  of PyObjC.
+
+* tests for all functions in ``Modules/*/*Mapping*.m``
+  (including IMPs)
+
+* tests for all non-generated function wrappers (and some for the generated
+  functions as well, just in case the generator script is buggy)
+
+* tests where Python implementation of method with output arguments returns
+  the wrong value (type, number of values)
+
+* Add tests for accepting any sequence when depythonifying structs and arrays.
+
+* Add more tests for objc_support.m to unittest.c
+
+* Add tests for OC_PythonArray, OC_PythonDict to unittest.c
+
+
+The first two bullets require at least some GUI tests.
+
+
+
+Less important items
+--------------------
+
+Refactor some parts of the bridge
+.................................
+
+From the top of my head:
+
+* Restructure selector.m, this file is too long and complicated. We could
+  do away with the difference between method implemented in Python and
+  Objective-C.
+
+* Remove the need for ``pyobjc_classMethods``, you should be able to call
+  class methods in the obvious way.  This would (finally) close `836247`__.
+
+.. __: http://sourceforge.net/tracker/index.php?func=detail&aid=836247&group_id=14534&atid=114534
+
+* Likewise for class-builder.m, this file is way to large.
+
+* We've several types that wrap pointer values, such as ``SessionWrapper`` in
+  ``Modules/AppKit``. Should add a function for creating these types, 
+  possibly exposed to C code.
+
+Support for GNUstep
+...................
+
+The current SVN version contains some support for GNUstep, this needs to
+be enhanced.
+
+Unless somebody actually starts working on this GNUstep support will slowly
+fade away.
+
+Project templates
+.................
+
+Nobody seems to care enough about the templates to actually maintain them, this
+is a shame. 
+
+* Integrate Xcode template with py2app, somehow
+
+  (some work to this end exists in the svn sandbox)
+
+* Update or remove the Project Builder templates
+
+  I prefer updating them, by rebuilding the Xcode templates in Project Builder.
+
+  This would require Python 2.3 on Jaguar.
+
+Complete Cocoa wrapping
+.......................
+
+We do not yet have a 100% coverage of the Cocoa API's. We also need code in
+the testsuite that checks if the function wrappers are working as expected.
+
+Not all constants and enums from Cocoa are currently wrapped.  The annotations
+for input/output arguments are not all checked and may not be complete or
+correct.  
+
+We also don't support all "difficult" methods yet, implementing these is
+not too hard but it is a lot of work.
+
+Note that even though we do not have 100% coverage of Cocoa, the majority
+of useful functions, constants, and "difficult" methods are wrapped.  If you
+run across a missing or incorrectly wrapped constant, function, or method
+please report it as a bug and/or post to pyobjc-dev about the issue.  This is
+one area we intend to improve after the release of 1.2 when our new
+wrapper-generators are in a more complete state.
+
+Pickle support
+..............
+
+Objective-C objects don't support pickling.
+
+This is post-1.2 work, in general this is a hard problem because it may 
+involve object cycles that cross the Python-ObjC boundary.
+
+NSCoder support
+...............
+
+It might be useful to add default implementations of ``encodeWithCoder:`` and
+``initWithCoder:`` methods to Python subclasses of Objective-C classes that 
+implement these.  Note that property list types should already be serializable
+(``int``, ``long``, ``unicode``, ``list``, ``tuple``, ``dict``).
+
+See also `Pickle support`.
+
+``-copy``
+.........
+
+There are issues with implementing ``-copy`` in python, these need to be fixed.
+
+Specifically, overriding an existing ``-copy`` implementation does not work 
+unless ``__slots__ == ()``
+
+
+Known issues
+............
+
+It is impossible to support methods with a variable number of arguments in the
+generic code (you have to re-implement almost all of the logic of these 
+methods in order to know how many and which types of arguments are expected).
+Luckily there are not many varargs methods and most (if no all) of them can
+be easily avoided.
+
+All existing varargs methods should be located and documented. Where possible
+we should provide custom wrappers, otherwise we should document alternatives.
+
+Limitations such as the above should be clearly documented elsewhere, these
+are not necessarily TODO items.
+
+Code cleanup
+............
+
+* Check all error/exception messages
+
+* Check/cleanup error handling
+
+* Finish in-code documentation for the C code
+
+* SessionWrapper (in ``Modules/AppKit``) is one of several types that wrap 
+  a single pointer, create a function to build such types (similar to
+  ``Modules/objc/struct-wrapper.m``)
+
+* Use the ``CArray`` API whenever appropriate.
+
+Cleanup Examples
+................
+
+The CurrencyConverter example should be removed, this should be the same as the
+final step of the tutorial. It isn't at the moment because additional cruft in
+the example.
+
+* dictionary.py
+  Should be a unittest, and should be added to the (non-existing) manual
+
+* pydict-to-objcdict.py
+  Move to unittests
+
+* subclassing-objective-c.py
+  Move to documentation (unittest?)
+
+* super-call.py
+  Move to documentation  (unittest?)
+
+Add examples that demonstrate:
+
+- how to use a lot of Cocoa features
+
+- how to integrate with MacPython
+
+- how to use PIL with Cocoa 
+
+Performance tuning/testing
+..........................
+
+Design and implement a set of performance tests for the bridge. Use this to 
+investigate and fix any possible performance problems.
+
+Add freelists
+.............
+
+PyObjCSelector objects and PyObjCObject objects are created on
+a regular basis, we should check if using freelists would speed this up. See
+also `Performance tuning/testing`.
+
+
+Formal Protocols, Distributed Objects
+.....................................
+
+``DO`` seems to use formal protocols, we don't fully support those. There is 
+an equivalent to ``@protocol(Foo)``, but it is not yet possible to define
+new protocols in Python.
+
+Links to Apple documentation
+............................
+
+Links to Apple documentation are not stable, can we add a layer of indirection
+here, e.g. link to the PyObjC website that will redirect to the right
+location?
+
+We should also provide links to locally installed documentation,
+especially in the documentation that will be installed on the users machine.
+
+Implement more of NSMutableDictionary in OC_PythonDictionary
+.............................................................
+
+The implementation of OC_PythonDictionary is very minimal, we should add
+additional methods in the NSMutableDictionary interface if those can be 
+implemented efficiently. The default implementation will take care of the
+methods we cannot implement efficiently.
+
+And the same is true of OC_PythonArray
+
+Clean up OC_PythonObject
+........................
+
+The code is a mess.
+
+Rewrite scripts/find-raw-pointers.py
+....................................
+
+This is a script for finding 'difficult' methods. The script should be 
+refactored to make it easier to create readable reports.
+
+Finish refactoring of the code-generator scripts
+................................................
+
+1. Change code-generator scripts to use loadBundleFunctions, etc.
+
+2. Move the code-generator scripts to ``PyObjCTools``, to make it easier
+   for others to generate wrappers.
+
+3. Install ``pyobjc-api.h``.
+
+setup.py cleanup
+................
+
+* Use 'WrapperGenerator.py', probably need to create a custom build action
+  for that.
+
+Unique proxies for Python objects
+.................................
+
+Some Cocoa/CoreFoundation API's basically require that ``a[0] is a[0]``. The
+container wrappers contain support for that, but we should try to move that
+into the generic core: there should be at most one Objective-C proxy object
+alive for every Python object (just like there's at most one Python proxy for
+every Objective-C object).
+
+NSSet vs set
+............
+
+Check if it is possible to wrap ``NSSet`` using ``set`` (and v.v.).
+
+Only implement this when it is possible to convert without loss of information.
+
+Python 2.4
+..........
+
+Python 2.4 introduces a decorator syntax. Add convenience functions that
+make it easier to use decorators with PyObjC. 
+
+Also add example programs using decorators. Actually, first add the example(s)
+and extract useful convenience functions from those.
+
+An example of a convenience function would be::
+
+	import objc
+
+	def method_signature(signature):
+		def make_selector(func):
+			return objc.selector(func, signature=signature)
+		return make_selector
+
+Which can be used like this::
+	
+	class FooClass (NSObject):
+
+		@method_signature("v@:i")
+		def myIntMethod_(self, value):
+			pass
+
+NSLog, stringWithFormat, ...
+............................
+
+Functions and methods that use format strings are not properly wrapped. Fix
+that.
