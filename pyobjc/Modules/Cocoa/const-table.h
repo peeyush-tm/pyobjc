@@ -22,8 +22,8 @@ struct stringtable {
 
 #define CONST_ENTRY(var) { STR(var), var }
 #define STR_ENTRY(var) { STR(var), &var }
-#define STR_VAR(var) if (add_string(d, STR(VAR), var) < 0) return
-#define INT_VAR(var) if (add_int(d, STR(VAR), var) < 0) return
+#define STR_VAR(var) if (add_string(d, STR(var), var) < 0) return
+#define INT_VAR(var) if (add_int(d, STR(var), var) < 0) return
 
 static inline int add_double(PyObject*d, char* name, double value)
 {
