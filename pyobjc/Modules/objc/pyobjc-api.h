@@ -14,10 +14,23 @@
  * - This interface is in development, the the API will probably change in
  *   incompatible ways.
  *
- * $Id: pyobjc-api.h,v 1.1.2.1 2002/09/08 16:40:52 ronaldoussoren Exp $
+ * $Id: pyobjc-api.h,v 1.1.2.2 2002/09/23 16:00:49 bbum Exp $
  */
 
 #include <Python.h>
+
+#ifndef PyDoc_STRVAR
+#define PyDoc_STRVAR(name, value) static char name[] = value
+#endif
+
+#ifndef PyBool_Check
+#define PyBool_Check(_x_) (0)
+#endif
+
+#ifndef PyBool_FromLong
+#define PyBool_FromLong(_x_) PyInt_FromLong(_x_)
+#endif
+
 #include <objc/objc.h>
 
 #define PYOBJC_API_VERSION -1
