@@ -16,12 +16,14 @@
 
 #include "objc_support.h"
 #include "abstract.h"
-/* the def below is to fix Python2.2 bug */
+/* the def below is to fix Python2.2 bug
 #define PyMapping_DelItem(O,K) PyDict_DelItem((O),(K))
+*/
 #include "compile.h"
 
 #include <stdarg.h>
 
+#import  <Foundation/NSObject.h>  
 #import  <Foundation/NSMethodSignature.h>  /* sdm7g- chg #include to #import */
 #import  <Foundation/NSInvocation.h>       /* sdm7g */
 
@@ -34,25 +36,35 @@
 
 @implementation OC_PythonObject
 
+#if 0 /* NSProxy doesn't seem to define +setVersion, making this useless */
 + (void) initialize
 {
-/*
   if (self == [OC_PythonObject class])
     {
       [OC_PythonObject setVersion:CLASS_VERSION];
     }
-*/
 }
+#endif
 
 + newWithObject:(PyObject *) obj
 {
-  if (ObjCObject_Check (obj))
-    return ((ObjCObject *) obj)->oc_object;
+  if (ObjCObject_Check (obj)) 
+    {
+    // YYYY Ronald: If Jack is right (see below), we should 'retain' the 
+    // wrapped object to maintain the correct refcount
+    id objc_obj = ObjCObject_GetObject(obj);
+    
+    [objc_obj retain];
+    return objc_obj;
+    }
   else
     {
       id instance = [[self alloc] initWithObject:obj];
       
-      [instance autorelease];
+      // XXXX Jack thinks this shouldn't be done. And because these wrapper
+      // objects used to be released as soon as we get back into the mainloop
+      // he's strengthened in that belief:-)
+      //[instance autorelease];
 
       return instance;
     }
@@ -60,22 +72,36 @@
 
 - initWithObject:(PyObject *) obj
 {
+  //Py_XDECREF(pyObject);
   pyObject = obj;
+  Py_XINCREF(obj);
 
   return self;
 }
 
+#if 1
+- (void)dealloc
+{
+  printf("dealloc %p(%p) %s\n", self, pyObject, PyString_AS_STRING(PyObject_Repr(pyObject)));
+  Py_XDECREF(pyObject);
+  [super dealloc];
+}
+#else
+// XXX Jack thinks this is a bad idea: this ObjC object is exactly one reference
+// to the Python object (to be decreffed in dealloc)
 - retain
 {
-  Py_INCREF (pyObject);
+  Py_XINCREF (pyObject);
   return [super retain];
 }
 
 - (oneway void) release
 {
+  //printf("- release %x (pyObject %x), count=%d\n", self, pyObject, [self retainCount]); fflush(stdout);
   [super release];
-  Py_DECREF (pyObject);
+  Py_XDECREF (pyObject);
 }
+#endif
 
 - (NSString *) description
 {
@@ -103,8 +129,11 @@
       Py_DECREF (result);                                               \
       return ret;                                                       \
     }                                                                   \
-  else                                                                  \
+  else {                                                                \
+    PySys_WriteStderr("Error in Python call from ObjC:\n");             \
+    PyErr_Print();                                                      \
     return nil;                                                         \
+    }                                                                   \
 } while(0)
 
 - (void) doesNotRecognizeSelector:(SEL) aSelector
@@ -117,7 +146,7 @@
   strcpy (buffer, whoiam);
   strcat (buffer, ERRORMSG);
   strcat (buffer, selname);
-  PyErr_SetString (ObjC_Error, buffer);
+  PyErr_SetString (objc_error, buffer);
 }
 
 
@@ -162,6 +191,8 @@ get_method_for_selector (PyObject *obj, SEL aSelector)
       PyObject *pymethod;
       register const char *p;
       
+      //printf("Finding selector for '%s'\n", meth_name);
+      
       for (argcount=0, p=meth_name; *p; p++)
         if (*p == ':')
           argcount++;
@@ -170,6 +201,7 @@ get_method_for_selector (PyObject *obj, SEL aSelector)
 #if PYTHONIFICATION_METHOD != WITH_BOTH
       pythonify_objc_message (meth_name, pymeth_name);
 
+      //printf("Trying1 '%s'\n", pymeth_name);
       pymethod = PyObject_GetAttrString (obj, pymeth_name);
       return check_argcount (pymethod, argcount);
 #else
@@ -177,8 +209,11 @@ get_method_for_selector (PyObject *obj, SEL aSelector)
         PyObject *meth;
 
         pythonify_objc_message (meth_name, pymeth_name, PYTHONIFICATION_FIRST_TRY);
+        //printf("TryingA '%s'\n", pymeth_name);
         pymethod = PyObject_GetAttrString (obj, pymeth_name);
+	//printf("Result: %p\n",  pymethod);
         meth = check_argcount (pymethod, argcount);
+	//printf("ResultCnt: %p\n",  meth);
         if (meth)
           return meth;
 
@@ -187,8 +222,11 @@ get_method_for_selector (PyObject *obj, SEL aSelector)
 #else
         pythonify_objc_message (meth_name, pymeth_name, WITH_DOUBLE_UNDERSCORE);
 #endif
+        //printf("TryingB '%s'\n", pymeth_name);
         pymethod = PyObject_GetAttrString (obj, pymeth_name);
+	//printf("Result: %p\n",  pymethod);
         meth = check_argcount (pymethod, argcount);
+	//printf("ResultCnt: %p\n",  meth);
         if (meth)
           {
             if (Py_VerboseFlag)
@@ -213,16 +251,25 @@ get_method_for_selector (PyObject *obj, SEL aSelector)
 
 - (BOOL) respondsToSelector:(SEL) aSelector
 {
+  
+  printf("-respondsToSelector called: %s\n", SELNAME(aSelector));
   if ([super respondsToSelector:aSelector])
+    {
+    printf("YES, super supplies it\n");
     return YES;
+    }
   else
     {
-      PyObject *m = get_method_for_selector ([self pyObject], aSelector);
+      PyObject *m;
+    
+      m = get_method_for_selector ([self pyObject], aSelector);
 
-      if (m)
+      if (m) {
+        printf("YES, Python object supplies it\n");
         return YES;
-      else
+      } else
         {
+	  printf("NO\n");
           PyErr_Clear();
           return NO;
         }
@@ -232,7 +279,10 @@ get_method_for_selector (PyObject *obj, SEL aSelector)
 - (NSMethodSignature *) methodSignatureForSelector:(SEL) sel
 {
 
-  NSMethodSignature *result;
+  NSMethodSignature *result = nil;
+
+  //printf("methodSignatureForSelector: %p %s\n", sel, SELNAME(sel));
+  fflush(stdout);
 
   NS_DURING
     result = [super methodSignatureForSelector:sel];
@@ -246,10 +296,65 @@ get_method_for_selector (PyObject *obj, SEL aSelector)
     {
       const char *encoding = get_selector_encoding (self, sel);
 
-      if (!encoding)
+      //printf("Encoding: %s\n", encoding);
+
+      if (!encoding) {
+	  PyObject *pymethod;
+
+	  pymethod = get_method_for_selector ([self pyObject], sel);
+	  if (pymethod) {
+	      PyCodeObject *func_code;
+	      int argcount;
+		  
+	      if (PyMethod_Check (pymethod))
+		{
+		  func_code = (PyCodeObject *) PyFunction_GetCode (PyMethod_Function (pymethod));
+		  argcount = func_code->co_argcount-1; // adjust for `self'
+		}
+	      else
+		{
+		  func_code = (PyCodeObject *) PyFunction_GetCode (pymethod);
+		  argcount = func_code->co_argcount;
+		}
+
+		/* XXXX Jack thinks we may be able to handle getting the signatures
+		** if we make our Python classes subclass the corresponding ObjC
+		** classes: we should be able to use instanceMethodSignatureForSelector
+		*/
+		/*
+		** Hack by Jack: if our underlying Python object has a getObjCSignatureString
+		** method we call that.
+		*/
+		if (PyObject_HasAttrString([self pyObject], "getObjCSignatureString")) {
+			PyObject *sigstr;
+			
+			sigstr = PyObject_CallMethod([self pyObject], "getObjCSignatureString",
+					"s", [NSStringFromSelector (sel) cString]);
+			if (sigstr == NULL) {
+				fprintf(stderr, "Exception in getObjCSignatureString()\n");
+				PyErr_Clear();
+			} else if (PyString_Check(sigstr)) {
+				char *sigcstr = PyString_AsString(sigstr);
+				
+				id rv = [NSMethodSignature signatureWithObjCTypes:sigcstr];
+				
+				Py_DECREF(sigstr);
+				return rv;
+			} else {
+				fprintf(stderr, "getObjCSignatureString() did not return a string\n");
+				PyErr_Clear();
+			}
+		}
+	  }
+	/* Returning nil is not allowed here, crashes later in 
+	** [NSInvocation newInvocationWithMethodSignature:]
+	** XXXX For now we abort().
+	*/
+	abort();
 	return nil;
-      else
+      } else {
 	return [NSMethodSignature signatureWithObjCTypes:encoding];
+    }
     }
   return result;
 }
@@ -258,7 +363,11 @@ get_method_for_selector (PyObject *obj, SEL aSelector)
 {
   NSMethodSignature *msign = [invocation methodSignature];
   SEL aSelector = [invocation selector];
-  PyObject *pymethod = get_method_for_selector ([self pyObject], aSelector);
+  PyObject *pymethod;
+  
+  pymethod = get_method_for_selector ([self pyObject], aSelector);
+
+  //printf("forwardInvocation: %p %s\n", aSelector, SELNAME(aSelector));
 
   if (pymethod)
     {
@@ -282,7 +391,8 @@ get_method_for_selector (PyObject *obj, SEL aSelector)
         {
           PyObject *result;
 
-	  for (i=argcount+2; i>=2; i--)
+	  /*for (i=argcount+2; i>=2; i--) */
+	  for (i=argcount+1; i>1; i--) 
 	    {
 	      const char *argtype;
 	      char *argbuffer;
@@ -297,13 +407,14 @@ get_method_for_selector (PyObject *obj, SEL aSelector)
 	      NS_HANDLER
 		Py_DECREF(args);
 	        fprintf (stderr, "error getting type of arg %d\n", i);
+	        /* XXX Jack thinks this shouldn't happen */abort();
 		[super forwardInvocation:invocation];
 		return;
 	      NS_ENDHANDLER
 		
 	      argbuffer = alloca (objc_sizeof_type (argtype));
 	      [invocation getArgument:argbuffer atIndex:i];
-	      pyarg = pythonify_c_value (argtype, argbuffer, NULL);
+	      pyarg = pythonify_c_value (argtype, argbuffer);
 
 	      PyTuple_SET_ITEM (args, i-2, pyarg);
 	    }
@@ -321,14 +432,28 @@ get_method_for_selector (PyObject *obj, SEL aSelector)
 	      if (error)
 		{
 		  fprintf (stderr, "error depythonifying: %s\n", error);
+		  /* XXX Jack thinks this shouldn't happen */abort();
 		}
 	      else
 		[invocation setReturnValue:retbuffer];
 	    }
+	  else
+	    {
+                PySys_WriteStderr("Error in Python call from ObjC:\n");
+                PyErr_Print();  /* this also clears the error */
+            }
+	      
         }
-    }
-
-  [super forwardInvocation:invocation];    
+// XXXX Jack thinks that commenting out the super call is not the right thing to do.
+// But if we enable it we get an exception.
+//    } else {
+//    	printf("WARNING: forwardInvocation: no Python method for %s\n", SELNAME(aSelector));
+//    	fflush(stdout);
+//    	[super forwardInvocation:invocation];
+	}
+	/*
+  [super forwardInvocation:invocation];
+  */
 }    
 
 
@@ -934,8 +1059,10 @@ get_method_for_selector (PyObject *obj, SEL aSelector)
 {
   int len = PyObject_Length ([self pyObject]);
 
+#if 0
   if (len < 0)
     [NSException raise:PyObjCException format:@"PyObject_Length() returned -1"];
+#endif
 
   return len;
 }

@@ -14,7 +14,7 @@
  * Created Mon Oct 28 12:38:18 1996.
  */
 
-#include "ObjC.h"
+#include "meta.h"
 #include "objc_support.h"
 
 static void
@@ -24,11 +24,13 @@ ObjCPointer_dealloc (ObjCPointer *self)
   PyMem_DEL (self);
 }
 
-static char ObjCPointer_unpack_doc[] =
+static char ObjCPointer_unpack_doc[] = "";
+#if 0
 FUNDOC("Unpack the pointed value accordingly to its type.",
        ".unpack()",
        "none",
        "A Python object containing the unpacked value");
+#endif
 static PyObject *
 ObjCPointer_unpack (ObjCPointer *self, PyObject *args)
 {
@@ -40,12 +42,12 @@ ObjCPointer_unpack (ObjCPointer *self, PyObject *args)
 
           if (!strcmp (type, @encode (void)))
             {
-              PyErr_SetString (ObjC_Error, "Cannot dereference a pointer to void");
+              PyErr_SetString (objc_error, "Cannot dereference a pointer to void");
               return NULL;
             }
           else
             return pythonify_c_value (PyString_AS_STRING (self->type),
-                                      self->ptr, NULL);
+                                      self->ptr);
         }
       else
         {

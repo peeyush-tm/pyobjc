@@ -3,6 +3,23 @@
 # This file is part of the PyObjC package.
 #
 
+This file is part of the 'subclass-branch' of PyObjC. This branch is
+used to develop a version of PyObjC that allows transparent access
+to objective-C objects and classes, including subclassing of Objective-C
+classes in Python and instantiation those classes from Objective-C
+(without using the Python API)
+
+This version requires a framework install of Python 2.3 (which is the current
+development version)
+
+Most development on this branch is by Ronald Oussoren <oussoren@cistron.nl>.
+
+This branch is currently in an uncompilable state, I (Ronald) am busy merging
+my work into this version, while at the same time adding usefull information to
+the changelog
+
+----
+
 Steve Majewski <sdm7g@minsky.med.virginia.edu> picked up Lele's work
 in early November, 2000 and revived an otherwise stagnant project.
 
