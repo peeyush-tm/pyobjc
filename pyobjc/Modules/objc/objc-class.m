@@ -325,7 +325,10 @@ class_getattro(PyObject* self, PyObject* name)
 static int
 class_compare(PyObject* self, PyObject* other)
 {
-        Class self_class, other_class;
+	Class self_class;
+	Class other_class;
+	int   v;
+
 	if (!ObjCClass_Check(other)) {
 		PyErr_SetString(PyExc_NotImplementedError, "Cmp with other");
 		return -1;
@@ -334,22 +337,23 @@ class_compare(PyObject* self, PyObject* other)
 	/* This is as arbitrary as the default tp_compare, but nicer for
 	 * the user
 	 */
-	self_class  = ObjCClass_GetClass(self);
+	self_class = ObjCClass_GetClass(self);
 	other_class = ObjCClass_GetClass(other);
 
-	if (self_class) {
-		if (other_class) {
-			return strcmp(self_class->name, other_class->name);
-		} else {
-			return 1;
-		}
-	} else {
-		if (other_class) {
-			return -1;
-		} else {
-			return 0;
-		}
-	}
+	if (self_class == other_class) return 0;
+	if (!self_class) return -1;
+	if (!other_class) return 1;
+
+	v = strcmp(
+		self_class->name, 
+		other_class->name);
+
+	/* Python requires -1, 0 or 1, but strcmp on MacOS X returns
+	 * 'negative', 0 or 'positive'
+	 */
+	if (v < 0) return -1;
+	if (v == 0) return 0;
+	return 1;
 }
 
 static long
@@ -644,25 +648,43 @@ Class ObjCClass_GetClass(PyObject* cls)
 
 PyObject* ObjCClass_FindSelector(PyObject* cls, SEL selector)
 {
-
-#if 0 /* Should use this one, but code is not yet complete: */
 	struct class_info* info;
-	if (!ObjCClass_Check(obj)) {
+	PyObject*          result;
+	PyObject*          attributes;
+	PyObject*          key;
+	PyObject*          v;
+	int                i;
+	int                len;
+
+	if (!ObjCClass_Check(cls)) {
 		ObjCErr_Set(objc_internal_error,
 			"ObjCClass_GetClass called for non-class");
 		return nil;
 	}
 	
 	info = get_class_info(cls);
-#else
-	/* This is expensive, will change to dict in 'info' struct that
-	 * maps from SEL to PyObject
-	 */
-	PyObject*          attributes;
-	PyObject*          key;
-	PyObject*          v;
-	int                i;
-	int                len;
+	if (info->sel_to_py == NULL) {
+		info->sel_to_py = PyDict_New();
+		if (info->sel_to_py == NULL) return NULL;
+	}
+
+	/* First check the cache */
+
+	result = PyDict_GetItemString(info->sel_to_py, 
+				(char*)SELNAME(selector));	
+	if (result != NULL) {
+		if (result == Py_None) {
+			/* negative cache entry */
+			ObjCErr_Set(PyExc_AttributeError,
+				"No selector %s (cached)",
+				SELNAME(selector));
+			return NULL;
+		}
+		Py_INCREF(result);
+		return result;
+	}
+
+	/* Not in the cache, walk the attribute list */
 
 	attributes = PyObject_Dir(cls);
 	if (attributes == NULL) {
@@ -683,8 +705,12 @@ PyObject* ObjCClass_FindSelector(PyObject* cls, SEL selector)
 
 		if (ObjCSelector_Check(v)) {
 			if (((ObjCSelector*)v)->sel_selector == selector) {
-				/*Py_INCREF(v);*/
 				Py_DECREF(attributes);
+				if (PyDict_SetItemString(info->sel_to_py,
+					(char*)SELNAME(selector), v) == 0) {
+
+					Py_INCREF(v);
+				}
 				return v;
 			}
 		} 
@@ -693,9 +719,13 @@ PyObject* ObjCClass_FindSelector(PyObject* cls, SEL selector)
 
 	Py_DECREF(attributes);
 
-	PyErr_SetString(PyExc_AttributeError, SELNAME(selector));
+	ObjCErr_Set(PyExc_AttributeError,
+		"No selector %s", SELNAME(selector));
+	if (PyDict_SetItemString(info->sel_to_py, 
+			(char*)SELNAME(selector), Py_None) == 0) {
+		Py_INCREF(Py_None);
+	}
 	return NULL;
-#endif
 }
 
 /*
@@ -726,10 +756,12 @@ ObjCClass_MaybeRescan(PyObject* class)
 	if (r < 0) abort();
 
 	info->rescan_done = 1;
+	if (info->sel_to_py) {
+		Py_DECREF(info->sel_to_py);
+		info->sel_to_py = NULL;
+	}
 }
 
-
-// NEW CODE
 
 int 
 ObjCClass_IsSubClass(Class child, Class parent)

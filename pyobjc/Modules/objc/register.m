@@ -10,9 +10,250 @@
 #include "pyobjc-api.h"
 static struct pyobjc_api* ObjC_API;
 typedef int (*superfunc)();
+/* signature: c@:@@ */
+static char 
+meth_imp_0(id self, SEL sel, id arg_2, id arg_3)
+{
+	PyObject* arglist;
+	PyObject* retval;
+	PyObject* tmp;
+	const char* errstr;
+	char objc_retval;
+
+	arglist = PyTuple_New(3);
+	if (arglist == NULL) ObjCErr_ToObjC();
+
+	tmp = ObjC_ObjCToPython("@", &self);
+	if (tmp == NULL) ObjCErr_ToObjC();
+	PyTuple_SET_ITEM(arglist, 0, tmp);
+	tmp = ObjC_ObjCToPython("@", &arg_2);
+	if (tmp == NULL) ObjCErr_ToObjC();
+	PyTuple_SET_ITEM(arglist, 1, tmp);
+	tmp = ObjC_ObjCToPython("@", &arg_3);
+	if (tmp == NULL) ObjCErr_ToObjC();
+	PyTuple_SET_ITEM(arglist, 2, tmp);
+
+	retval = ObjC_CallPython(self, sel, arglist);
+	Py_DECREF(arglist);
+	if (retval == NULL) ObjCErr_ToObjC();
+	errstr = ObjC_PythonToObjC("c", retval, &objc_retval);
+	Py_DECREF(retval);
+	if (errstr != NULL) {
+		PyErr_SetString(PyExc_ValueError, "Cannot convert to ObjC");
+		ObjCErr_ToObjC();
+	}
+	return objc_retval;
+}
+static PyObject* super_0(PyObject* meth, PyObject* self, PyObject* args)
+{
+	id objc_self;
+	const char* errstr;
+	PyObject* v;
+	char objc_retval;
+	id objc_arg2;
+	id objc_arg3;
+	struct objc_super super;
+
+	if (PyTuple_Size(args) != 2) {
+		PyErr_SetString(PyExc_TypeError, "Wrong argcount");
+		return NULL;
+	}
+	errstr = ObjC_PythonToObjC("@", self, &objc_self);
+	if (errstr != NULL) {
+		PyErr_SetString(PyExc_TypeError, "Cannot convert self");
+		return NULL;
+	} 	super.receiver = objc_self;
+	super.class = ObjCSelector_GetClass(meth);
+	v = PyTuple_GET_ITEM(args, 0);
+	errstr = ObjC_PythonToObjC("@", v, &objc_arg2);
+	if (errstr) {
+		PyErr_SetString(PyExc_TypeError, "Cannot convert argument");
+	return NULL;
+	}
+	v = PyTuple_GET_ITEM(args, 1);
+	errstr = ObjC_PythonToObjC("@", v, &objc_arg3);
+	if (errstr) {
+		PyErr_SetString(PyExc_TypeError, "Cannot convert argument");
+	return NULL;
+	}
+	NS_DURING
+		objc_retval = (char)(long)objc_msgSendSuper(&super, ObjCSelector_GetSelector(meth), objc_arg2, objc_arg3);
+	NS_HANDLER
+		ObjCErr_FromObjC(localException);
+	NS_ENDHANDLER
+	if (PyErr_Occurred()) return NULL;
+	v = ObjC_ObjCToPython("c", &objc_retval);
+	return v;
+}
+
+
+/* signature: @@:@i@ */
+static id 
+meth_imp_1(id self, SEL sel, id arg_2, int arg_3, id arg_4)
+{
+	PyObject* arglist;
+	PyObject* retval;
+	PyObject* tmp;
+	const char* errstr;
+	id objc_retval;
+
+	arglist = PyTuple_New(4);
+	if (arglist == NULL) ObjCErr_ToObjC();
+
+	tmp = ObjC_ObjCToPython("@", &self);
+	if (tmp == NULL) ObjCErr_ToObjC();
+	PyTuple_SET_ITEM(arglist, 0, tmp);
+	tmp = ObjC_ObjCToPython("@", &arg_2);
+	if (tmp == NULL) ObjCErr_ToObjC();
+	PyTuple_SET_ITEM(arglist, 1, tmp);
+	tmp = ObjC_ObjCToPython("i", &arg_3);
+	if (tmp == NULL) ObjCErr_ToObjC();
+	PyTuple_SET_ITEM(arglist, 2, tmp);
+	tmp = ObjC_ObjCToPython("@", &arg_4);
+	if (tmp == NULL) ObjCErr_ToObjC();
+	PyTuple_SET_ITEM(arglist, 3, tmp);
+
+	retval = ObjC_CallPython(self, sel, arglist);
+	Py_DECREF(arglist);
+	if (retval == NULL) ObjCErr_ToObjC();
+	errstr = ObjC_PythonToObjC("@", retval, &objc_retval);
+	Py_DECREF(retval);
+	if (errstr != NULL) {
+		PyErr_SetString(PyExc_ValueError, "Cannot convert to ObjC");
+		ObjCErr_ToObjC();
+	}
+	return objc_retval;
+}
+static PyObject* super_1(PyObject* meth, PyObject* self, PyObject* args)
+{
+	id objc_self;
+	const char* errstr;
+	PyObject* v;
+	id objc_retval;
+	id objc_arg2;
+	int objc_arg3;
+	id objc_arg4;
+	struct objc_super super;
+
+	if (PyTuple_Size(args) != 3) {
+		PyErr_SetString(PyExc_TypeError, "Wrong argcount");
+		return NULL;
+	}
+	errstr = ObjC_PythonToObjC("@", self, &objc_self);
+	if (errstr != NULL) {
+		PyErr_SetString(PyExc_TypeError, "Cannot convert self");
+		return NULL;
+	} 	super.receiver = objc_self;
+	super.class = ObjCSelector_GetClass(meth);
+	v = PyTuple_GET_ITEM(args, 0);
+	errstr = ObjC_PythonToObjC("@", v, &objc_arg2);
+	if (errstr) {
+		PyErr_SetString(PyExc_TypeError, "Cannot convert argument");
+	return NULL;
+	}
+	v = PyTuple_GET_ITEM(args, 1);
+	errstr = ObjC_PythonToObjC("i", v, &objc_arg3);
+	if (errstr) {
+		PyErr_SetString(PyExc_TypeError, "Cannot convert argument");
+	return NULL;
+	}
+	v = PyTuple_GET_ITEM(args, 2);
+	errstr = ObjC_PythonToObjC("@", v, &objc_arg4);
+	if (errstr) {
+		PyErr_SetString(PyExc_TypeError, "Cannot convert argument");
+	return NULL;
+	}
+	NS_DURING
+		objc_retval = (id)(long)objc_msgSendSuper(&super, ObjCSelector_GetSelector(meth), objc_arg2, objc_arg3, objc_arg4);
+	NS_HANDLER
+		ObjCErr_FromObjC(localException);
+	NS_ENDHANDLER
+	if (PyErr_Occurred()) return NULL;
+	v = ObjC_ObjCToPython("@", &objc_retval);
+	return v;
+}
+
+
+/* signature: i@:@@ */
+static int 
+meth_imp_2(id self, SEL sel, id arg_2, id arg_3)
+{
+	PyObject* arglist;
+	PyObject* retval;
+	PyObject* tmp;
+	const char* errstr;
+	int objc_retval;
+
+	arglist = PyTuple_New(3);
+	if (arglist == NULL) ObjCErr_ToObjC();
+
+	tmp = ObjC_ObjCToPython("@", &self);
+	if (tmp == NULL) ObjCErr_ToObjC();
+	PyTuple_SET_ITEM(arglist, 0, tmp);
+	tmp = ObjC_ObjCToPython("@", &arg_2);
+	if (tmp == NULL) ObjCErr_ToObjC();
+	PyTuple_SET_ITEM(arglist, 1, tmp);
+	tmp = ObjC_ObjCToPython("@", &arg_3);
+	if (tmp == NULL) ObjCErr_ToObjC();
+	PyTuple_SET_ITEM(arglist, 2, tmp);
+
+	retval = ObjC_CallPython(self, sel, arglist);
+	Py_DECREF(arglist);
+	if (retval == NULL) ObjCErr_ToObjC();
+	errstr = ObjC_PythonToObjC("i", retval, &objc_retval);
+	Py_DECREF(retval);
+	if (errstr != NULL) {
+		PyErr_SetString(PyExc_ValueError, "Cannot convert to ObjC");
+		ObjCErr_ToObjC();
+	}
+	return objc_retval;
+}
+static PyObject* super_2(PyObject* meth, PyObject* self, PyObject* args)
+{
+	id objc_self;
+	const char* errstr;
+	PyObject* v;
+	int objc_retval;
+	id objc_arg2;
+	id objc_arg3;
+	struct objc_super super;
+
+	if (PyTuple_Size(args) != 2) {
+		PyErr_SetString(PyExc_TypeError, "Wrong argcount");
+		return NULL;
+	}
+	errstr = ObjC_PythonToObjC("@", self, &objc_self);
+	if (errstr != NULL) {
+		PyErr_SetString(PyExc_TypeError, "Cannot convert self");
+		return NULL;
+	} 	super.receiver = objc_self;
+	super.class = ObjCSelector_GetClass(meth);
+	v = PyTuple_GET_ITEM(args, 0);
+	errstr = ObjC_PythonToObjC("@", v, &objc_arg2);
+	if (errstr) {
+		PyErr_SetString(PyExc_TypeError, "Cannot convert argument");
+	return NULL;
+	}
+	v = PyTuple_GET_ITEM(args, 1);
+	errstr = ObjC_PythonToObjC("@", v, &objc_arg3);
+	if (errstr) {
+		PyErr_SetString(PyExc_TypeError, "Cannot convert argument");
+	return NULL;
+	}
+	NS_DURING
+		objc_retval = (int)(long)objc_msgSendSuper(&super, ObjCSelector_GetSelector(meth), objc_arg2, objc_arg3);
+	NS_HANDLER
+		ObjCErr_FromObjC(localException);
+	NS_ENDHANDLER
+	if (PyErr_Occurred()) return NULL;
+	v = ObjC_ObjCToPython("i", &objc_retval);
+	return v;
+}
+
+
 /* signature: #0@4:8 */
 static Class 
-meth_imp_0(id self, SEL sel)
+meth_imp_3(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -38,7 +279,7 @@ meth_imp_0(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_0(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_3(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -69,7 +310,7 @@ static PyObject* super_0(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: #0@4:8@12 */
 static Class 
-meth_imp_1(id self, SEL sel, id arg_2)
+meth_imp_4(id self, SEL sel, id arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -98,7 +339,7 @@ meth_imp_1(id self, SEL sel, id arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_1(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_4(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -136,7 +377,7 @@ static PyObject* super_1(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: #0@4:8@12@16 */
 static Class 
-meth_imp_2(id self, SEL sel, id arg_2, id arg_3)
+meth_imp_5(id self, SEL sel, id arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -168,7 +409,7 @@ meth_imp_2(id self, SEL sel, id arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_2(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_5(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -213,7 +454,7 @@ static PyObject* super_2(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: #0@4:8I12 */
 static Class 
-meth_imp_3(id self, SEL sel, unsigned int arg_2)
+meth_imp_6(id self, SEL sel, unsigned int arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -242,7 +483,7 @@ meth_imp_3(id self, SEL sel, unsigned int arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_3(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_6(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -280,7 +521,7 @@ static PyObject* super_3(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: *0@4:8 */
 static char* 
-meth_imp_4(id self, SEL sel)
+meth_imp_7(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -306,7 +547,7 @@ meth_imp_4(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_4(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_7(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -338,7 +579,7 @@ static PyObject* super_4(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: *0@4:8@12^I16
 /* signature: 8@12o^@16 */
 static id 
-meth_imp_5(id self, SEL sel)
+meth_imp_8(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -364,7 +605,7 @@ meth_imp_5(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_5(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_8(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -404,7 +645,7 @@ static PyObject* super_5(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: :0@4:8 */
 static SEL 
-meth_imp_6(id self, SEL sel)
+meth_imp_9(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -430,7 +671,7 @@ meth_imp_6(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_6(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_9(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -461,7 +702,7 @@ static PyObject* super_6(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: :0@4:8@12 */
 static SEL 
-meth_imp_7(id self, SEL sel, id arg_2)
+meth_imp_10(id self, SEL sel, id arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -490,7 +731,7 @@ meth_imp_7(id self, SEL sel, id arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_7(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_10(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -528,7 +769,7 @@ static PyObject* super_7(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8 */
 static id 
-meth_imp_8(id self, SEL sel)
+meth_imp_11(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -554,7 +795,7 @@ meth_imp_8(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_8(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_11(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -585,7 +826,7 @@ static PyObject* super_8(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8#12 */
 static id 
-meth_imp_9(id self, SEL sel, Class arg_2)
+meth_imp_12(id self, SEL sel, Class arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -614,7 +855,7 @@ meth_imp_9(id self, SEL sel, Class arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_9(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_12(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -652,7 +893,7 @@ static PyObject* super_9(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8#12@16@20:24 */
 static id 
-meth_imp_10(id self, SEL sel, Class arg_2, id arg_3, id arg_4, SEL arg_5)
+meth_imp_13(id self, SEL sel, Class arg_2, id arg_3, id arg_4, SEL arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -690,7 +931,7 @@ meth_imp_10(id self, SEL sel, Class arg_2, id arg_3, id arg_4, SEL arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_10(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_13(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -749,7 +990,7 @@ static PyObject* super_10(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8*12 */
 static id 
-meth_imp_11(id self, SEL sel, char* arg_2)
+meth_imp_14(id self, SEL sel, char* arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -778,7 +1019,7 @@ meth_imp_11(id self, SEL sel, char* arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_11(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_14(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -816,7 +1057,7 @@ static PyObject* super_11(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8*12*16 */
 static id 
-meth_imp_12(id self, SEL sel, char* arg_2, char* arg_3)
+meth_imp_15(id self, SEL sel, char* arg_2, char* arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -848,7 +1089,7 @@ meth_imp_12(id self, SEL sel, char* arg_2, char* arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_12(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_15(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -893,7 +1134,7 @@ static PyObject* super_12(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8*12*16*20*24*28c32 */
 static id 
-meth_imp_13(id self, SEL sel, char* arg_2, char* arg_3, char* arg_4, char* arg_5, char* arg_6, char arg_7)
+meth_imp_16(id self, SEL sel, char* arg_2, char* arg_3, char* arg_4, char* arg_5, char* arg_6, char arg_7)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -937,7 +1178,7 @@ meth_imp_13(id self, SEL sel, char* arg_2, char* arg_3, char* arg_4, char* arg_5
 	}
 	return objc_retval;
 }
-static PyObject* super_13(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_16(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -1010,7 +1251,7 @@ static PyObject* super_13(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8*12@16*20 */
 static id 
-meth_imp_14(id self, SEL sel, char* arg_2, id arg_3, char* arg_4)
+meth_imp_17(id self, SEL sel, char* arg_2, id arg_3, char* arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -1045,7 +1286,7 @@ meth_imp_14(id self, SEL sel, char* arg_2, id arg_3, char* arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_14(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_17(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -1097,7 +1338,7 @@ static PyObject* super_14(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8*12I16 */
 static id 
-meth_imp_15(id self, SEL sel, char* arg_2, unsigned int arg_3)
+meth_imp_18(id self, SEL sel, char* arg_2, unsigned int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -1129,7 +1370,7 @@ meth_imp_15(id self, SEL sel, char* arg_2, unsigned int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_15(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_18(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -1174,7 +1415,7 @@ static PyObject* super_15(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8*12I16c20 */
 static id 
-meth_imp_16(id self, SEL sel, char* arg_2, unsigned int arg_3, char arg_4)
+meth_imp_19(id self, SEL sel, char* arg_2, unsigned int arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -1209,7 +1450,7 @@ meth_imp_16(id self, SEL sel, char* arg_2, unsigned int arg_3, char arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_16(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_19(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -1261,7 +1502,7 @@ static PyObject* super_16(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8*12i16 */
 static id 
-meth_imp_17(id self, SEL sel, char* arg_2, int arg_3)
+meth_imp_20(id self, SEL sel, char* arg_2, int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -1293,7 +1534,7 @@ meth_imp_17(id self, SEL sel, char* arg_2, int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_17(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_20(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -1338,7 +1579,7 @@ static PyObject* super_17(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8:12 */
 static id 
-meth_imp_18(id self, SEL sel, SEL arg_2)
+meth_imp_21(id self, SEL sel, SEL arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -1367,7 +1608,7 @@ meth_imp_18(id self, SEL sel, SEL arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_18(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_21(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -1405,7 +1646,7 @@ static PyObject* super_18(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8:12@16 */
 static id 
-meth_imp_19(id self, SEL sel, SEL arg_2, id arg_3)
+meth_imp_22(id self, SEL sel, SEL arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -1437,7 +1678,7 @@ meth_imp_19(id self, SEL sel, SEL arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_19(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_22(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -1482,7 +1723,7 @@ static PyObject* super_19(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8:12@16@20 */
 static id 
-meth_imp_20(id self, SEL sel, SEL arg_2, id arg_3, id arg_4)
+meth_imp_23(id self, SEL sel, SEL arg_2, id arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -1517,7 +1758,7 @@ meth_imp_20(id self, SEL sel, SEL arg_2, id arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_20(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_23(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -1572,7 +1813,7 @@ static PyObject* super_20(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: @0@4:8:12^v16
 /* signature: @0@4:8:12c16 */
 static id 
-meth_imp_21(id self, SEL sel, SEL arg_2, char arg_3)
+meth_imp_24(id self, SEL sel, SEL arg_2, char arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -1604,7 +1845,7 @@ meth_imp_21(id self, SEL sel, SEL arg_2, char arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_21(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_24(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -1649,7 +1890,7 @@ static PyObject* super_21(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8:12i16@20@24 */
 static id 
-meth_imp_22(id self, SEL sel, SEL arg_2, int arg_3, id arg_4, id arg_5)
+meth_imp_25(id self, SEL sel, SEL arg_2, int arg_3, id arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -1687,7 +1928,7 @@ meth_imp_22(id self, SEL sel, SEL arg_2, int arg_3, id arg_4, id arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_22(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_25(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -1751,7 +1992,7 @@ struct _NSRange {
 };
 
 static id 
-meth_imp_23(id self, SEL sel, SEL arg_2, struct _NSRange arg_3, id arg_4)
+meth_imp_26(id self, SEL sel, SEL arg_2, struct _NSRange arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -1786,7 +2027,7 @@ meth_imp_23(id self, SEL sel, SEL arg_2, struct _NSRange arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_23(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_26(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -1838,7 +2079,7 @@ static PyObject* super_23(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12 */
 static id 
-meth_imp_24(id self, SEL sel, id arg_2)
+meth_imp_27(id self, SEL sel, id arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -1867,7 +2108,7 @@ meth_imp_24(id self, SEL sel, id arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_24(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_27(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -1905,7 +2146,7 @@ static PyObject* super_24(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12#16 */
 static id 
-meth_imp_25(id self, SEL sel, id arg_2, Class arg_3)
+meth_imp_28(id self, SEL sel, id arg_2, Class arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -1937,7 +2178,7 @@ meth_imp_25(id self, SEL sel, id arg_2, Class arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_25(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_28(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -1982,7 +2223,7 @@ static PyObject* super_25(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12*16 */
 static id 
-meth_imp_26(id self, SEL sel, id arg_2, char* arg_3)
+meth_imp_29(id self, SEL sel, id arg_2, char* arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -2014,7 +2255,7 @@ meth_imp_26(id self, SEL sel, id arg_2, char* arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_26(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_29(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -2059,7 +2300,7 @@ static PyObject* super_26(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12:16 */
 static id 
-meth_imp_27(id self, SEL sel, id arg_2, SEL arg_3)
+meth_imp_30(id self, SEL sel, id arg_2, SEL arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -2091,7 +2332,7 @@ meth_imp_27(id self, SEL sel, id arg_2, SEL arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_27(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_30(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -2136,7 +2377,7 @@ static PyObject* super_27(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12:16@20 */
 static id 
-meth_imp_28(id self, SEL sel, id arg_2, SEL arg_3, id arg_4)
+meth_imp_31(id self, SEL sel, id arg_2, SEL arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -2171,7 +2412,7 @@ meth_imp_28(id self, SEL sel, id arg_2, SEL arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_28(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_31(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -2223,7 +2464,7 @@ static PyObject* super_28(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12:16@20i24 */
 static id 
-meth_imp_29(id self, SEL sel, id arg_2, SEL arg_3, id arg_4, int arg_5)
+meth_imp_32(id self, SEL sel, id arg_2, SEL arg_3, id arg_4, int arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -2261,7 +2502,7 @@ meth_imp_29(id self, SEL sel, id arg_2, SEL arg_3, id arg_4, int arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_29(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_32(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -2320,7 +2561,7 @@ static PyObject* super_29(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12:16i20 */
 static id 
-meth_imp_30(id self, SEL sel, id arg_2, SEL arg_3, int arg_4)
+meth_imp_33(id self, SEL sel, id arg_2, SEL arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -2355,7 +2596,7 @@ meth_imp_30(id self, SEL sel, id arg_2, SEL arg_3, int arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_30(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_33(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -2407,7 +2648,7 @@ static PyObject* super_30(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12@16 */
 static id 
-meth_imp_31(id self, SEL sel, id arg_2, id arg_3)
+meth_imp_34(id self, SEL sel, id arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -2439,7 +2680,7 @@ meth_imp_31(id self, SEL sel, id arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_31(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_34(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -2484,7 +2725,7 @@ static PyObject* super_31(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12@16*20 */
 static id 
-meth_imp_32(id self, SEL sel, id arg_2, id arg_3, char* arg_4)
+meth_imp_35(id self, SEL sel, id arg_2, id arg_3, char* arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -2519,7 +2760,7 @@ meth_imp_32(id self, SEL sel, id arg_2, id arg_3, char* arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_32(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_35(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -2571,7 +2812,7 @@ static PyObject* super_32(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12@16:20@24 */
 static id 
-meth_imp_33(id self, SEL sel, id arg_2, id arg_3, SEL arg_4, id arg_5)
+meth_imp_36(id self, SEL sel, id arg_2, id arg_3, SEL arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -2609,7 +2850,7 @@ meth_imp_33(id self, SEL sel, id arg_2, id arg_3, SEL arg_4, id arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_33(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_36(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -2668,7 +2909,7 @@ static PyObject* super_33(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12@16@20 */
 static id 
-meth_imp_34(id self, SEL sel, id arg_2, id arg_3, id arg_4)
+meth_imp_37(id self, SEL sel, id arg_2, id arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -2703,7 +2944,7 @@ meth_imp_34(id self, SEL sel, id arg_2, id arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_34(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_37(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -2755,7 +2996,7 @@ static PyObject* super_34(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12@16@20@24 */
 static id 
-meth_imp_35(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5)
+meth_imp_38(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -2793,7 +3034,7 @@ meth_imp_35(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_35(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_38(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -2852,7 +3093,7 @@ static PyObject* super_35(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12@16@20@24@28 */
 static id 
-meth_imp_36(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6)
+meth_imp_39(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -2893,7 +3134,7 @@ meth_imp_36(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6)
 	}
 	return objc_retval;
 }
-static PyObject* super_36(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_39(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -2959,7 +3200,7 @@ static PyObject* super_36(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12@16@20@24@28@32 */
 static id 
-meth_imp_37(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6, id arg_7)
+meth_imp_40(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6, id arg_7)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -3003,7 +3244,7 @@ meth_imp_37(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6, 
 	}
 	return objc_retval;
 }
-static PyObject* super_37(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_40(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -3078,7 +3319,7 @@ static PyObject* super_37(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: @0@4:8@12@16@20@24^@28c32
 /* signature: @0@4:8@12@16@20@24c28 */
 static id 
-meth_imp_38(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, char arg_6)
+meth_imp_41(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, char arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -3119,7 +3360,7 @@ meth_imp_38(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, char arg_6
 	}
 	return objc_retval;
 }
-static PyObject* super_38(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_41(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -3185,7 +3426,7 @@ static PyObject* super_38(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12@16@20@24c28i32 */
 static id 
-meth_imp_39(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, char arg_6, int arg_7)
+meth_imp_42(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, char arg_6, int arg_7)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -3229,7 +3470,7 @@ meth_imp_39(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, char arg_6
 	}
 	return objc_retval;
 }
-static PyObject* super_39(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_42(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -3302,7 +3543,7 @@ static PyObject* super_39(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12@16@20@24i28 */
 static id 
-meth_imp_40(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, int arg_6)
+meth_imp_43(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, int arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -3343,7 +3584,7 @@ meth_imp_40(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, int arg_6)
 	}
 	return objc_retval;
 }
-static PyObject* super_40(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_43(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -3411,7 +3652,7 @@ static PyObject* super_40(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: @0@4:8@12@16@20^{_NSZone=}24
 /* signature: @0@4:8@12@16@20c24 */
 static id 
-meth_imp_41(id self, SEL sel, id arg_2, id arg_3, id arg_4, char arg_5)
+meth_imp_44(id self, SEL sel, id arg_2, id arg_3, id arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -3449,7 +3690,7 @@ meth_imp_41(id self, SEL sel, id arg_2, id arg_3, id arg_4, char arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_41(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_44(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -3508,7 +3749,7 @@ static PyObject* super_41(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12@16@20c24@28 */
 static id 
-meth_imp_42(id self, SEL sel, id arg_2, id arg_3, id arg_4, char arg_5, id arg_6)
+meth_imp_45(id self, SEL sel, id arg_2, id arg_3, id arg_4, char arg_5, id arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -3549,7 +3790,7 @@ meth_imp_42(id self, SEL sel, id arg_2, id arg_3, id arg_4, char arg_5, id arg_6
 	}
 	return objc_retval;
 }
-static PyObject* super_42(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_45(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -3615,7 +3856,7 @@ static PyObject* super_42(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12@16@20i24 */
 static id 
-meth_imp_43(id self, SEL sel, id arg_2, id arg_3, id arg_4, int arg_5)
+meth_imp_46(id self, SEL sel, id arg_2, id arg_3, id arg_4, int arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -3653,7 +3894,7 @@ meth_imp_43(id self, SEL sel, id arg_2, id arg_3, id arg_4, int arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_43(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_46(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -3712,7 +3953,7 @@ static PyObject* super_43(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12@16@20i24@28 */
 static id 
-meth_imp_44(id self, SEL sel, id arg_2, id arg_3, id arg_4, int arg_5, id arg_6)
+meth_imp_47(id self, SEL sel, id arg_2, id arg_3, id arg_4, int arg_5, id arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -3753,7 +3994,7 @@ meth_imp_44(id self, SEL sel, id arg_2, id arg_3, id arg_4, int arg_5, id arg_6)
 	}
 	return objc_retval;
 }
-static PyObject* super_44(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_47(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -3824,7 +4065,7 @@ struct _NSPoint {
 };
 
 static id 
-meth_imp_45(id self, SEL sel, id arg_2, id arg_3, id arg_4, struct _NSPoint arg_5)
+meth_imp_48(id self, SEL sel, id arg_2, id arg_3, id arg_4, struct _NSPoint arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -3862,7 +4103,7 @@ meth_imp_45(id self, SEL sel, id arg_2, id arg_3, id arg_4, struct _NSPoint arg_
 	}
 	return objc_retval;
 }
-static PyObject* super_45(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_48(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -3921,7 +4162,7 @@ static PyObject* super_45(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12@16I20 */
 static id 
-meth_imp_46(id self, SEL sel, id arg_2, id arg_3, unsigned int arg_4)
+meth_imp_49(id self, SEL sel, id arg_2, id arg_3, unsigned int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -3956,7 +4197,7 @@ meth_imp_46(id self, SEL sel, id arg_2, id arg_3, unsigned int arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_46(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_49(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -4008,7 +4249,7 @@ static PyObject* super_46(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12@16I20@24 */
 static id 
-meth_imp_47(id self, SEL sel, id arg_2, id arg_3, unsigned int arg_4, id arg_5)
+meth_imp_50(id self, SEL sel, id arg_2, id arg_3, unsigned int arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -4046,7 +4287,7 @@ meth_imp_47(id self, SEL sel, id arg_2, id arg_3, unsigned int arg_4, id arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_47(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_50(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -4105,7 +4346,7 @@ static PyObject* super_47(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12@16I20@24@28 */
 static id 
-meth_imp_48(id self, SEL sel, id arg_2, id arg_3, unsigned int arg_4, id arg_5, id arg_6)
+meth_imp_51(id self, SEL sel, id arg_2, id arg_3, unsigned int arg_4, id arg_5, id arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -4146,7 +4387,7 @@ meth_imp_48(id self, SEL sel, id arg_2, id arg_3, unsigned int arg_4, id arg_5, 
 	}
 	return objc_retval;
 }
-static PyObject* super_48(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_51(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -4212,7 +4453,7 @@ static PyObject* super_48(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12@16S20 */
 static id 
-meth_imp_49(id self, SEL sel, id arg_2, id arg_3, unsigned short arg_4)
+meth_imp_52(id self, SEL sel, id arg_2, id arg_3, unsigned short arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -4247,7 +4488,7 @@ meth_imp_49(id self, SEL sel, id arg_2, id arg_3, unsigned short arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_49(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_52(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -4302,7 +4543,7 @@ static PyObject* super_49(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: @0@4:8@12@16^{_NSZone=}20
 /* signature: @0@4:8@12@16c20 */
 static id 
-meth_imp_50(id self, SEL sel, id arg_2, id arg_3, char arg_4)
+meth_imp_53(id self, SEL sel, id arg_2, id arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -4337,7 +4578,7 @@ meth_imp_50(id self, SEL sel, id arg_2, id arg_3, char arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_50(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_53(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -4389,7 +4630,7 @@ static PyObject* super_50(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12@16c20@24 */
 static id 
-meth_imp_51(id self, SEL sel, id arg_2, id arg_3, char arg_4, id arg_5)
+meth_imp_54(id self, SEL sel, id arg_2, id arg_3, char arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -4427,7 +4668,7 @@ meth_imp_51(id self, SEL sel, id arg_2, id arg_3, char arg_4, id arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_51(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_54(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -4486,7 +4727,7 @@ static PyObject* super_51(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12@16f40 */
 static id 
-meth_imp_52(id self, SEL sel, id arg_2, id arg_3, float arg_4)
+meth_imp_55(id self, SEL sel, id arg_2, id arg_3, float arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -4521,7 +4762,7 @@ meth_imp_52(id self, SEL sel, id arg_2, id arg_3, float arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_52(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_55(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -4573,7 +4814,7 @@ static PyObject* super_52(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12@16i20 */
 static id 
-meth_imp_53(id self, SEL sel, id arg_2, id arg_3, int arg_4)
+meth_imp_56(id self, SEL sel, id arg_2, id arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -4608,7 +4849,7 @@ meth_imp_53(id self, SEL sel, id arg_2, id arg_3, int arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_53(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_56(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -4660,7 +4901,7 @@ static PyObject* super_53(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12@16i20c24 */
 static id 
-meth_imp_54(id self, SEL sel, id arg_2, id arg_3, int arg_4, char arg_5)
+meth_imp_57(id self, SEL sel, id arg_2, id arg_3, int arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -4698,7 +4939,7 @@ meth_imp_54(id self, SEL sel, id arg_2, id arg_3, int arg_4, char arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_54(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_57(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -4757,7 +4998,7 @@ static PyObject* super_54(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12@16i20i24 */
 static id 
-meth_imp_55(id self, SEL sel, id arg_2, id arg_3, int arg_4, int arg_5)
+meth_imp_58(id self, SEL sel, id arg_2, id arg_3, int arg_4, int arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -4795,7 +5036,7 @@ meth_imp_55(id self, SEL sel, id arg_2, id arg_3, int arg_4, int arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_55(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_58(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -4855,7 +5096,7 @@ static PyObject* super_55(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: @0@4:8@12@16i20i24^{_SelectionAnchor=iii}28c32
 /* signature: @0@4:8@12@16o^@20 */
 static id 
-meth_imp_56(id self, SEL sel, id arg_2, id arg_3, id  *arg_4)
+meth_imp_59(id self, SEL sel, id arg_2, id arg_3, id  *arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -4909,7 +5150,7 @@ meth_imp_56(id self, SEL sel, id arg_2, id arg_3, id  *arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_56(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_59(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -4968,7 +5209,7 @@ static PyObject* super_56(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12@16{_NSRange=II}20@28 */
 static id 
-meth_imp_57(id self, SEL sel, id arg_2, id arg_3, struct _NSRange arg_4, id arg_5)
+meth_imp_60(id self, SEL sel, id arg_2, id arg_3, struct _NSRange arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -5006,7 +5247,7 @@ meth_imp_57(id self, SEL sel, id arg_2, id arg_3, struct _NSRange arg_4, id arg_
 	}
 	return objc_retval;
 }
-static PyObject* super_57(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_60(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -5065,7 +5306,7 @@ static PyObject* super_57(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12I16 */
 static id 
-meth_imp_58(id self, SEL sel, id arg_2, unsigned int arg_3)
+meth_imp_61(id self, SEL sel, id arg_2, unsigned int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -5097,7 +5338,7 @@ meth_imp_58(id self, SEL sel, id arg_2, unsigned int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_58(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_61(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -5142,7 +5383,7 @@ static PyObject* super_58(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12I16@20 */
 static id 
-meth_imp_59(id self, SEL sel, id arg_2, unsigned int arg_3, id arg_4)
+meth_imp_62(id self, SEL sel, id arg_2, unsigned int arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -5177,7 +5418,7 @@ meth_imp_59(id self, SEL sel, id arg_2, unsigned int arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_59(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_62(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -5229,7 +5470,7 @@ static PyObject* super_59(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12I16@20@24 */
 static id 
-meth_imp_60(id self, SEL sel, id arg_2, unsigned int arg_3, id arg_4, id arg_5)
+meth_imp_63(id self, SEL sel, id arg_2, unsigned int arg_3, id arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -5267,7 +5508,7 @@ meth_imp_60(id self, SEL sel, id arg_2, unsigned int arg_3, id arg_4, id arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_60(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_63(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -5326,7 +5567,7 @@ static PyObject* super_60(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12I16I20 */
 static id 
-meth_imp_61(id self, SEL sel, id arg_2, unsigned int arg_3, unsigned int arg_4)
+meth_imp_64(id self, SEL sel, id arg_2, unsigned int arg_3, unsigned int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -5361,7 +5602,7 @@ meth_imp_61(id self, SEL sel, id arg_2, unsigned int arg_3, unsigned int arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_61(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_64(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -5415,7 +5656,7 @@ static PyObject* super_61(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: @0@4:8@12I16^{_NSRange=II}20{_NSRange=II}24
 /* signature: @0@4:8@12I16i20 */
 static id 
-meth_imp_62(id self, SEL sel, id arg_2, unsigned int arg_3, int arg_4)
+meth_imp_65(id self, SEL sel, id arg_2, unsigned int arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -5450,7 +5691,7 @@ meth_imp_62(id self, SEL sel, id arg_2, unsigned int arg_3, int arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_62(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_65(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -5502,7 +5743,7 @@ static PyObject* super_62(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12I16i20f40 */
 static id 
-meth_imp_63(id self, SEL sel, id arg_2, unsigned int arg_3, int arg_4, float arg_5)
+meth_imp_66(id self, SEL sel, id arg_2, unsigned int arg_3, int arg_4, float arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -5540,7 +5781,7 @@ meth_imp_63(id self, SEL sel, id arg_2, unsigned int arg_3, int arg_4, float arg
 	}
 	return objc_retval;
 }
-static PyObject* super_63(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_66(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -5599,7 +5840,7 @@ static PyObject* super_63(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12I16o^{_NSRange=II}20 */
 static id 
-meth_imp_64(id self, SEL sel, id arg_2, unsigned int arg_3, struct _NSRange  *arg_4)
+meth_imp_67(id self, SEL sel, id arg_2, unsigned int arg_3, struct _NSRange  *arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -5653,7 +5894,7 @@ meth_imp_64(id self, SEL sel, id arg_2, unsigned int arg_3, struct _NSRange  *ar
 	}
 	return objc_retval;
 }
-static PyObject* super_64(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_67(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -5712,7 +5953,7 @@ static PyObject* super_64(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12I16o^{_NSRange=II}20{_NSRange=II}24 */
 static id 
-meth_imp_65(id self, SEL sel, id arg_2, unsigned int arg_3, struct _NSRange  *arg_4, struct _NSRange arg_5)
+meth_imp_68(id self, SEL sel, id arg_2, unsigned int arg_3, struct _NSRange  *arg_4, struct _NSRange arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -5769,7 +6010,7 @@ meth_imp_65(id self, SEL sel, id arg_2, unsigned int arg_3, struct _NSRange  *ar
 	}
 	return objc_retval;
 }
-static PyObject* super_65(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_68(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -5835,7 +6076,7 @@ static PyObject* super_65(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12L16 */
 static id 
-meth_imp_66(id self, SEL sel, id arg_2, unsigned long arg_3)
+meth_imp_69(id self, SEL sel, id arg_2, unsigned long arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -5867,7 +6108,7 @@ meth_imp_66(id self, SEL sel, id arg_2, unsigned long arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_66(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_69(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -5923,7 +6164,7 @@ static PyObject* super_66(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: @0@4:8@12^{tiff=*^{_NXStream}sccsll{?=IIIIIISSSSSSSSSSIIIffSSffII[2S]ISSSSI^S^S^S^S[3^S]*********[2I]II^I^I[2S]^f[2S]S^f^f^f[4^S]S[2S]**I^v}{?=SSL}^i^i[10i]liillil^?^?^?^?^?^?^?^?^?^?^?^?*ii*l*llii}16s20
 /* signature: @0@4:8@12c16 */
 static id 
-meth_imp_67(id self, SEL sel, id arg_2, char arg_3)
+meth_imp_70(id self, SEL sel, id arg_2, char arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -5955,7 +6196,7 @@ meth_imp_67(id self, SEL sel, id arg_2, char arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_67(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_70(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -6000,7 +6241,7 @@ static PyObject* super_67(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12c16c20 */
 static id 
-meth_imp_68(id self, SEL sel, id arg_2, char arg_3, char arg_4)
+meth_imp_71(id self, SEL sel, id arg_2, char arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -6035,7 +6276,7 @@ meth_imp_68(id self, SEL sel, id arg_2, char arg_3, char arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_68(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_71(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -6087,7 +6328,7 @@ static PyObject* super_68(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12f40 */
 static id 
-meth_imp_69(id self, SEL sel, id arg_2, float arg_3)
+meth_imp_72(id self, SEL sel, id arg_2, float arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -6119,7 +6360,7 @@ meth_imp_69(id self, SEL sel, id arg_2, float arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_69(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_72(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -6164,7 +6405,7 @@ static PyObject* super_69(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12f40@20{_NSPoint=ff}24 */
 static id 
-meth_imp_70(id self, SEL sel, id arg_2, float arg_3, id arg_4, struct _NSPoint arg_5)
+meth_imp_73(id self, SEL sel, id arg_2, float arg_3, id arg_4, struct _NSPoint arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -6202,7 +6443,7 @@ meth_imp_70(id self, SEL sel, id arg_2, float arg_3, id arg_4, struct _NSPoint a
 	}
 	return objc_retval;
 }
-static PyObject* super_70(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_73(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -6261,7 +6502,7 @@ static PyObject* super_70(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12f40r^f20 */
 static id 
-meth_imp_71(id self, SEL sel, id arg_2, float arg_3, float  *arg_4)
+meth_imp_74(id self, SEL sel, id arg_2, float arg_3, float  *arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -6296,7 +6537,7 @@ meth_imp_71(id self, SEL sel, id arg_2, float arg_3, float  *arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_71(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_74(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -6348,7 +6589,7 @@ static PyObject* super_71(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12f40r^f20I24 */
 static id 
-meth_imp_72(id self, SEL sel, id arg_2, float arg_3, float  *arg_4, unsigned int arg_5)
+meth_imp_75(id self, SEL sel, id arg_2, float arg_3, float  *arg_4, unsigned int arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -6386,7 +6627,7 @@ meth_imp_72(id self, SEL sel, id arg_2, float arg_3, float  *arg_4, unsigned int
 	}
 	return objc_retval;
 }
-static PyObject* super_72(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_75(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -6445,7 +6686,7 @@ static PyObject* super_72(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12f40r^f20i24 */
 static id 
-meth_imp_73(id self, SEL sel, id arg_2, float arg_3, float  *arg_4, int arg_5)
+meth_imp_76(id self, SEL sel, id arg_2, float arg_3, float  *arg_4, int arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -6483,7 +6724,7 @@ meth_imp_73(id self, SEL sel, id arg_2, float arg_3, float  *arg_4, int arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_73(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_76(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -6542,7 +6783,7 @@ static PyObject* super_73(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12i16 */
 static id 
-meth_imp_74(id self, SEL sel, id arg_2, int arg_3)
+meth_imp_77(id self, SEL sel, id arg_2, int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -6574,7 +6815,7 @@ meth_imp_74(id self, SEL sel, id arg_2, int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_74(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_77(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -6619,7 +6860,7 @@ static PyObject* super_74(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12i16:20 */
 static id 
-meth_imp_75(id self, SEL sel, id arg_2, int arg_3, SEL arg_4)
+meth_imp_78(id self, SEL sel, id arg_2, int arg_3, SEL arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -6654,7 +6895,7 @@ meth_imp_75(id self, SEL sel, id arg_2, int arg_3, SEL arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_75(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_78(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -6706,7 +6947,7 @@ static PyObject* super_75(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12i16@20 */
 static id 
-meth_imp_76(id self, SEL sel, id arg_2, int arg_3, id arg_4)
+meth_imp_79(id self, SEL sel, id arg_2, int arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -6741,7 +6982,7 @@ meth_imp_76(id self, SEL sel, id arg_2, int arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_76(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_79(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -6793,7 +7034,7 @@ static PyObject* super_76(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12i16I20 */
 static id 
-meth_imp_77(id self, SEL sel, id arg_2, int arg_3, unsigned int arg_4)
+meth_imp_80(id self, SEL sel, id arg_2, int arg_3, unsigned int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -6828,7 +7069,7 @@ meth_imp_77(id self, SEL sel, id arg_2, int arg_3, unsigned int arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_77(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_80(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -6882,7 +7123,7 @@ static PyObject* super_77(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: @0@4:8@12i16^i20^@24
 /* signature: @0@4:8@12i16f40 */
 static id 
-meth_imp_78(id self, SEL sel, id arg_2, int arg_3, float arg_4)
+meth_imp_81(id self, SEL sel, id arg_2, int arg_3, float arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -6917,7 +7158,7 @@ meth_imp_78(id self, SEL sel, id arg_2, int arg_3, float arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_78(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_81(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -6969,7 +7210,7 @@ static PyObject* super_78(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12i16i20 */
 static id 
-meth_imp_79(id self, SEL sel, id arg_2, int arg_3, int arg_4)
+meth_imp_82(id self, SEL sel, id arg_2, int arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -7004,7 +7245,7 @@ meth_imp_79(id self, SEL sel, id arg_2, int arg_3, int arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_79(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_82(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -7056,7 +7297,7 @@ static PyObject* super_79(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12i16i20@24 */
 static id 
-meth_imp_80(id self, SEL sel, id arg_2, int arg_3, int arg_4, id arg_5)
+meth_imp_83(id self, SEL sel, id arg_2, int arg_3, int arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -7094,7 +7335,7 @@ meth_imp_80(id self, SEL sel, id arg_2, int arg_3, int arg_4, id arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_80(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_83(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -7163,7 +7404,7 @@ struct _NSRect {
 };
 
 static id 
-meth_imp_81(id self, SEL sel, id arg_2, int arg_3, struct _NSRect arg_4)
+meth_imp_84(id self, SEL sel, id arg_2, int arg_3, struct _NSRect arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -7198,7 +7439,7 @@ meth_imp_81(id self, SEL sel, id arg_2, int arg_3, struct _NSRect arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_81(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_84(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -7250,7 +7491,7 @@ static PyObject* super_81(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12o^@16 */
 static id 
-meth_imp_82(id self, SEL sel, id arg_2, id  *arg_3)
+meth_imp_85(id self, SEL sel, id arg_2, id  *arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -7301,7 +7542,7 @@ meth_imp_82(id self, SEL sel, id arg_2, id  *arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_82(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_85(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -7353,7 +7594,7 @@ static PyObject* super_82(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12r*16I20 */
 static id 
-meth_imp_83(id self, SEL sel, id arg_2, char* arg_3, unsigned int arg_4)
+meth_imp_86(id self, SEL sel, id arg_2, char* arg_3, unsigned int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -7388,7 +7629,7 @@ meth_imp_83(id self, SEL sel, id arg_2, char* arg_3, unsigned int arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_83(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_86(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -7440,7 +7681,7 @@ static PyObject* super_83(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12r^f16 */
 static id 
-meth_imp_84(id self, SEL sel, id arg_2, float  *arg_3)
+meth_imp_87(id self, SEL sel, id arg_2, float  *arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -7472,7 +7713,7 @@ meth_imp_84(id self, SEL sel, id arg_2, float  *arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_84(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_87(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -7521,7 +7762,7 @@ struct FSRef {
 };
 
 static id 
-meth_imp_85(id self, SEL sel, id arg_2, struct FSRef  *arg_3)
+meth_imp_88(id self, SEL sel, id arg_2, struct FSRef  *arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -7553,7 +7794,7 @@ meth_imp_85(id self, SEL sel, id arg_2, struct FSRef  *arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_85(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_88(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -7598,7 +7839,7 @@ static PyObject* super_85(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12{_NSPoint=ff}16 */
 static id 
-meth_imp_86(id self, SEL sel, id arg_2, struct _NSPoint arg_3)
+meth_imp_89(id self, SEL sel, id arg_2, struct _NSPoint arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -7630,7 +7871,7 @@ meth_imp_86(id self, SEL sel, id arg_2, struct _NSPoint arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_86(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_89(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -7675,7 +7916,7 @@ static PyObject* super_86(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12{_NSRange=II}16 */
 static id 
-meth_imp_87(id self, SEL sel, id arg_2, struct _NSRange arg_3)
+meth_imp_90(id self, SEL sel, id arg_2, struct _NSRange arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -7707,7 +7948,7 @@ meth_imp_87(id self, SEL sel, id arg_2, struct _NSRange arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_87(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_90(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -7752,7 +7993,7 @@ static PyObject* super_87(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12{_NSRange=II}16i24 */
 static id 
-meth_imp_88(id self, SEL sel, id arg_2, struct _NSRange arg_3, int arg_4)
+meth_imp_91(id self, SEL sel, id arg_2, struct _NSRange arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -7787,7 +8028,7 @@ meth_imp_88(id self, SEL sel, id arg_2, struct _NSRange arg_3, int arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_88(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_91(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -7839,7 +8080,7 @@ static PyObject* super_88(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16 */
 static id 
-meth_imp_89(id self, SEL sel, id arg_2, struct _NSRect arg_3)
+meth_imp_92(id self, SEL sel, id arg_2, struct _NSRect arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -7871,7 +8112,7 @@ meth_imp_89(id self, SEL sel, id arg_2, struct _NSRect arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_89(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_92(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -7916,7 +8157,7 @@ static PyObject* super_89(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32 */
 static id 
-meth_imp_90(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4)
+meth_imp_93(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -7951,7 +8192,7 @@ meth_imp_90(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_90(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_93(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -8003,7 +8244,7 @@ static PyObject* super_90(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8C12 */
 static id 
-meth_imp_91(id self, SEL sel, unsigned char arg_2)
+meth_imp_94(id self, SEL sel, unsigned char arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -8032,7 +8273,7 @@ meth_imp_91(id self, SEL sel, unsigned char arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_91(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_94(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -8070,7 +8311,7 @@ static PyObject* super_91(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8I12 */
 static id 
-meth_imp_92(id self, SEL sel, unsigned int arg_2)
+meth_imp_95(id self, SEL sel, unsigned int arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -8099,7 +8340,7 @@ meth_imp_92(id self, SEL sel, unsigned int arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_92(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_95(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -8137,7 +8378,7 @@ static PyObject* super_92(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8I12:16 */
 static id 
-meth_imp_93(id self, SEL sel, unsigned int arg_2, SEL arg_3)
+meth_imp_96(id self, SEL sel, unsigned int arg_2, SEL arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -8169,7 +8410,7 @@ meth_imp_93(id self, SEL sel, unsigned int arg_2, SEL arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_93(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_96(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -8214,7 +8455,7 @@ static PyObject* super_93(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8I12@16 */
 static id 
-meth_imp_94(id self, SEL sel, unsigned int arg_2, id arg_3)
+meth_imp_97(id self, SEL sel, unsigned int arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -8246,7 +8487,7 @@ meth_imp_94(id self, SEL sel, unsigned int arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_94(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_97(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -8291,7 +8532,7 @@ static PyObject* super_94(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8I12@16@20 */
 static id 
-meth_imp_95(id self, SEL sel, unsigned int arg_2, id arg_3, id arg_4)
+meth_imp_98(id self, SEL sel, unsigned int arg_2, id arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -8326,7 +8567,7 @@ meth_imp_95(id self, SEL sel, unsigned int arg_2, id arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_95(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_98(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -8379,7 +8620,7 @@ static PyObject* super_95(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: @0@4:8I12@16@20^{_NSZone=}24
 /* signature: @0@4:8I12@16@20c24 */
 static id 
-meth_imp_96(id self, SEL sel, unsigned int arg_2, id arg_3, id arg_4, char arg_5)
+meth_imp_99(id self, SEL sel, unsigned int arg_2, id arg_3, id arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -8417,7 +8658,7 @@ meth_imp_96(id self, SEL sel, unsigned int arg_2, id arg_3, id arg_4, char arg_5
 	}
 	return objc_retval;
 }
-static PyObject* super_96(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_99(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -8476,7 +8717,7 @@ static PyObject* super_96(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8I12@16@20l24 */
 static id 
-meth_imp_97(id self, SEL sel, unsigned int arg_2, id arg_3, id arg_4, long arg_5)
+meth_imp_100(id self, SEL sel, unsigned int arg_2, id arg_3, id arg_4, long arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -8514,7 +8755,7 @@ meth_imp_97(id self, SEL sel, unsigned int arg_2, id arg_3, id arg_4, long arg_5
 	}
 	return objc_retval;
 }
-static PyObject* super_97(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_100(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -8573,7 +8814,7 @@ static PyObject* super_97(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8I12@16I20 */
 static id 
-meth_imp_98(id self, SEL sel, unsigned int arg_2, id arg_3, unsigned int arg_4)
+meth_imp_101(id self, SEL sel, unsigned int arg_2, id arg_3, unsigned int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -8608,7 +8849,7 @@ meth_imp_98(id self, SEL sel, unsigned int arg_2, id arg_3, unsigned int arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_98(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_101(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -8660,7 +8901,7 @@ static PyObject* super_98(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8I12I16 */
 static id 
-meth_imp_99(id self, SEL sel, unsigned int arg_2, unsigned int arg_3)
+meth_imp_102(id self, SEL sel, unsigned int arg_2, unsigned int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -8692,7 +8933,7 @@ meth_imp_99(id self, SEL sel, unsigned int arg_2, unsigned int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_99(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_102(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -8737,7 +8978,7 @@ static PyObject* super_99(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8I12I16@20s24i28 */
 static id 
-meth_imp_100(id self, SEL sel, unsigned int arg_2, unsigned int arg_3, id arg_4, short arg_5, int arg_6)
+meth_imp_103(id self, SEL sel, unsigned int arg_2, unsigned int arg_3, id arg_4, short arg_5, int arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -8778,7 +9019,7 @@ meth_imp_100(id self, SEL sel, unsigned int arg_2, unsigned int arg_3, id arg_4,
 	}
 	return objc_retval;
 }
-static PyObject* super_100(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_103(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -8848,7 +9089,7 @@ static PyObject* super_100(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: @0@4:8I12^{_NSRange=II}16{_NSRange=II}20
 /* signature: @0@4:8I12c16 */
 static id 
-meth_imp_101(id self, SEL sel, unsigned int arg_2, char arg_3)
+meth_imp_104(id self, SEL sel, unsigned int arg_2, char arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -8880,7 +9121,7 @@ meth_imp_101(id self, SEL sel, unsigned int arg_2, char arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_101(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_104(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -8925,7 +9166,7 @@ static PyObject* super_101(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8I12i16@20 */
 static id 
-meth_imp_102(id self, SEL sel, unsigned int arg_2, int arg_3, id arg_4)
+meth_imp_105(id self, SEL sel, unsigned int arg_2, int arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -8960,7 +9201,7 @@ meth_imp_102(id self, SEL sel, unsigned int arg_2, int arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_102(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_105(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -9012,7 +9253,7 @@ static PyObject* super_102(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8I12o^{_NSRange=II}16 */
 static id 
-meth_imp_103(id self, SEL sel, unsigned int arg_2, struct _NSRange  *arg_3)
+meth_imp_106(id self, SEL sel, unsigned int arg_2, struct _NSRange  *arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -9063,7 +9304,7 @@ meth_imp_103(id self, SEL sel, unsigned int arg_2, struct _NSRange  *arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_103(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_106(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -9115,7 +9356,7 @@ static PyObject* super_103(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8I12o^{_NSRange=II}16{_NSRange=II}20 */
 static id 
-meth_imp_104(id self, SEL sel, unsigned int arg_2, struct _NSRange  *arg_3, struct _NSRange arg_4)
+meth_imp_107(id self, SEL sel, unsigned int arg_2, struct _NSRange  *arg_3, struct _NSRange arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -9169,7 +9410,7 @@ meth_imp_104(id self, SEL sel, unsigned int arg_2, struct _NSRange  *arg_3, stru
 	}
 	return objc_retval;
 }
-static PyObject* super_104(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_107(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -9229,7 +9470,7 @@ static PyObject* super_104(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: @0@4:8I12r^v16I20
 /* signature: @0@4:8I12{_NSPoint=ff}16@24 */
 static id 
-meth_imp_105(id self, SEL sel, unsigned int arg_2, struct _NSPoint arg_3, id arg_4)
+meth_imp_108(id self, SEL sel, unsigned int arg_2, struct _NSPoint arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -9264,7 +9505,7 @@ meth_imp_105(id self, SEL sel, unsigned int arg_2, struct _NSPoint arg_3, id arg
 	}
 	return objc_retval;
 }
-static PyObject* super_105(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_108(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -9316,7 +9557,7 @@ static PyObject* super_105(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8I12{_NSRange=II}16 */
 static id 
-meth_imp_106(id self, SEL sel, unsigned int arg_2, struct _NSRange arg_3)
+meth_imp_109(id self, SEL sel, unsigned int arg_2, struct _NSRange arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -9348,7 +9589,7 @@ meth_imp_106(id self, SEL sel, unsigned int arg_2, struct _NSRange arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_106(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_109(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -9393,7 +9634,7 @@ static PyObject* super_106(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8L12 */
 static id 
-meth_imp_107(id self, SEL sel, unsigned long arg_2)
+meth_imp_110(id self, SEL sel, unsigned long arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -9422,7 +9663,7 @@ meth_imp_107(id self, SEL sel, unsigned long arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_107(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_110(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -9460,7 +9701,7 @@ static PyObject* super_107(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8L12L16 */
 static id 
-meth_imp_108(id self, SEL sel, unsigned long arg_2, unsigned long arg_3)
+meth_imp_111(id self, SEL sel, unsigned long arg_2, unsigned long arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -9492,7 +9733,7 @@ meth_imp_108(id self, SEL sel, unsigned long arg_2, unsigned long arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_108(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_111(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -9537,7 +9778,7 @@ static PyObject* super_108(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8Q12 */
 static id 
-meth_imp_109(id self, SEL sel, unsigned long long arg_2)
+meth_imp_112(id self, SEL sel, unsigned long long arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -9566,7 +9807,7 @@ meth_imp_109(id self, SEL sel, unsigned long long arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_109(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_112(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -9604,7 +9845,7 @@ static PyObject* super_109(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8Q12s20c24 */
 static id 
-meth_imp_110(id self, SEL sel, unsigned long long arg_2, short arg_3, char arg_4)
+meth_imp_113(id self, SEL sel, unsigned long long arg_2, short arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -9639,7 +9880,7 @@ meth_imp_110(id self, SEL sel, unsigned long long arg_2, short arg_3, char arg_4
 	}
 	return objc_retval;
 }
-static PyObject* super_110(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_113(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -9691,7 +9932,7 @@ static PyObject* super_110(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8S12 */
 static id 
-meth_imp_111(id self, SEL sel, unsigned short arg_2)
+meth_imp_114(id self, SEL sel, unsigned short arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -9720,7 +9961,7 @@ meth_imp_111(id self, SEL sel, unsigned short arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_111(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_114(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -9758,7 +9999,7 @@ static PyObject* super_111(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8S12@16 */
 static id 
-meth_imp_112(id self, SEL sel, unsigned short arg_2, id arg_3)
+meth_imp_115(id self, SEL sel, unsigned short arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -9790,7 +10031,7 @@ meth_imp_112(id self, SEL sel, unsigned short arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_112(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_115(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -9835,7 +10076,7 @@ static PyObject* super_112(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8S12I16@20 */
 static id 
-meth_imp_113(id self, SEL sel, unsigned short arg_2, unsigned int arg_3, id arg_4)
+meth_imp_116(id self, SEL sel, unsigned short arg_2, unsigned int arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -9870,7 +10111,7 @@ meth_imp_113(id self, SEL sel, unsigned short arg_2, unsigned int arg_3, id arg_
 	}
 	return objc_retval;
 }
-static PyObject* super_113(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_116(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -9922,7 +10163,7 @@ static PyObject* super_113(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8S12S16 */
 static id 
-meth_imp_114(id self, SEL sel, unsigned short arg_2, unsigned short arg_3)
+meth_imp_117(id self, SEL sel, unsigned short arg_2, unsigned short arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -9954,7 +10195,7 @@ meth_imp_114(id self, SEL sel, unsigned short arg_2, unsigned short arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_114(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_117(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -9999,7 +10240,7 @@ static PyObject* super_114(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8S12S16@20 */
 static id 
-meth_imp_115(id self, SEL sel, unsigned short arg_2, unsigned short arg_3, id arg_4)
+meth_imp_118(id self, SEL sel, unsigned short arg_2, unsigned short arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -10034,7 +10275,7 @@ meth_imp_115(id self, SEL sel, unsigned short arg_2, unsigned short arg_3, id ar
 	}
 	return objc_retval;
 }
-static PyObject* super_115(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_118(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -10086,7 +10327,7 @@ static PyObject* super_115(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8S12i16 */
 static id 
-meth_imp_116(id self, SEL sel, unsigned short arg_2, int arg_3)
+meth_imp_119(id self, SEL sel, unsigned short arg_2, int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -10118,7 +10359,7 @@ meth_imp_116(id self, SEL sel, unsigned short arg_2, int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_116(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_119(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -10211,7 +10452,7 @@ static PyObject* super_116(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: @0@4:8^{stat=iISSIIi{timespec=il}{timespec=il}{timespec=il}qqIIIi[2q]}12
 /* signature: @0@4:8c12 */
 static id 
-meth_imp_117(id self, SEL sel, char arg_2)
+meth_imp_120(id self, SEL sel, char arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -10240,7 +10481,7 @@ meth_imp_117(id self, SEL sel, char arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_117(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_120(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -10278,7 +10519,7 @@ static PyObject* super_117(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8c12@16 */
 static id 
-meth_imp_118(id self, SEL sel, char arg_2, id arg_3)
+meth_imp_121(id self, SEL sel, char arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -10310,7 +10551,7 @@ meth_imp_118(id self, SEL sel, char arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_118(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_121(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -10356,7 +10597,7 @@ static PyObject* super_118(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: @0@4:8c12I16r^v20
 /* signature: @0@4:8c12c16 */
 static id 
-meth_imp_119(id self, SEL sel, char arg_2, char arg_3)
+meth_imp_122(id self, SEL sel, char arg_2, char arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -10388,7 +10629,7 @@ meth_imp_119(id self, SEL sel, char arg_2, char arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_119(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_122(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -10433,7 +10674,7 @@ static PyObject* super_119(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8c12i16 */
 static id 
-meth_imp_120(id self, SEL sel, char arg_2, int arg_3)
+meth_imp_123(id self, SEL sel, char arg_2, int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -10465,7 +10706,7 @@ meth_imp_120(id self, SEL sel, char arg_2, int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_120(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_123(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -10510,7 +10751,7 @@ static PyObject* super_120(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8c12i16i20c24 */
 static id 
-meth_imp_121(id self, SEL sel, char arg_2, int arg_3, int arg_4, char arg_5)
+meth_imp_124(id self, SEL sel, char arg_2, int arg_3, int arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -10548,7 +10789,7 @@ meth_imp_121(id self, SEL sel, char arg_2, int arg_3, int arg_4, char arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_121(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_124(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -10607,7 +10848,7 @@ static PyObject* super_121(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8d40 */
 static id 
-meth_imp_122(id self, SEL sel, double arg_2)
+meth_imp_125(id self, SEL sel, double arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -10636,7 +10877,7 @@ meth_imp_122(id self, SEL sel, double arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_122(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_125(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -10674,7 +10915,7 @@ static PyObject* super_122(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8d40@20 */
 static id 
-meth_imp_123(id self, SEL sel, double arg_2, id arg_3)
+meth_imp_126(id self, SEL sel, double arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -10706,7 +10947,7 @@ meth_imp_123(id self, SEL sel, double arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_123(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_126(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -10751,7 +10992,7 @@ static PyObject* super_123(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8d40@20:24@28c32 */
 static id 
-meth_imp_124(id self, SEL sel, double arg_2, id arg_3, SEL arg_4, id arg_5, char arg_6)
+meth_imp_127(id self, SEL sel, double arg_2, id arg_3, SEL arg_4, id arg_5, char arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -10792,7 +11033,7 @@ meth_imp_124(id self, SEL sel, double arg_2, id arg_3, SEL arg_4, id arg_5, char
 	}
 	return objc_retval;
 }
-static PyObject* super_124(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_127(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -10858,7 +11099,7 @@ static PyObject* super_124(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8d40@20c24 */
 static id 
-meth_imp_125(id self, SEL sel, double arg_2, id arg_3, char arg_4)
+meth_imp_128(id self, SEL sel, double arg_2, id arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -10893,7 +11134,7 @@ meth_imp_125(id self, SEL sel, double arg_2, id arg_3, char arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_125(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_128(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -10945,7 +11186,7 @@ static PyObject* super_125(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8f40 */
 static id 
-meth_imp_126(id self, SEL sel, float arg_2)
+meth_imp_129(id self, SEL sel, float arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -10974,7 +11215,7 @@ meth_imp_126(id self, SEL sel, float arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_126(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_129(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -11012,7 +11253,7 @@ static PyObject* super_126(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8f40@16 */
 static id 
-meth_imp_127(id self, SEL sel, float arg_2, id arg_3)
+meth_imp_130(id self, SEL sel, float arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -11044,7 +11285,7 @@ meth_imp_127(id self, SEL sel, float arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_127(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_130(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -11089,7 +11330,7 @@ static PyObject* super_127(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8f40f48 */
 static id 
-meth_imp_128(id self, SEL sel, float arg_2, float arg_3)
+meth_imp_131(id self, SEL sel, float arg_2, float arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -11121,7 +11362,7 @@ meth_imp_128(id self, SEL sel, float arg_2, float arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_128(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_131(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -11166,7 +11407,7 @@ static PyObject* super_128(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8f40f48c20 */
 static id 
-meth_imp_129(id self, SEL sel, float arg_2, float arg_3, char arg_4)
+meth_imp_132(id self, SEL sel, float arg_2, float arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -11201,7 +11442,7 @@ meth_imp_129(id self, SEL sel, float arg_2, float arg_3, char arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_129(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_132(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -11253,7 +11494,7 @@ static PyObject* super_129(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8f40f48f56f64 */
 static id 
-meth_imp_130(id self, SEL sel, float arg_2, float arg_3, float arg_4, float arg_5)
+meth_imp_133(id self, SEL sel, float arg_2, float arg_3, float arg_4, float arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -11291,7 +11532,7 @@ meth_imp_130(id self, SEL sel, float arg_2, float arg_3, float arg_4, float arg_
 	}
 	return objc_retval;
 }
-static PyObject* super_130(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_133(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -11350,7 +11591,7 @@ static PyObject* super_130(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8f40f48f56f64f72 */
 static id 
-meth_imp_131(id self, SEL sel, float arg_2, float arg_3, float arg_4, float arg_5, float arg_6)
+meth_imp_134(id self, SEL sel, float arg_2, float arg_3, float arg_4, float arg_5, float arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -11391,7 +11632,7 @@ meth_imp_131(id self, SEL sel, float arg_2, float arg_3, float arg_4, float arg_
 	}
 	return objc_retval;
 }
-static PyObject* super_131(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_134(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -11457,7 +11698,7 @@ static PyObject* super_131(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8i12 */
 static id 
-meth_imp_132(id self, SEL sel, int arg_2)
+meth_imp_135(id self, SEL sel, int arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -11486,7 +11727,7 @@ meth_imp_132(id self, SEL sel, int arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_132(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_135(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -11524,7 +11765,7 @@ static PyObject* super_132(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8i12@16 */
 static id 
-meth_imp_133(id self, SEL sel, int arg_2, id arg_3)
+meth_imp_136(id self, SEL sel, int arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -11556,7 +11797,7 @@ meth_imp_133(id self, SEL sel, int arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_133(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_136(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -11601,7 +11842,7 @@ static PyObject* super_133(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8i12@16@20@24i28 */
 static id 
-meth_imp_134(id self, SEL sel, int arg_2, id arg_3, id arg_4, id arg_5, int arg_6)
+meth_imp_137(id self, SEL sel, int arg_2, id arg_3, id arg_4, id arg_5, int arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -11642,7 +11883,7 @@ meth_imp_134(id self, SEL sel, int arg_2, id arg_3, id arg_4, id arg_5, int arg_
 	}
 	return objc_retval;
 }
-static PyObject* super_134(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_137(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -11709,7 +11950,7 @@ static PyObject* super_134(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: @0@4:8i12@16^i20
 /* signature: @0@4:8i12@16i20 */
 static id 
-meth_imp_135(id self, SEL sel, int arg_2, id arg_3, int arg_4)
+meth_imp_138(id self, SEL sel, int arg_2, id arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -11744,7 +11985,7 @@ meth_imp_135(id self, SEL sel, int arg_2, id arg_3, int arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_135(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_138(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -11796,7 +12037,7 @@ static PyObject* super_135(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8i12I16 */
 static id 
-meth_imp_136(id self, SEL sel, int arg_2, unsigned int arg_3)
+meth_imp_139(id self, SEL sel, int arg_2, unsigned int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -11828,7 +12069,7 @@ meth_imp_136(id self, SEL sel, int arg_2, unsigned int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_136(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_139(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -11873,7 +12114,7 @@ static PyObject* super_136(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8i12c16 */
 static id 
-meth_imp_137(id self, SEL sel, int arg_2, char arg_3)
+meth_imp_140(id self, SEL sel, int arg_2, char arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -11905,7 +12146,7 @@ meth_imp_137(id self, SEL sel, int arg_2, char arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_137(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_140(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -11950,7 +12191,7 @@ static PyObject* super_137(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8i12f40 */
 static id 
-meth_imp_138(id self, SEL sel, int arg_2, float arg_3)
+meth_imp_141(id self, SEL sel, int arg_2, float arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -11982,7 +12223,7 @@ meth_imp_138(id self, SEL sel, int arg_2, float arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_138(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_141(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -12027,7 +12268,7 @@ static PyObject* super_138(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8i12f40r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}20r^{_NSPoint=ff}24 */
 static id 
-meth_imp_139(id self, SEL sel, int arg_2, float arg_3, struct _NSRect  *arg_4, struct _NSPoint  *arg_5)
+meth_imp_142(id self, SEL sel, int arg_2, float arg_3, struct _NSRect  *arg_4, struct _NSPoint  *arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -12065,7 +12306,7 @@ meth_imp_139(id self, SEL sel, int arg_2, float arg_3, struct _NSRect  *arg_4, s
 	}
 	return objc_retval;
 }
-static PyObject* super_139(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_142(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -12124,7 +12365,7 @@ static PyObject* super_139(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8i12i16 */
 static id 
-meth_imp_140(id self, SEL sel, int arg_2, int arg_3)
+meth_imp_143(id self, SEL sel, int arg_2, int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -12156,7 +12397,7 @@ meth_imp_140(id self, SEL sel, int arg_2, int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_140(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_143(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -12201,7 +12442,7 @@ static PyObject* super_140(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8i12i16@20 */
 static id 
-meth_imp_141(id self, SEL sel, int arg_2, int arg_3, id arg_4)
+meth_imp_144(id self, SEL sel, int arg_2, int arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -12236,7 +12477,7 @@ meth_imp_141(id self, SEL sel, int arg_2, int arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_141(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_144(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -12288,7 +12529,7 @@ static PyObject* super_141(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8i12i16c20 */
 static id 
-meth_imp_142(id self, SEL sel, int arg_2, int arg_3, char arg_4)
+meth_imp_145(id self, SEL sel, int arg_2, int arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -12323,7 +12564,7 @@ meth_imp_142(id self, SEL sel, int arg_2, int arg_3, char arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_142(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_145(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -12375,7 +12616,7 @@ static PyObject* super_142(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8i12i16i20 */
 static id 
-meth_imp_143(id self, SEL sel, int arg_2, int arg_3, int arg_4)
+meth_imp_146(id self, SEL sel, int arg_2, int arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -12410,7 +12651,7 @@ meth_imp_143(id self, SEL sel, int arg_2, int arg_3, int arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_143(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_146(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -12462,7 +12703,7 @@ static PyObject* super_143(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8i12i16i20@24 */
 static id 
-meth_imp_144(id self, SEL sel, int arg_2, int arg_3, int arg_4, id arg_5)
+meth_imp_147(id self, SEL sel, int arg_2, int arg_3, int arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -12500,7 +12741,7 @@ meth_imp_144(id self, SEL sel, int arg_2, int arg_3, int arg_4, id arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_144(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_147(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -12559,7 +12800,7 @@ static PyObject* super_144(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8i12i16i20i24 */
 static id 
-meth_imp_145(id self, SEL sel, int arg_2, int arg_3, int arg_4, int arg_5)
+meth_imp_148(id self, SEL sel, int arg_2, int arg_3, int arg_4, int arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -12597,7 +12838,7 @@ meth_imp_145(id self, SEL sel, int arg_2, int arg_3, int arg_4, int arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_145(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_148(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -12656,7 +12897,7 @@ static PyObject* super_145(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8i12i16i20i24i28i32 */
 static id 
-meth_imp_146(id self, SEL sel, int arg_2, int arg_3, int arg_4, int arg_5, int arg_6, int arg_7)
+meth_imp_149(id self, SEL sel, int arg_2, int arg_3, int arg_4, int arg_5, int arg_6, int arg_7)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -12700,7 +12941,7 @@ meth_imp_146(id self, SEL sel, int arg_2, int arg_3, int arg_4, int arg_5, int a
 	}
 	return objc_retval;
 }
-static PyObject* super_146(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_149(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -12773,7 +13014,7 @@ static PyObject* super_146(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8i12r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}16 */
 static id 
-meth_imp_147(id self, SEL sel, int arg_2, struct _NSRect  *arg_3)
+meth_imp_150(id self, SEL sel, int arg_2, struct _NSRect  *arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -12805,7 +13046,7 @@ meth_imp_147(id self, SEL sel, int arg_2, struct _NSRect  *arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_147(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_150(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -12850,7 +13091,7 @@ static PyObject* super_147(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8i12r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}16I20 */
 static id 
-meth_imp_148(id self, SEL sel, int arg_2, struct _NSRect  *arg_3, unsigned int arg_4)
+meth_imp_151(id self, SEL sel, int arg_2, struct _NSRect  *arg_3, unsigned int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -12885,7 +13126,7 @@ meth_imp_148(id self, SEL sel, int arg_2, struct _NSRect  *arg_3, unsigned int a
 	}
 	return objc_retval;
 }
-static PyObject* super_148(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_151(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -12937,7 +13178,7 @@ static PyObject* super_148(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8i12s16c20c24c28c32 */
 static id 
-meth_imp_149(id self, SEL sel, int arg_2, short arg_3, char arg_4, char arg_5, char arg_6, char arg_7)
+meth_imp_152(id self, SEL sel, int arg_2, short arg_3, char arg_4, char arg_5, char arg_6, char arg_7)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -12981,7 +13222,7 @@ meth_imp_149(id self, SEL sel, int arg_2, short arg_3, char arg_4, char arg_5, c
 	}
 	return objc_retval;
 }
-static PyObject* super_149(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_152(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -13054,7 +13295,7 @@ static PyObject* super_149(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8i12{_NSRange=II}16 */
 static id 
-meth_imp_150(id self, SEL sel, int arg_2, struct _NSRange arg_3)
+meth_imp_153(id self, SEL sel, int arg_2, struct _NSRange arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -13086,7 +13327,7 @@ meth_imp_150(id self, SEL sel, int arg_2, struct _NSRange arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_150(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_153(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -13131,7 +13372,7 @@ static PyObject* super_150(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8i12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16 */
 static id 
-meth_imp_151(id self, SEL sel, int arg_2, struct _NSRect arg_3)
+meth_imp_154(id self, SEL sel, int arg_2, struct _NSRect arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -13163,7 +13404,7 @@ meth_imp_151(id self, SEL sel, int arg_2, struct _NSRect arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_151(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_154(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -13208,7 +13449,7 @@ static PyObject* super_151(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8l12 */
 static id 
-meth_imp_152(id self, SEL sel, long arg_2)
+meth_imp_155(id self, SEL sel, long arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -13237,7 +13478,7 @@ meth_imp_152(id self, SEL sel, long arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_152(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_155(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -13275,7 +13516,7 @@ static PyObject* super_152(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8q12 */
 static id 
-meth_imp_153(id self, SEL sel, long long arg_2)
+meth_imp_156(id self, SEL sel, long long arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -13304,7 +13545,7 @@ meth_imp_153(id self, SEL sel, long long arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_153(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_156(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -13342,7 +13583,7 @@ static PyObject* super_153(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8r*12 */
 static id 
-meth_imp_154(id self, SEL sel, char* arg_2)
+meth_imp_157(id self, SEL sel, char* arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -13371,7 +13612,7 @@ meth_imp_154(id self, SEL sel, char* arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_154(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_157(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -13409,7 +13650,7 @@ static PyObject* super_154(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8r*12I16 */
 static id 
-meth_imp_155(id self, SEL sel, char* arg_2, unsigned int arg_3)
+meth_imp_158(id self, SEL sel, char* arg_2, unsigned int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -13441,7 +13682,7 @@ meth_imp_155(id self, SEL sel, char* arg_2, unsigned int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_155(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_158(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -13486,7 +13727,7 @@ static PyObject* super_155(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8r*12I16I20 */
 static id 
-meth_imp_156(id self, SEL sel, char* arg_2, unsigned int arg_3, unsigned int arg_4)
+meth_imp_159(id self, SEL sel, char* arg_2, unsigned int arg_3, unsigned int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -13521,7 +13762,7 @@ meth_imp_156(id self, SEL sel, char* arg_2, unsigned int arg_3, unsigned int arg
 	}
 	return objc_retval;
 }
-static PyObject* super_156(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_159(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -13573,7 +13814,7 @@ static PyObject* super_156(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8r^S12I16 */
 static id 
-meth_imp_157(id self, SEL sel, unsigned short  *arg_2, unsigned int arg_3)
+meth_imp_160(id self, SEL sel, unsigned short  *arg_2, unsigned int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -13605,7 +13846,7 @@ meth_imp_157(id self, SEL sel, unsigned short  *arg_2, unsigned int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_157(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_160(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -13659,7 +13900,7 @@ struct OpaqueAEDataStorageType;struct AEDesc {
 };
 
 static id 
-meth_imp_158(id self, SEL sel, struct AEDesc  *arg_2)
+meth_imp_161(id self, SEL sel, struct AEDesc  *arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -13688,7 +13929,7 @@ meth_imp_158(id self, SEL sel, struct AEDesc  *arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_158(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_161(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -13726,7 +13967,7 @@ static PyObject* super_158(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8r^{FSRef=[80C]}12 */
 static id 
-meth_imp_159(id self, SEL sel, struct FSRef  *arg_2)
+meth_imp_162(id self, SEL sel, struct FSRef  *arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -13755,7 +13996,7 @@ meth_imp_159(id self, SEL sel, struct FSRef  *arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_159(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_162(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -13793,7 +14034,7 @@ static PyObject* super_159(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}12 */
 static id 
-meth_imp_160(id self, SEL sel, struct _NSRect  *arg_2)
+meth_imp_163(id self, SEL sel, struct _NSRect  *arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -13822,7 +14063,7 @@ meth_imp_160(id self, SEL sel, struct _NSRect  *arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_160(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_163(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -13860,7 +14101,7 @@ static PyObject* super_160(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}12I16i20c24@28 */
 static id 
-meth_imp_161(id self, SEL sel, struct _NSRect  *arg_2, unsigned int arg_3, int arg_4, char arg_5, id arg_6)
+meth_imp_164(id self, SEL sel, struct _NSRect  *arg_2, unsigned int arg_3, int arg_4, char arg_5, id arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -13901,7 +14142,7 @@ meth_imp_161(id self, SEL sel, struct _NSRect  *arg_2, unsigned int arg_3, int a
 	}
 	return objc_retval;
 }
-static PyObject* super_161(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_164(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -13967,7 +14208,7 @@ static PyObject* super_161(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}12I16i20c24@28@32 */
 static id 
-meth_imp_162(id self, SEL sel, struct _NSRect  *arg_2, unsigned int arg_3, int arg_4, char arg_5, id arg_6, id arg_7)
+meth_imp_165(id self, SEL sel, struct _NSRect  *arg_2, unsigned int arg_3, int arg_4, char arg_5, id arg_6, id arg_7)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -14011,7 +14252,7 @@ meth_imp_162(id self, SEL sel, struct _NSRect  *arg_2, unsigned int arg_3, int a
 	}
 	return objc_retval;
 }
-static PyObject* super_162(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_165(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -14084,7 +14325,7 @@ static PyObject* super_162(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8r^{_NSSize=ff}12@16 */
 static id 
-meth_imp_163(id self, SEL sel, struct _NSSize  *arg_2, id arg_3)
+meth_imp_166(id self, SEL sel, struct _NSSize  *arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -14116,7 +14357,7 @@ meth_imp_163(id self, SEL sel, struct _NSSize  *arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_163(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_166(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -14161,7 +14402,7 @@ static PyObject* super_163(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8s12 */
 static id 
-meth_imp_164(id self, SEL sel, short arg_2)
+meth_imp_167(id self, SEL sel, short arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -14190,7 +14431,7 @@ meth_imp_164(id self, SEL sel, short arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_164(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_167(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -14228,7 +14469,7 @@ static PyObject* super_164(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8s12@16 */
 static id 
-meth_imp_165(id self, SEL sel, short arg_2, id arg_3)
+meth_imp_168(id self, SEL sel, short arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -14260,7 +14501,7 @@ meth_imp_165(id self, SEL sel, short arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_165(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_168(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -14310,7 +14551,7 @@ struct CGPoint {
 };
 
 static id 
-meth_imp_166(id self, SEL sel, struct CGPoint arg_2)
+meth_imp_169(id self, SEL sel, struct CGPoint arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -14339,7 +14580,7 @@ meth_imp_166(id self, SEL sel, struct CGPoint arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_166(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_169(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -14384,7 +14625,7 @@ struct NSButtonState {
 };
 
 static id 
-meth_imp_167(id self, SEL sel, struct NSButtonState arg_2)
+meth_imp_170(id self, SEL sel, struct NSButtonState arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -14413,7 +14654,7 @@ meth_imp_167(id self, SEL sel, struct NSButtonState arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_167(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_170(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -14451,7 +14692,7 @@ static PyObject* super_167(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8{_NSPoint=ff}12 */
 static id 
-meth_imp_168(id self, SEL sel, struct _NSPoint arg_2)
+meth_imp_171(id self, SEL sel, struct _NSPoint arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -14480,7 +14721,7 @@ meth_imp_168(id self, SEL sel, struct _NSPoint arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_168(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_171(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -14518,7 +14759,7 @@ static PyObject* super_168(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8{_NSPoint=ff}12c20 */
 static id 
-meth_imp_169(id self, SEL sel, struct _NSPoint arg_2, char arg_3)
+meth_imp_172(id self, SEL sel, struct _NSPoint arg_2, char arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -14550,7 +14791,7 @@ meth_imp_169(id self, SEL sel, struct _NSPoint arg_2, char arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_169(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_172(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -14595,7 +14836,7 @@ static PyObject* super_169(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8{_NSRange=II}12 */
 static id 
-meth_imp_170(id self, SEL sel, struct _NSRange arg_2)
+meth_imp_173(id self, SEL sel, struct _NSRange arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -14624,7 +14865,7 @@ meth_imp_170(id self, SEL sel, struct _NSRange arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_170(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_173(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -14662,7 +14903,7 @@ static PyObject* super_170(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8{_NSRange=II}12@20 */
 static id 
-meth_imp_171(id self, SEL sel, struct _NSRange arg_2, id arg_3)
+meth_imp_174(id self, SEL sel, struct _NSRange arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -14694,7 +14935,7 @@ meth_imp_171(id self, SEL sel, struct _NSRange arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_171(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_174(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -14739,7 +14980,7 @@ static PyObject* super_171(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8{_NSRange=II}12@20@24 */
 static id 
-meth_imp_172(id self, SEL sel, struct _NSRange arg_2, id arg_3, id arg_4)
+meth_imp_175(id self, SEL sel, struct _NSRange arg_2, id arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -14774,7 +15015,7 @@ meth_imp_172(id self, SEL sel, struct _NSRange arg_2, id arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_172(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_175(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -14826,7 +15067,7 @@ static PyObject* super_172(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8{_NSRange=II}12@20@24{_NSRange=II}28 */
 static id 
-meth_imp_173(id self, SEL sel, struct _NSRange arg_2, id arg_3, id arg_4, struct _NSRange arg_5)
+meth_imp_176(id self, SEL sel, struct _NSRange arg_2, id arg_3, id arg_4, struct _NSRange arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -14864,7 +15105,7 @@ meth_imp_173(id self, SEL sel, struct _NSRange arg_2, id arg_3, id arg_4, struct
 	}
 	return objc_retval;
 }
-static PyObject* super_173(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_176(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -14924,7 +15165,7 @@ static PyObject* super_173(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: @0@4:8{_NSRange=II}12^{_NSZone=}20
 /* signature: @0@4:8{_NSRange=II}12c20 */
 static id 
-meth_imp_174(id self, SEL sel, struct _NSRange arg_2, char arg_3)
+meth_imp_177(id self, SEL sel, struct _NSRange arg_2, char arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -14956,7 +15197,7 @@ meth_imp_174(id self, SEL sel, struct _NSRange arg_2, char arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_174(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_177(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -15001,7 +15242,7 @@ static PyObject* super_174(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12 */
 static id 
-meth_imp_175(id self, SEL sel, struct _NSRect arg_2)
+meth_imp_178(id self, SEL sel, struct _NSRect arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -15030,7 +15271,7 @@ meth_imp_175(id self, SEL sel, struct _NSRect arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_175(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_178(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -15068,7 +15309,7 @@ static PyObject* super_175(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28 */
 static id 
-meth_imp_176(id self, SEL sel, struct _NSRect arg_2, id arg_3)
+meth_imp_179(id self, SEL sel, struct _NSRect arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -15100,7 +15341,7 @@ meth_imp_176(id self, SEL sel, struct _NSRect arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_176(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_179(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -15145,7 +15386,7 @@ static PyObject* super_176(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28@32 */
 static id 
-meth_imp_177(id self, SEL sel, struct _NSRect arg_2, id arg_3, id arg_4)
+meth_imp_180(id self, SEL sel, struct _NSRect arg_2, id arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -15180,7 +15421,7 @@ meth_imp_177(id self, SEL sel, struct _NSRect arg_2, id arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_177(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_180(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -15232,7 +15473,7 @@ static PyObject* super_177(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28i32 */
 static id 
-meth_imp_178(id self, SEL sel, struct _NSRect arg_2, id arg_3, int arg_4)
+meth_imp_181(id self, SEL sel, struct _NSRect arg_2, id arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -15267,7 +15508,7 @@ meth_imp_178(id self, SEL sel, struct _NSRect arg_2, id arg_3, int arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_178(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_181(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -15319,7 +15560,7 @@ static PyObject* super_178(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12I28@32 */
 static id 
-meth_imp_179(id self, SEL sel, struct _NSRect arg_2, unsigned int arg_3, id arg_4)
+meth_imp_182(id self, SEL sel, struct _NSRect arg_2, unsigned int arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -15354,7 +15595,7 @@ meth_imp_179(id self, SEL sel, struct _NSRect arg_2, unsigned int arg_3, id arg_
 	}
 	return objc_retval;
 }
-static PyObject* super_179(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_182(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -15406,7 +15647,7 @@ static PyObject* super_179(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12c28 */
 static id 
-meth_imp_180(id self, SEL sel, struct _NSRect arg_2, char arg_3)
+meth_imp_183(id self, SEL sel, struct _NSRect arg_2, char arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -15438,7 +15679,7 @@ meth_imp_180(id self, SEL sel, struct _NSRect arg_2, char arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_180(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_183(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -15483,7 +15724,7 @@ static PyObject* super_180(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12i28 */
 static id 
-meth_imp_181(id self, SEL sel, struct _NSRect arg_2, int arg_3)
+meth_imp_184(id self, SEL sel, struct _NSRect arg_2, int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -15515,7 +15756,7 @@ meth_imp_181(id self, SEL sel, struct _NSRect arg_2, int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_181(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_184(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -15560,7 +15801,7 @@ static PyObject* super_181(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12s28 */
 static id 
-meth_imp_182(id self, SEL sel, struct _NSRect arg_2, short arg_3)
+meth_imp_185(id self, SEL sel, struct _NSRect arg_2, short arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -15592,7 +15833,7 @@ meth_imp_182(id self, SEL sel, struct _NSRect arg_2, short arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_182(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_185(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -15637,7 +15878,7 @@ static PyObject* super_182(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8{_NSSize=ff}12 */
 static id 
-meth_imp_183(id self, SEL sel, struct _NSSize arg_2)
+meth_imp_186(id self, SEL sel, struct _NSSize arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -15666,7 +15907,7 @@ meth_imp_183(id self, SEL sel, struct _NSSize arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_183(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_186(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -15704,7 +15945,7 @@ static PyObject* super_183(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8{_NSSize=ff}12@20 */
 static id 
-meth_imp_184(id self, SEL sel, struct _NSSize arg_2, id arg_3)
+meth_imp_187(id self, SEL sel, struct _NSSize arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -15736,7 +15977,7 @@ meth_imp_184(id self, SEL sel, struct _NSSize arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_184(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_187(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -15781,7 +16022,7 @@ static PyObject* super_184(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8{_NSSize=ff}12i20 */
 static id 
-meth_imp_185(id self, SEL sel, struct _NSSize arg_2, int arg_3)
+meth_imp_188(id self, SEL sel, struct _NSSize arg_2, int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -15813,7 +16054,7 @@ meth_imp_185(id self, SEL sel, struct _NSSize arg_2, int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_185(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_188(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -15858,7 +16099,7 @@ static PyObject* super_185(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8{_NSSize=ff}12i20c24c28 */
 static id 
-meth_imp_186(id self, SEL sel, struct _NSSize arg_2, int arg_3, char arg_4, char arg_5)
+meth_imp_189(id self, SEL sel, struct _NSSize arg_2, int arg_3, char arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -15896,7 +16137,7 @@ meth_imp_186(id self, SEL sel, struct _NSSize arg_2, int arg_3, char arg_4, char
 	}
 	return objc_retval;
 }
-static PyObject* super_186(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_189(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -15955,7 +16196,7 @@ static PyObject* super_186(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @0@4:8{_NSSize=ff}12i20c24c28c32 */
 static id 
-meth_imp_187(id self, SEL sel, struct _NSSize arg_2, int arg_3, char arg_4, char arg_5, char arg_6)
+meth_imp_190(id self, SEL sel, struct _NSSize arg_2, int arg_3, char arg_4, char arg_5, char arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -15996,7 +16237,7 @@ meth_imp_187(id self, SEL sel, struct _NSSize arg_2, int arg_3, char arg_4, char
 	}
 	return objc_retval;
 }
-static PyObject* super_187(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_190(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -16062,7 +16303,7 @@ static PyObject* super_187(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @36@4:8@12:16@20@24@28@32I32 */
 static id 
-meth_imp_188(id self, SEL sel, id arg_2, SEL arg_3, id arg_4, id arg_5, id arg_6, id arg_7, unsigned int arg_8)
+meth_imp_191(id self, SEL sel, id arg_2, SEL arg_3, id arg_4, id arg_5, id arg_6, id arg_7, unsigned int arg_8)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -16109,7 +16350,7 @@ meth_imp_188(id self, SEL sel, id arg_2, SEL arg_3, id arg_4, id arg_5, id arg_6
 	}
 	return objc_retval;
 }
-static PyObject* super_188(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_191(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -16189,7 +16430,7 @@ static PyObject* super_188(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @36@4:8@12@16c20@24@28:32I32 */
 static id 
-meth_imp_189(id self, SEL sel, id arg_2, id arg_3, char arg_4, id arg_5, id arg_6, SEL arg_7, unsigned int arg_8)
+meth_imp_192(id self, SEL sel, id arg_2, id arg_3, char arg_4, id arg_5, id arg_6, SEL arg_7, unsigned int arg_8)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -16236,7 +16477,7 @@ meth_imp_189(id self, SEL sel, id arg_2, id arg_3, char arg_4, id arg_5, id arg_
 	}
 	return objc_retval;
 }
-static PyObject* super_189(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_192(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -16316,7 +16557,7 @@ static PyObject* super_189(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @36@4:8@12d40@24:28@32c35 */
 static id 
-meth_imp_190(id self, SEL sel, id arg_2, double arg_3, id arg_4, SEL arg_5, id arg_6, char arg_7)
+meth_imp_193(id self, SEL sel, id arg_2, double arg_3, id arg_4, SEL arg_5, id arg_6, char arg_7)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -16360,7 +16601,7 @@ meth_imp_190(id self, SEL sel, id arg_2, double arg_3, id arg_4, SEL arg_5, id a
 	}
 	return objc_retval;
 }
-static PyObject* super_190(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_193(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -16433,7 +16674,7 @@ static PyObject* super_190(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @36@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32@32 */
 static id 
-meth_imp_191(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4, id arg_5)
+meth_imp_194(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -16471,7 +16712,7 @@ meth_imp_191(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4, id arg_
 	}
 	return objc_retval;
 }
-static PyObject* super_191(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_194(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -16530,7 +16771,7 @@ static PyObject* super_191(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @36@4:8@12{_NSSize=ff}16f40f48{_NSPoint=ff}28 */
 static id 
-meth_imp_192(id self, SEL sel, id arg_2, struct _NSSize arg_3, float arg_4, float arg_5, struct _NSPoint arg_6)
+meth_imp_195(id self, SEL sel, id arg_2, struct _NSSize arg_3, float arg_4, float arg_5, struct _NSPoint arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -16571,7 +16812,7 @@ meth_imp_192(id self, SEL sel, id arg_2, struct _NSSize arg_3, float arg_4, floa
 	}
 	return objc_retval;
 }
-static PyObject* super_192(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_195(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -16637,7 +16878,7 @@ static PyObject* super_192(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @36@4:8i12@16@20@24@28@32*32 */
 static id 
-meth_imp_193(id self, SEL sel, int arg_2, id arg_3, id arg_4, id arg_5, id arg_6, id arg_7, char* arg_8)
+meth_imp_196(id self, SEL sel, int arg_2, id arg_3, id arg_4, id arg_5, id arg_6, id arg_7, char* arg_8)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -16684,7 +16925,7 @@ meth_imp_193(id self, SEL sel, int arg_2, id arg_3, id arg_4, id arg_5, id arg_6
 	}
 	return objc_retval;
 }
-static PyObject* super_193(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_196(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -16764,7 +17005,7 @@ static PyObject* super_193(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @36@4:8i12I16I20I24I28I32@32 */
 static id 
-meth_imp_194(id self, SEL sel, int arg_2, unsigned int arg_3, unsigned int arg_4, unsigned int arg_5, unsigned int arg_6, unsigned int arg_7, id arg_8)
+meth_imp_197(id self, SEL sel, int arg_2, unsigned int arg_3, unsigned int arg_4, unsigned int arg_5, unsigned int arg_6, unsigned int arg_7, id arg_8)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -16811,7 +17052,7 @@ meth_imp_194(id self, SEL sel, int arg_2, unsigned int arg_3, unsigned int arg_4
 	}
 	return objc_retval;
 }
-static PyObject* super_194(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_197(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -16891,7 +17132,7 @@ static PyObject* super_194(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @36@4:8r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@16@20@24@28i32i32 */
 static id 
-meth_imp_195(id self, SEL sel, struct _NSRect  *arg_2, id arg_3, id arg_4, id arg_5, id arg_6, int arg_7, int arg_8)
+meth_imp_198(id self, SEL sel, struct _NSRect  *arg_2, id arg_3, id arg_4, id arg_5, id arg_6, int arg_7, int arg_8)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -16938,7 +17179,7 @@ meth_imp_195(id self, SEL sel, struct _NSRect  *arg_2, id arg_3, id arg_4, id ar
 	}
 	return objc_retval;
 }
-static PyObject* super_195(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_198(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -17018,7 +17259,7 @@ static PyObject* super_195(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28I32@32 */
 static id 
-meth_imp_196(id self, SEL sel, struct _NSRect arg_2, id arg_3, unsigned int arg_4, id arg_5)
+meth_imp_199(id self, SEL sel, struct _NSRect arg_2, id arg_3, unsigned int arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -17056,7 +17297,7 @@ meth_imp_196(id self, SEL sel, struct _NSRect arg_2, id arg_3, unsigned int arg_
 	}
 	return objc_retval;
 }
-static PyObject* super_196(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_199(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -17115,7 +17356,7 @@ static PyObject* super_196(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12I28i32c35 */
 static id 
-meth_imp_197(id self, SEL sel, struct _NSRect arg_2, unsigned int arg_3, int arg_4, char arg_5)
+meth_imp_200(id self, SEL sel, struct _NSRect arg_2, unsigned int arg_3, int arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -17153,7 +17394,7 @@ meth_imp_197(id self, SEL sel, struct _NSRect arg_2, unsigned int arg_3, int arg
 	}
 	return objc_retval;
 }
-static PyObject* super_197(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_200(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -17212,7 +17453,7 @@ static PyObject* super_197(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @40@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12I28i32c35@36 */
 static id 
-meth_imp_198(id self, SEL sel, struct _NSRect arg_2, unsigned int arg_3, int arg_4, char arg_5, id arg_6)
+meth_imp_201(id self, SEL sel, struct _NSRect arg_2, unsigned int arg_3, int arg_4, char arg_5, id arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -17253,7 +17494,7 @@ meth_imp_198(id self, SEL sel, struct _NSRect arg_2, unsigned int arg_3, int arg
 	}
 	return objc_retval;
 }
-static PyObject* super_198(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_201(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -17319,7 +17560,7 @@ static PyObject* super_198(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @40@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12i28#32i32i36 */
 static id 
-meth_imp_199(id self, SEL sel, struct _NSRect arg_2, int arg_3, Class arg_4, int arg_5, int arg_6)
+meth_imp_202(id self, SEL sel, struct _NSRect arg_2, int arg_3, Class arg_4, int arg_5, int arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -17360,7 +17601,7 @@ meth_imp_199(id self, SEL sel, struct _NSRect arg_2, int arg_3, Class arg_4, int
 	}
 	return objc_retval;
 }
-static PyObject* super_199(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_202(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -17426,7 +17667,7 @@ static PyObject* super_199(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @40@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12i28@32i32i36 */
 static id 
-meth_imp_200(id self, SEL sel, struct _NSRect arg_2, int arg_3, id arg_4, int arg_5, int arg_6)
+meth_imp_203(id self, SEL sel, struct _NSRect arg_2, int arg_3, id arg_4, int arg_5, int arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -17467,7 +17708,7 @@ meth_imp_200(id self, SEL sel, struct _NSRect arg_2, int arg_3, id arg_4, int ar
 	}
 	return objc_retval;
 }
-static PyObject* super_200(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_203(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -17534,7 +17775,7 @@ static PyObject* super_200(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: @48@4:8^*12i16i20i24i28c32c35@36i40i44
 /* signature: @48@4:8i12{_NSPoint=ff}16I24d40i32@36i40i44f48 */
 static id 
-meth_imp_201(id self, SEL sel, int arg_2, struct _NSPoint arg_3, unsigned int arg_4, double arg_5, int arg_6, id arg_7, int arg_8, int arg_9, float arg_10)
+meth_imp_204(id self, SEL sel, int arg_2, struct _NSPoint arg_3, unsigned int arg_4, double arg_5, int arg_6, id arg_7, int arg_8, int arg_9, float arg_10)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -17587,7 +17828,7 @@ meth_imp_201(id self, SEL sel, int arg_2, struct _NSPoint arg_3, unsigned int ar
 	}
 	return objc_retval;
 }
-static PyObject* super_201(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_204(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -17682,7 +17923,7 @@ static PyObject* super_201(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: @52@4:8i12{_NSPoint=ff}16I24d40i32@36i40i44^v48
 /* signature: @52@4:8i12{_NSPoint=ff}16I24d40i32@36s42i44i48 */
 static id 
-meth_imp_202(id self, SEL sel, int arg_2, struct _NSPoint arg_3, unsigned int arg_4, double arg_5, int arg_6, id arg_7, short arg_8, int arg_9, int arg_10)
+meth_imp_205(id self, SEL sel, int arg_2, struct _NSPoint arg_3, unsigned int arg_4, double arg_5, int arg_6, id arg_7, short arg_8, int arg_9, int arg_10)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -17735,7 +17976,7 @@ meth_imp_202(id self, SEL sel, int arg_2, struct _NSPoint arg_3, unsigned int ar
 	}
 	return objc_retval;
 }
-static PyObject* super_202(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_205(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -17830,7 +18071,7 @@ static PyObject* super_202(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: @56@4:8^*12i16i20i24i28c32c35@36i40i44{_NSSize=ff}48
 /* signature: @56@4:8i12{_NSPoint=ff}16I24d40i32@36@40@44c51S54 */
 static id 
-meth_imp_203(id self, SEL sel, int arg_2, struct _NSPoint arg_3, unsigned int arg_4, double arg_5, int arg_6, id arg_7, id arg_8, id arg_9, char arg_10, unsigned short arg_11)
+meth_imp_206(id self, SEL sel, int arg_2, struct _NSPoint arg_3, unsigned int arg_4, double arg_5, int arg_6, id arg_7, id arg_8, id arg_9, char arg_10, unsigned short arg_11)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -17886,7 +18127,7 @@ meth_imp_203(id self, SEL sel, int arg_2, struct _NSPoint arg_3, unsigned int ar
 	}
 	return objc_retval;
 }
-static PyObject* super_203(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_206(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -17987,7 +18228,7 @@ static PyObject* super_203(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @@: */
 static id 
-meth_imp_204(id self, SEL sel)
+meth_imp_207(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -18013,7 +18254,7 @@ meth_imp_204(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_204(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_207(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -18044,7 +18285,7 @@ static PyObject* super_204(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @@:@ */
 static id 
-meth_imp_205(id self, SEL sel, id arg_2)
+meth_imp_208(id self, SEL sel, id arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -18073,7 +18314,7 @@ meth_imp_205(id self, SEL sel, id arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_205(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_208(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -18111,7 +18352,7 @@ static PyObject* super_205(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @@:@@ */
 static id 
-meth_imp_206(id self, SEL sel, id arg_2, id arg_3)
+meth_imp_209(id self, SEL sel, id arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -18143,7 +18384,7 @@ meth_imp_206(id self, SEL sel, id arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_206(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_209(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -18188,7 +18429,7 @@ static PyObject* super_206(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @@:@@@ */
 static id 
-meth_imp_207(id self, SEL sel, id arg_2, id arg_3, id arg_4)
+meth_imp_210(id self, SEL sel, id arg_2, id arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -18223,7 +18464,7 @@ meth_imp_207(id self, SEL sel, id arg_2, id arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_207(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_210(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -18275,7 +18516,7 @@ static PyObject* super_207(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @@:@@@@ */
 static id 
-meth_imp_208(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5)
+meth_imp_211(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -18313,7 +18554,7 @@ meth_imp_208(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_208(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_211(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -18372,7 +18613,7 @@ static PyObject* super_208(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @@:@@@@@ */
 static id 
-meth_imp_209(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6)
+meth_imp_212(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -18413,7 +18654,7 @@ meth_imp_209(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6)
 	}
 	return objc_retval;
 }
-static PyObject* super_209(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_212(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -18479,7 +18720,7 @@ static PyObject* super_209(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @@:@@@@@@ */
 static id 
-meth_imp_210(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6, id arg_7)
+meth_imp_213(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6, id arg_7)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -18523,7 +18764,7 @@ meth_imp_210(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6,
 	}
 	return objc_retval;
 }
-static PyObject* super_210(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_213(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -18596,7 +18837,7 @@ static PyObject* super_210(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @@:@@@@@@@ */
 static id 
-meth_imp_211(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6, id arg_7, id arg_8)
+meth_imp_214(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6, id arg_7, id arg_8)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -18643,7 +18884,7 @@ meth_imp_211(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6,
 	}
 	return objc_retval;
 }
-static PyObject* super_211(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_214(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -18723,7 +18964,7 @@ static PyObject* super_211(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: @@:@@i */
 static id 
-meth_imp_212(id self, SEL sel, id arg_2, id arg_3, int arg_4)
+meth_imp_215(id self, SEL sel, id arg_2, id arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -18758,7 +18999,7 @@ meth_imp_212(id self, SEL sel, id arg_2, id arg_3, int arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_212(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_215(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -18810,7 +19051,7 @@ static PyObject* super_212(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: C0@4:8 */
 static unsigned char 
-meth_imp_213(id self, SEL sel)
+meth_imp_216(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -18836,7 +19077,7 @@ meth_imp_213(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_213(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_216(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -18868,7 +19109,7 @@ static PyObject* super_213(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: C0@4:8I12^{OpaqueMenuRef=}16S20
 /* signature: I0@4:8 */
 static unsigned int 
-meth_imp_214(id self, SEL sel)
+meth_imp_217(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -18894,7 +19135,7 @@ meth_imp_214(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_214(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_217(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -18925,7 +19166,7 @@ static PyObject* super_214(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: I0@4:8:12 */
 static unsigned int 
-meth_imp_215(id self, SEL sel, SEL arg_2)
+meth_imp_218(id self, SEL sel, SEL arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -18954,7 +19195,7 @@ meth_imp_215(id self, SEL sel, SEL arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_215(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_218(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -18992,7 +19233,7 @@ static PyObject* super_215(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: I0@4:8:12@16 */
 static unsigned int 
-meth_imp_216(id self, SEL sel, SEL arg_2, id arg_3)
+meth_imp_219(id self, SEL sel, SEL arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -19024,7 +19265,7 @@ meth_imp_216(id self, SEL sel, SEL arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_216(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_219(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -19069,7 +19310,7 @@ static PyObject* super_216(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: I0@4:8@12 */
 static unsigned int 
-meth_imp_217(id self, SEL sel, id arg_2)
+meth_imp_220(id self, SEL sel, id arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -19098,7 +19339,7 @@ meth_imp_217(id self, SEL sel, id arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_217(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_220(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -19136,7 +19377,7 @@ static PyObject* super_217(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: I0@4:8@12@16 */
 static unsigned int 
-meth_imp_218(id self, SEL sel, id arg_2, id arg_3)
+meth_imp_221(id self, SEL sel, id arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -19168,7 +19409,7 @@ meth_imp_218(id self, SEL sel, id arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_218(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_221(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -19213,7 +19454,7 @@ static PyObject* super_218(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: I0@4:8@12@16@20 */
 static unsigned int 
-meth_imp_219(id self, SEL sel, id arg_2, id arg_3, id arg_4)
+meth_imp_222(id self, SEL sel, id arg_2, id arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -19248,7 +19489,7 @@ meth_imp_219(id self, SEL sel, id arg_2, id arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_219(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_222(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -19300,7 +19541,7 @@ static PyObject* super_219(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: I0@4:8@12@16I20{_NSRange=II}24 */
 static unsigned int 
-meth_imp_220(id self, SEL sel, id arg_2, id arg_3, unsigned int arg_4, struct _NSRange arg_5)
+meth_imp_223(id self, SEL sel, id arg_2, id arg_3, unsigned int arg_4, struct _NSRange arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -19338,7 +19579,7 @@ meth_imp_220(id self, SEL sel, id arg_2, id arg_3, unsigned int arg_4, struct _N
 	}
 	return objc_retval;
 }
-static PyObject* super_220(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_223(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -19397,7 +19638,7 @@ static PyObject* super_220(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: I0@4:8@12@16c20 */
 static unsigned int 
-meth_imp_221(id self, SEL sel, id arg_2, id arg_3, char arg_4)
+meth_imp_224(id self, SEL sel, id arg_2, id arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -19432,7 +19673,7 @@ meth_imp_221(id self, SEL sel, id arg_2, id arg_3, char arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_221(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_224(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -19484,7 +19725,7 @@ static PyObject* super_221(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: I0@4:8@12I16 */
 static unsigned int 
-meth_imp_222(id self, SEL sel, id arg_2, unsigned int arg_3)
+meth_imp_225(id self, SEL sel, id arg_2, unsigned int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -19516,7 +19757,7 @@ meth_imp_222(id self, SEL sel, id arg_2, unsigned int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_222(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_225(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -19561,7 +19802,7 @@ static PyObject* super_222(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: I0@4:8@12I16{_NSRange=II}20@28 */
 static unsigned int 
-meth_imp_223(id self, SEL sel, id arg_2, unsigned int arg_3, struct _NSRange arg_4, id arg_5)
+meth_imp_226(id self, SEL sel, id arg_2, unsigned int arg_3, struct _NSRange arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -19599,7 +19840,7 @@ meth_imp_223(id self, SEL sel, id arg_2, unsigned int arg_3, struct _NSRange arg
 	}
 	return objc_retval;
 }
-static PyObject* super_223(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_226(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -19658,7 +19899,7 @@ static PyObject* super_223(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: I0@4:8@12i16@20c24 */
 static unsigned int 
-meth_imp_224(id self, SEL sel, id arg_2, int arg_3, id arg_4, char arg_5)
+meth_imp_227(id self, SEL sel, id arg_2, int arg_3, id arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -19696,7 +19937,7 @@ meth_imp_224(id self, SEL sel, id arg_2, int arg_3, id arg_4, char arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_224(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_227(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -19755,7 +19996,7 @@ static PyObject* super_224(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: I0@4:8@12{_NSRange=II}16 */
 static unsigned int 
-meth_imp_225(id self, SEL sel, id arg_2, struct _NSRange arg_3)
+meth_imp_228(id self, SEL sel, id arg_2, struct _NSRange arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -19787,7 +20028,7 @@ meth_imp_225(id self, SEL sel, id arg_2, struct _NSRange arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_225(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_228(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -19832,7 +20073,7 @@ static PyObject* super_225(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: I0@4:8@12{_NSRange=II}16c24 */
 static unsigned int 
-meth_imp_226(id self, SEL sel, id arg_2, struct _NSRange arg_3, char arg_4)
+meth_imp_229(id self, SEL sel, id arg_2, struct _NSRange arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -19867,7 +20108,7 @@ meth_imp_226(id self, SEL sel, id arg_2, struct _NSRange arg_3, char arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_226(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_229(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -19919,7 +20160,7 @@ static PyObject* super_226(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: I0@4:8I12 */
 static unsigned int 
-meth_imp_227(id self, SEL sel, unsigned int arg_2)
+meth_imp_230(id self, SEL sel, unsigned int arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -19948,7 +20189,7 @@ meth_imp_227(id self, SEL sel, unsigned int arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_227(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_230(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -19986,7 +20227,7 @@ static PyObject* super_227(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: I0@4:8I12*16 */
 static unsigned int 
-meth_imp_228(id self, SEL sel, unsigned int arg_2, char* arg_3)
+meth_imp_231(id self, SEL sel, unsigned int arg_2, char* arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -20018,7 +20259,7 @@ meth_imp_228(id self, SEL sel, unsigned int arg_2, char* arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_228(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_231(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -20064,7 +20305,7 @@ static PyObject* super_228(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: I0@4:8I12^c16
 /* signature: I0@4:8I12c16 */
 static unsigned int 
-meth_imp_229(id self, SEL sel, unsigned int arg_2, char arg_3)
+meth_imp_232(id self, SEL sel, unsigned int arg_2, char arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -20096,7 +20337,7 @@ meth_imp_229(id self, SEL sel, unsigned int arg_2, char arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_229(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_232(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -20141,7 +20382,7 @@ static PyObject* super_229(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: I0@4:8I12{_NSRange=II}16 */
 static unsigned int 
-meth_imp_230(id self, SEL sel, unsigned int arg_2, struct _NSRange arg_3)
+meth_imp_233(id self, SEL sel, unsigned int arg_2, struct _NSRange arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -20173,7 +20414,7 @@ meth_imp_230(id self, SEL sel, unsigned int arg_2, struct _NSRange arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_230(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_233(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -20219,7 +20460,7 @@ static PyObject* super_230(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: I0@4:8I12{_NSRange=II}16^c24^{ATSGlyphVector=III^v*I^v^{ATSStyleSetting}SsiiI{FixedRect=iiii}IiiiSS^S^s^s^i^i}28
 /* signature: I0@4:8S12 */
 static unsigned int 
-meth_imp_231(id self, SEL sel, unsigned short arg_2)
+meth_imp_234(id self, SEL sel, unsigned short arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -20248,7 +20489,7 @@ meth_imp_231(id self, SEL sel, unsigned short arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_231(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_234(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -20291,7 +20532,7 @@ static PyObject* super_231(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: I0@4:8^i12
 /* signature: I0@4:8c12 */
 static unsigned int 
-meth_imp_232(id self, SEL sel, char arg_2)
+meth_imp_235(id self, SEL sel, char arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -20320,7 +20561,7 @@ meth_imp_232(id self, SEL sel, char arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_232(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_235(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -20358,7 +20599,7 @@ static PyObject* super_232(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: I0@4:8i12 */
 static unsigned int 
-meth_imp_233(id self, SEL sel, int arg_2)
+meth_imp_236(id self, SEL sel, int arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -20387,7 +20628,7 @@ meth_imp_233(id self, SEL sel, int arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_233(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_236(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -20425,7 +20666,7 @@ static PyObject* super_233(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: I0@4:8l12 */
 static unsigned int 
-meth_imp_234(id self, SEL sel, long arg_2)
+meth_imp_237(id self, SEL sel, long arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -20454,7 +20695,7 @@ meth_imp_234(id self, SEL sel, long arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_234(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_237(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -20493,7 +20734,7 @@ static PyObject* super_234(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: I0@4:8r^v12I16
 /* signature: I0@4:8{_NSPoint=ff}12 */
 static unsigned int 
-meth_imp_235(id self, SEL sel, struct _NSPoint arg_2)
+meth_imp_238(id self, SEL sel, struct _NSPoint arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -20522,7 +20763,7 @@ meth_imp_235(id self, SEL sel, struct _NSPoint arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_235(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_238(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -20560,7 +20801,7 @@ static PyObject* super_235(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: I0@4:8{_NSPoint=ff}12@20 */
 static unsigned int 
-meth_imp_236(id self, SEL sel, struct _NSPoint arg_2, id arg_3)
+meth_imp_239(id self, SEL sel, struct _NSPoint arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -20592,7 +20833,7 @@ meth_imp_236(id self, SEL sel, struct _NSPoint arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_236(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_239(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -20640,7 +20881,7 @@ static PyObject* super_236(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: I36@4:8{_NSRange=II}12^I20^I24^i28^c32*32
 /* signature: Io^@co^@@ */
 static unsigned int 
-meth_imp_237(id self, SEL sel, id  *arg_2, id arg_3)
+meth_imp_240(id self, SEL sel, id  *arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -20691,7 +20932,7 @@ meth_imp_237(id self, SEL sel, id  *arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_237(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_240(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -20743,7 +20984,7 @@ static PyObject* super_237(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: L0@4:8 */
 static unsigned long 
-meth_imp_238(id self, SEL sel)
+meth_imp_241(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -20769,7 +21010,7 @@ meth_imp_238(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_238(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_241(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -20800,7 +21041,7 @@ static PyObject* super_238(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: L0@4:8@12 */
 static unsigned long 
-meth_imp_239(id self, SEL sel, id arg_2)
+meth_imp_242(id self, SEL sel, id arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -20829,7 +21070,7 @@ meth_imp_239(id self, SEL sel, id arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_239(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_242(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -20867,7 +21108,7 @@ static PyObject* super_239(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: O@0@4:8nO@12 */
 static id 
-meth_imp_240(id self, SEL sel, id arg_2)
+meth_imp_243(id self, SEL sel, id arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -20896,7 +21137,7 @@ meth_imp_240(id self, SEL sel, id arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_240(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_243(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -20934,7 +21175,7 @@ static PyObject* super_240(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: O@0@4:8nO@12nO@16 */
 static id 
-meth_imp_241(id self, SEL sel, id arg_2, id arg_3)
+meth_imp_244(id self, SEL sel, id arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -20966,7 +21207,7 @@ meth_imp_241(id self, SEL sel, id arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_241(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_244(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -21011,7 +21252,7 @@ static PyObject* super_241(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: Q0@4:8 */
 static unsigned long long 
-meth_imp_242(id self, SEL sel)
+meth_imp_245(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -21037,7 +21278,7 @@ meth_imp_242(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_242(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_245(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -21068,7 +21309,7 @@ static PyObject* super_242(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: S0@4:8 */
 static unsigned short 
-meth_imp_243(id self, SEL sel)
+meth_imp_246(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -21094,7 +21335,7 @@ meth_imp_243(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_243(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_246(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -21125,7 +21366,7 @@ static PyObject* super_243(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: S0@4:8I12 */
 static unsigned short 
-meth_imp_244(id self, SEL sel, unsigned int arg_2)
+meth_imp_247(id self, SEL sel, unsigned int arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -21154,7 +21395,7 @@ meth_imp_244(id self, SEL sel, unsigned int arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_244(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_247(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -21192,7 +21433,7 @@ static PyObject* super_244(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: Vv0@4:8 */
 static void 
-meth_imp_245(id self, SEL sel)
+meth_imp_248(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -21210,7 +21451,7 @@ meth_imp_245(id self, SEL sel)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_245(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_248(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -21239,7 +21480,7 @@ static PyObject* super_245(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: Vv0@4:8@12 */
 static void 
-meth_imp_246(id self, SEL sel, id arg_2)
+meth_imp_249(id self, SEL sel, id arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -21260,7 +21501,7 @@ meth_imp_246(id self, SEL sel, id arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_246(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_249(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -21297,7 +21538,7 @@ static PyObject* super_246(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: Vv0@4:8@12i16 */
 static void 
-meth_imp_247(id self, SEL sel, id arg_2, int arg_3)
+meth_imp_250(id self, SEL sel, id arg_2, int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -21321,7 +21562,7 @@ meth_imp_247(id self, SEL sel, id arg_2, int arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_247(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_250(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -21365,7 +21606,7 @@ static PyObject* super_247(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: Vv0@4:8i12c16 */
 static void 
-meth_imp_248(id self, SEL sel, int arg_2, char arg_3)
+meth_imp_251(id self, SEL sel, int arg_2, char arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -21389,7 +21630,7 @@ meth_imp_248(id self, SEL sel, int arg_2, char arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_248(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_251(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -21433,7 +21674,7 @@ static PyObject* super_248(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: Vv0@4:8nO@12nO@16 */
 static void 
-meth_imp_249(id self, SEL sel, id arg_2, id arg_3)
+meth_imp_252(id self, SEL sel, id arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -21457,7 +21698,7 @@ meth_imp_249(id self, SEL sel, id arg_2, id arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_249(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_252(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -21501,7 +21742,7 @@ static PyObject* super_249(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: Vv0@4:8nO@12ni16 */
 static void 
-meth_imp_250(id self, SEL sel, id arg_2, int arg_3)
+meth_imp_253(id self, SEL sel, id arg_2, int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -21525,7 +21766,7 @@ meth_imp_250(id self, SEL sel, id arg_2, int arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_250(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_253(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -21627,7 +21868,7 @@ static PyObject* super_250(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: ^{objc_method_description=:*}0@4:8:12
 /* signature: c0@4:8 */
 static char 
-meth_imp_251(id self, SEL sel)
+meth_imp_254(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -21653,7 +21894,7 @@ meth_imp_251(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_251(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_254(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -21684,7 +21925,7 @@ static PyObject* super_251(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8#12 */
 static char 
-meth_imp_252(id self, SEL sel, Class arg_2)
+meth_imp_255(id self, SEL sel, Class arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -21713,7 +21954,7 @@ meth_imp_252(id self, SEL sel, Class arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_252(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_255(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -21751,7 +21992,7 @@ static PyObject* super_252(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8#12@16 */
 static char 
-meth_imp_253(id self, SEL sel, Class arg_2, id arg_3)
+meth_imp_256(id self, SEL sel, Class arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -21783,7 +22024,7 @@ meth_imp_253(id self, SEL sel, Class arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_253(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_256(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -21828,7 +22069,7 @@ static PyObject* super_253(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8*12@16*20@24i28 */
 static char 
-meth_imp_254(id self, SEL sel, char* arg_2, id arg_3, char* arg_4, id arg_5, int arg_6)
+meth_imp_257(id self, SEL sel, char* arg_2, id arg_3, char* arg_4, id arg_5, int arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -21869,7 +22110,7 @@ meth_imp_254(id self, SEL sel, char* arg_2, id arg_3, char* arg_4, id arg_5, int
 	}
 	return objc_retval;
 }
-static PyObject* super_254(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_257(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -21935,7 +22176,7 @@ static PyObject* super_254(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8*12I16 */
 static char 
-meth_imp_255(id self, SEL sel, char* arg_2, unsigned int arg_3)
+meth_imp_258(id self, SEL sel, char* arg_2, unsigned int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -21967,7 +22208,7 @@ meth_imp_255(id self, SEL sel, char* arg_2, unsigned int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_255(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_258(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -22012,7 +22253,7 @@ static PyObject* super_255(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8*12I16@20 */
 static char 
-meth_imp_256(id self, SEL sel, char* arg_2, unsigned int arg_3, id arg_4)
+meth_imp_259(id self, SEL sel, char* arg_2, unsigned int arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -22047,7 +22288,7 @@ meth_imp_256(id self, SEL sel, char* arg_2, unsigned int arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_256(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_259(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -22099,7 +22340,7 @@ static PyObject* super_256(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8*12I16I20 */
 static char 
-meth_imp_257(id self, SEL sel, char* arg_2, unsigned int arg_3, unsigned int arg_4)
+meth_imp_260(id self, SEL sel, char* arg_2, unsigned int arg_3, unsigned int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -22134,7 +22375,7 @@ meth_imp_257(id self, SEL sel, char* arg_2, unsigned int arg_3, unsigned int arg
 	}
 	return objc_retval;
 }
-static PyObject* super_257(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_260(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -22186,7 +22427,7 @@ static PyObject* super_257(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8*12i16c20c24c28 */
 static char 
-meth_imp_258(id self, SEL sel, char* arg_2, int arg_3, char arg_4, char arg_5, char arg_6)
+meth_imp_261(id self, SEL sel, char* arg_2, int arg_3, char arg_4, char arg_5, char arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -22227,7 +22468,7 @@ meth_imp_258(id self, SEL sel, char* arg_2, int arg_3, char arg_4, char arg_5, c
 	}
 	return objc_retval;
 }
-static PyObject* super_258(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_261(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -22293,7 +22534,7 @@ static PyObject* super_258(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8:12 */
 static char 
-meth_imp_259(id self, SEL sel, SEL arg_2)
+meth_imp_262(id self, SEL sel, SEL arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -22322,7 +22563,7 @@ meth_imp_259(id self, SEL sel, SEL arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_259(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_262(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -22360,7 +22601,7 @@ static PyObject* super_259(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8:12@16 */
 static char 
-meth_imp_260(id self, SEL sel, SEL arg_2, id arg_3)
+meth_imp_263(id self, SEL sel, SEL arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -22392,7 +22633,7 @@ meth_imp_260(id self, SEL sel, SEL arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_260(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_263(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -22437,7 +22678,7 @@ static PyObject* super_260(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8:12@16@20 */
 static char 
-meth_imp_261(id self, SEL sel, SEL arg_2, id arg_3, id arg_4)
+meth_imp_264(id self, SEL sel, SEL arg_2, id arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -22472,7 +22713,7 @@ meth_imp_261(id self, SEL sel, SEL arg_2, id arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_261(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_264(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -22524,7 +22765,7 @@ static PyObject* super_261(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8:12@16i20i24 */
 static char 
-meth_imp_262(id self, SEL sel, SEL arg_2, id arg_3, int arg_4, int arg_5)
+meth_imp_265(id self, SEL sel, SEL arg_2, id arg_3, int arg_4, int arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -22562,7 +22803,7 @@ meth_imp_262(id self, SEL sel, SEL arg_2, id arg_3, int arg_4, int arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_262(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_265(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -22621,7 +22862,7 @@ static PyObject* super_262(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12 */
 static char 
-meth_imp_263(id self, SEL sel, id arg_2)
+meth_imp_266(id self, SEL sel, id arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -22650,7 +22891,7 @@ meth_imp_263(id self, SEL sel, id arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_263(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_266(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -22688,7 +22929,7 @@ static PyObject* super_263(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12:16 */
 static char 
-meth_imp_264(id self, SEL sel, id arg_2, SEL arg_3)
+meth_imp_267(id self, SEL sel, id arg_2, SEL arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -22720,7 +22961,7 @@ meth_imp_264(id self, SEL sel, id arg_2, SEL arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_264(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_267(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -22765,7 +23006,7 @@ static PyObject* super_264(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12@16 */
 static char 
-meth_imp_265(id self, SEL sel, id arg_2, id arg_3)
+meth_imp_268(id self, SEL sel, id arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -22797,7 +23038,7 @@ meth_imp_265(id self, SEL sel, id arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_265(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_268(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -22842,7 +23083,7 @@ static PyObject* super_265(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12@16:20 */
 static char 
-meth_imp_266(id self, SEL sel, id arg_2, id arg_3, SEL arg_4)
+meth_imp_269(id self, SEL sel, id arg_2, id arg_3, SEL arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -22877,7 +23118,7 @@ meth_imp_266(id self, SEL sel, id arg_2, id arg_3, SEL arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_266(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_269(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -22929,7 +23170,7 @@ static PyObject* super_266(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12@16@20 */
 static char 
-meth_imp_267(id self, SEL sel, id arg_2, id arg_3, id arg_4)
+meth_imp_270(id self, SEL sel, id arg_2, id arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -22964,7 +23205,7 @@ meth_imp_267(id self, SEL sel, id arg_2, id arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_267(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_270(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -23017,7 +23258,7 @@ static PyObject* super_267(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: c0@4:8@12@16@20@24^i28
 /* signature: c0@4:8@12@16@20I24 */
 static char 
-meth_imp_268(id self, SEL sel, id arg_2, id arg_3, id arg_4, unsigned int arg_5)
+meth_imp_271(id self, SEL sel, id arg_2, id arg_3, id arg_4, unsigned int arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -23055,7 +23296,7 @@ meth_imp_268(id self, SEL sel, id arg_2, id arg_3, id arg_4, unsigned int arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_268(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_271(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -23114,7 +23355,7 @@ static PyObject* super_268(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12@16@20i24 */
 static char 
-meth_imp_269(id self, SEL sel, id arg_2, id arg_3, id arg_4, int arg_5)
+meth_imp_272(id self, SEL sel, id arg_2, id arg_3, id arg_4, int arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -23152,7 +23393,7 @@ meth_imp_269(id self, SEL sel, id arg_2, id arg_3, id arg_4, int arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_269(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_272(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -23211,7 +23452,7 @@ static PyObject* super_269(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12@16I20 */
 static char 
-meth_imp_270(id self, SEL sel, id arg_2, id arg_3, unsigned int arg_4)
+meth_imp_273(id self, SEL sel, id arg_2, id arg_3, unsigned int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -23246,7 +23487,7 @@ meth_imp_270(id self, SEL sel, id arg_2, id arg_3, unsigned int arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_270(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_273(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -23298,7 +23539,7 @@ static PyObject* super_270(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12@16S20 */
 static char 
-meth_imp_271(id self, SEL sel, id arg_2, id arg_3, unsigned short arg_4)
+meth_imp_274(id self, SEL sel, id arg_2, id arg_3, unsigned short arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -23333,7 +23574,7 @@ meth_imp_271(id self, SEL sel, id arg_2, id arg_3, unsigned short arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_271(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_274(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -23389,7 +23630,7 @@ static PyObject* super_271(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: c0@4:8@12@16^{_NSZone=}20@24
 /* signature: c0@4:8@12@16c20 */
 static char 
-meth_imp_272(id self, SEL sel, id arg_2, id arg_3, char arg_4)
+meth_imp_275(id self, SEL sel, id arg_2, id arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -23424,7 +23665,7 @@ meth_imp_272(id self, SEL sel, id arg_2, id arg_3, char arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_272(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_275(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -23476,7 +23717,7 @@ static PyObject* super_272(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12@16c20c24 */
 static char 
-meth_imp_273(id self, SEL sel, id arg_2, id arg_3, char arg_4, char arg_5)
+meth_imp_276(id self, SEL sel, id arg_2, id arg_3, char arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -23514,7 +23755,7 @@ meth_imp_273(id self, SEL sel, id arg_2, id arg_3, char arg_4, char arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_273(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_276(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -23573,7 +23814,7 @@ static PyObject* super_273(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12@16c20c24c28 */
 static char 
-meth_imp_274(id self, SEL sel, id arg_2, id arg_3, char arg_4, char arg_5, char arg_6)
+meth_imp_277(id self, SEL sel, id arg_2, id arg_3, char arg_4, char arg_5, char arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -23614,7 +23855,7 @@ meth_imp_274(id self, SEL sel, id arg_2, id arg_3, char arg_4, char arg_5, char 
 	}
 	return objc_retval;
 }
-static PyObject* super_274(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_277(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -23680,7 +23921,7 @@ static PyObject* super_274(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12@16i20 */
 static char 
-meth_imp_275(id self, SEL sel, id arg_2, id arg_3, int arg_4)
+meth_imp_278(id self, SEL sel, id arg_2, id arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -23715,7 +23956,7 @@ meth_imp_275(id self, SEL sel, id arg_2, id arg_3, int arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_275(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_278(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -23768,7 +24009,7 @@ static PyObject* super_275(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: c0@4:8@12@16i20^{_NSMapTable=}24@28
 /* signature: c0@4:8@12@16{_NSPoint=ff}20@28 */
 static char 
-meth_imp_276(id self, SEL sel, id arg_2, id arg_3, struct _NSPoint arg_4, id arg_5)
+meth_imp_279(id self, SEL sel, id arg_2, id arg_3, struct _NSPoint arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -23806,7 +24047,7 @@ meth_imp_276(id self, SEL sel, id arg_2, id arg_3, struct _NSPoint arg_4, id arg
 	}
 	return objc_retval;
 }
-static PyObject* super_276(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_279(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -23865,7 +24106,7 @@ static PyObject* super_276(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12I16 */
 static char 
-meth_imp_277(id self, SEL sel, id arg_2, unsigned int arg_3)
+meth_imp_280(id self, SEL sel, id arg_2, unsigned int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -23897,7 +24138,7 @@ meth_imp_277(id self, SEL sel, id arg_2, unsigned int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_277(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_280(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -23942,7 +24183,7 @@ static PyObject* super_277(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12I16@20@24I28 */
 static char 
-meth_imp_278(id self, SEL sel, id arg_2, unsigned int arg_3, id arg_4, id arg_5, unsigned int arg_6)
+meth_imp_281(id self, SEL sel, id arg_2, unsigned int arg_3, id arg_4, id arg_5, unsigned int arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -23983,7 +24224,7 @@ meth_imp_278(id self, SEL sel, id arg_2, unsigned int arg_3, id arg_4, id arg_5,
 	}
 	return objc_retval;
 }
-static PyObject* super_278(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_281(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -24056,7 +24297,7 @@ static PyObject* super_278(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: c0@4:8@12^{_NSRect={_NSPoint=ff}{_NSSize=ff}}16^c20
 /* signature: c0@4:8@12c16 */
 static char 
-meth_imp_279(id self, SEL sel, id arg_2, char arg_3)
+meth_imp_282(id self, SEL sel, id arg_2, char arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -24088,7 +24329,7 @@ meth_imp_279(id self, SEL sel, id arg_2, char arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_279(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_282(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -24133,7 +24374,7 @@ static PyObject* super_279(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12c16c20 */
 static char 
-meth_imp_280(id self, SEL sel, id arg_2, char arg_3, char arg_4)
+meth_imp_283(id self, SEL sel, id arg_2, char arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -24168,7 +24409,7 @@ meth_imp_280(id self, SEL sel, id arg_2, char arg_3, char arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_280(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_283(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -24220,7 +24461,7 @@ static PyObject* super_280(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12i16 */
 static char 
-meth_imp_281(id self, SEL sel, id arg_2, int arg_3)
+meth_imp_284(id self, SEL sel, id arg_2, int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -24252,7 +24493,7 @@ meth_imp_281(id self, SEL sel, id arg_2, int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_281(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_284(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -24297,7 +24538,7 @@ static PyObject* super_281(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12i16@20 */
 static char 
-meth_imp_282(id self, SEL sel, id arg_2, int arg_3, id arg_4)
+meth_imp_285(id self, SEL sel, id arg_2, int arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -24332,7 +24573,7 @@ meth_imp_282(id self, SEL sel, id arg_2, int arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_282(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_285(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -24385,7 +24626,7 @@ static PyObject* super_282(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: c0@4:8@12i16^c20^c24^@28
 /* signature: c0@4:8@12o^c16 */
 static char 
-meth_imp_283(id self, SEL sel, id arg_2, char  *arg_3)
+meth_imp_286(id self, SEL sel, id arg_2, char  *arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -24436,7 +24677,7 @@ meth_imp_283(id self, SEL sel, id arg_2, char  *arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_283(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_286(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -24488,7 +24729,7 @@ static PyObject* super_283(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12r^{FSRef=[80C]}16r^{FSRef=[80C]}20 */
 static char 
-meth_imp_284(id self, SEL sel, id arg_2, struct FSRef  *arg_3, struct FSRef  *arg_4)
+meth_imp_287(id self, SEL sel, id arg_2, struct FSRef  *arg_3, struct FSRef  *arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -24523,7 +24764,7 @@ meth_imp_284(id self, SEL sel, id arg_2, struct FSRef  *arg_3, struct FSRef  *ar
 	}
 	return objc_retval;
 }
-static PyObject* super_284(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_287(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -24575,7 +24816,7 @@ static PyObject* super_284(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12r^{FSRef=[80C]}16r^{FSRef=[80C]}20@24i28 */
 static char 
-meth_imp_285(id self, SEL sel, id arg_2, struct FSRef  *arg_3, struct FSRef  *arg_4, id arg_5, int arg_6)
+meth_imp_288(id self, SEL sel, id arg_2, struct FSRef  *arg_3, struct FSRef  *arg_4, id arg_5, int arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -24616,7 +24857,7 @@ meth_imp_285(id self, SEL sel, id arg_2, struct FSRef  *arg_3, struct FSRef  *ar
 	}
 	return objc_retval;
 }
-static PyObject* super_285(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_288(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -24682,7 +24923,7 @@ static PyObject* super_285(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}16 */
 static char 
-meth_imp_286(id self, SEL sel, id arg_2, struct _NSRect  *arg_3)
+meth_imp_289(id self, SEL sel, id arg_2, struct _NSRect  *arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -24714,7 +24955,7 @@ meth_imp_286(id self, SEL sel, id arg_2, struct _NSRect  *arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_286(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_289(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -24759,7 +25000,7 @@ static PyObject* super_286(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}16i20 */
 static char 
-meth_imp_287(id self, SEL sel, id arg_2, struct _NSRect  *arg_3, int arg_4)
+meth_imp_290(id self, SEL sel, id arg_2, struct _NSRect  *arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -24794,7 +25035,7 @@ meth_imp_287(id self, SEL sel, id arg_2, struct _NSRect  *arg_3, int arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_287(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_290(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -24846,7 +25087,7 @@ static PyObject* super_287(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12{_NSPoint=ff}16 */
 static char 
-meth_imp_288(id self, SEL sel, id arg_2, struct _NSPoint arg_3)
+meth_imp_291(id self, SEL sel, id arg_2, struct _NSPoint arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -24878,7 +25119,7 @@ meth_imp_288(id self, SEL sel, id arg_2, struct _NSPoint arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_288(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_291(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -24923,7 +25164,7 @@ static PyObject* super_288(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12{_NSRange=II}16 */
 static char 
-meth_imp_289(id self, SEL sel, id arg_2, struct _NSRange arg_3)
+meth_imp_292(id self, SEL sel, id arg_2, struct _NSRange arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -24955,7 +25196,7 @@ meth_imp_289(id self, SEL sel, id arg_2, struct _NSRange arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_289(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_292(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -25000,7 +25241,7 @@ static PyObject* super_289(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12{_NSRange=II}16@24 */
 static char 
-meth_imp_290(id self, SEL sel, id arg_2, struct _NSRange arg_3, id arg_4)
+meth_imp_293(id self, SEL sel, id arg_2, struct _NSRange arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -25035,7 +25276,7 @@ meth_imp_290(id self, SEL sel, id arg_2, struct _NSRange arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_290(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_293(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -25087,7 +25328,7 @@ static PyObject* super_290(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16 */
 static char 
-meth_imp_291(id self, SEL sel, id arg_2, struct _NSRect arg_3)
+meth_imp_294(id self, SEL sel, id arg_2, struct _NSRect arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -25119,7 +25360,7 @@ meth_imp_291(id self, SEL sel, id arg_2, struct _NSRect arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_291(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_294(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -25164,7 +25405,7 @@ static PyObject* super_291(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32 */
 static char 
-meth_imp_292(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4)
+meth_imp_295(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -25199,7 +25440,7 @@ meth_imp_292(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_292(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_295(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -25251,7 +25492,7 @@ static PyObject* super_292(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16c32 */
 static char 
-meth_imp_293(id self, SEL sel, id arg_2, struct _NSRect arg_3, char arg_4)
+meth_imp_296(id self, SEL sel, id arg_2, struct _NSRect arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -25286,7 +25527,7 @@ meth_imp_293(id self, SEL sel, id arg_2, struct _NSRect arg_3, char arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_293(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_296(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -25338,7 +25579,7 @@ static PyObject* super_293(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8C12 */
 static char 
-meth_imp_294(id self, SEL sel, unsigned char arg_2)
+meth_imp_297(id self, SEL sel, unsigned char arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -25367,7 +25608,7 @@ meth_imp_294(id self, SEL sel, unsigned char arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_294(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_297(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -25405,7 +25646,7 @@ static PyObject* super_294(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8I12 */
 static char 
-meth_imp_295(id self, SEL sel, unsigned int arg_2)
+meth_imp_298(id self, SEL sel, unsigned int arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -25434,7 +25675,7 @@ meth_imp_295(id self, SEL sel, unsigned int arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_295(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_298(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -25472,7 +25713,7 @@ static PyObject* super_295(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8I12I16 */
 static char 
-meth_imp_296(id self, SEL sel, unsigned int arg_2, unsigned int arg_3)
+meth_imp_299(id self, SEL sel, unsigned int arg_2, unsigned int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -25504,7 +25745,7 @@ meth_imp_296(id self, SEL sel, unsigned int arg_2, unsigned int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_296(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_299(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -25549,7 +25790,7 @@ static PyObject* super_296(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8I12I16@20 */
 static char 
-meth_imp_297(id self, SEL sel, unsigned int arg_2, unsigned int arg_3, id arg_4)
+meth_imp_300(id self, SEL sel, unsigned int arg_2, unsigned int arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -25584,7 +25825,7 @@ meth_imp_297(id self, SEL sel, unsigned int arg_2, unsigned int arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_297(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_300(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -25636,7 +25877,7 @@ static PyObject* super_297(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8I12{_NSPoint=ff}16I24@28 */
 static char 
-meth_imp_298(id self, SEL sel, unsigned int arg_2, struct _NSPoint arg_3, unsigned int arg_4, id arg_5)
+meth_imp_301(id self, SEL sel, unsigned int arg_2, struct _NSPoint arg_3, unsigned int arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -25674,7 +25915,7 @@ meth_imp_298(id self, SEL sel, unsigned int arg_2, struct _NSPoint arg_3, unsign
 	}
 	return objc_retval;
 }
-static PyObject* super_298(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_301(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -25733,7 +25974,7 @@ static PyObject* super_298(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8L12 */
 static char 
-meth_imp_299(id self, SEL sel, unsigned long arg_2)
+meth_imp_302(id self, SEL sel, unsigned long arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -25762,7 +26003,7 @@ meth_imp_299(id self, SEL sel, unsigned long arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_299(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_302(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -25800,7 +26041,7 @@ static PyObject* super_299(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8S12 */
 static char 
-meth_imp_300(id self, SEL sel, unsigned short arg_2)
+meth_imp_303(id self, SEL sel, unsigned short arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -25829,7 +26070,7 @@ meth_imp_300(id self, SEL sel, unsigned short arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_300(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_303(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -25894,7 +26135,7 @@ static PyObject* super_300(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: c0@4:8^{tiff=*^{_NXStream}sccsll{?=IIIIIISSSSSSSSSSIIIffSSffII[2S]ISSSSI^S^S^S^S[3^S]*********[2I]II^I^I[2S]^f[2S]S^f^f^f[4^S]S[2S]**I^v}{?=SSL}^i^i[10i]liillil^?^?^?^?^?^?^?^?^?^?^?^?*ii*l*llii}12i16
 /* signature: c0@4:8c12 */
 static char 
-meth_imp_301(id self, SEL sel, char arg_2)
+meth_imp_304(id self, SEL sel, char arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -25923,7 +26164,7 @@ meth_imp_301(id self, SEL sel, char arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_301(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_304(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -25961,7 +26202,7 @@ static PyObject* super_301(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8d40 */
 static char 
-meth_imp_302(id self, SEL sel, double arg_2)
+meth_imp_305(id self, SEL sel, double arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -25990,7 +26231,7 @@ meth_imp_302(id self, SEL sel, double arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_302(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_305(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -26029,7 +26270,7 @@ static PyObject* super_302(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: c0@4:8d40^v20@24@28I32
 /* signature: c0@4:8f40 */
 static char 
-meth_imp_303(id self, SEL sel, float arg_2)
+meth_imp_306(id self, SEL sel, float arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -26058,7 +26299,7 @@ meth_imp_303(id self, SEL sel, float arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_303(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_306(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -26096,7 +26337,7 @@ static PyObject* super_303(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8f40c16 */
 static char 
-meth_imp_304(id self, SEL sel, float arg_2, char arg_3)
+meth_imp_307(id self, SEL sel, float arg_2, char arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -26128,7 +26369,7 @@ meth_imp_304(id self, SEL sel, float arg_2, char arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_304(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_307(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -26173,7 +26414,7 @@ static PyObject* super_304(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8i12 */
 static char 
-meth_imp_305(id self, SEL sel, int arg_2)
+meth_imp_308(id self, SEL sel, int arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -26202,7 +26443,7 @@ meth_imp_305(id self, SEL sel, int arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_305(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_308(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -26240,7 +26481,7 @@ static PyObject* super_305(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8i12@16 */
 static char 
-meth_imp_306(id self, SEL sel, int arg_2, id arg_3)
+meth_imp_309(id self, SEL sel, int arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -26272,7 +26513,7 @@ meth_imp_306(id self, SEL sel, int arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_306(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_309(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -26317,7 +26558,7 @@ static PyObject* super_306(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8i12@16@20 */
 static char 
-meth_imp_307(id self, SEL sel, int arg_2, id arg_3, id arg_4)
+meth_imp_310(id self, SEL sel, int arg_2, id arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -26352,7 +26593,7 @@ meth_imp_307(id self, SEL sel, int arg_2, id arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_307(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_310(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -26404,7 +26645,7 @@ static PyObject* super_307(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8i12@16@20@24 */
 static char 
-meth_imp_308(id self, SEL sel, int arg_2, id arg_3, id arg_4, id arg_5)
+meth_imp_311(id self, SEL sel, int arg_2, id arg_3, id arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -26442,7 +26683,7 @@ meth_imp_308(id self, SEL sel, int arg_2, id arg_3, id arg_4, id arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_308(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_311(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -26501,7 +26742,7 @@ static PyObject* super_308(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8i12c16 */
 static char 
-meth_imp_309(id self, SEL sel, int arg_2, char arg_3)
+meth_imp_312(id self, SEL sel, int arg_2, char arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -26533,7 +26774,7 @@ meth_imp_309(id self, SEL sel, int arg_2, char arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_309(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_312(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -26578,7 +26819,7 @@ static PyObject* super_309(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8i12f40r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}20r^{_NSPoint=ff}24 */
 static char 
-meth_imp_310(id self, SEL sel, int arg_2, float arg_3, struct _NSRect  *arg_4, struct _NSPoint  *arg_5)
+meth_imp_313(id self, SEL sel, int arg_2, float arg_3, struct _NSRect  *arg_4, struct _NSPoint  *arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -26616,7 +26857,7 @@ meth_imp_310(id self, SEL sel, int arg_2, float arg_3, struct _NSRect  *arg_4, s
 	}
 	return objc_retval;
 }
-static PyObject* super_310(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_313(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -26675,7 +26916,7 @@ static PyObject* super_310(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8i12i16 */
 static char 
-meth_imp_311(id self, SEL sel, int arg_2, int arg_3)
+meth_imp_314(id self, SEL sel, int arg_2, int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -26707,7 +26948,7 @@ meth_imp_311(id self, SEL sel, int arg_2, int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_311(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_314(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -26752,7 +26993,7 @@ static PyObject* super_311(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8i12i16i20 */
 static char 
-meth_imp_312(id self, SEL sel, int arg_2, int arg_3, int arg_4)
+meth_imp_315(id self, SEL sel, int arg_2, int arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -26787,7 +27028,7 @@ meth_imp_312(id self, SEL sel, int arg_2, int arg_3, int arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_312(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_315(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -26839,7 +27080,7 @@ static PyObject* super_312(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8l12 */
 static char 
-meth_imp_313(id self, SEL sel, long arg_2)
+meth_imp_316(id self, SEL sel, long arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -26868,7 +27109,7 @@ meth_imp_313(id self, SEL sel, long arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_313(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_316(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -26906,7 +27147,7 @@ static PyObject* super_313(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8nO@12nO@16 */
 static char 
-meth_imp_314(id self, SEL sel, id arg_2, id arg_3)
+meth_imp_317(id self, SEL sel, id arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -26938,7 +27179,7 @@ meth_imp_314(id self, SEL sel, id arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_314(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_317(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -26983,7 +27224,7 @@ static PyObject* super_314(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8r*12 */
 static char 
-meth_imp_315(id self, SEL sel, char* arg_2)
+meth_imp_318(id self, SEL sel, char* arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -27012,7 +27253,7 @@ meth_imp_315(id self, SEL sel, char* arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_315(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_318(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -27051,7 +27292,7 @@ static PyObject* super_315(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: c0@4:8r^{?=@@cc}12I16@20^{?=@@cc}24^@28
 /* signature: c0@4:8r^{FSRef=[80C]}12 */
 static char 
-meth_imp_316(id self, SEL sel, struct FSRef  *arg_2)
+meth_imp_319(id self, SEL sel, struct FSRef  *arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -27080,7 +27321,7 @@ meth_imp_316(id self, SEL sel, struct FSRef  *arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_316(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_319(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -27118,7 +27359,7 @@ static PyObject* super_316(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8r^{_NSPoint=ff}12 */
 static char 
-meth_imp_317(id self, SEL sel, struct _NSPoint  *arg_2)
+meth_imp_320(id self, SEL sel, struct _NSPoint  *arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -27147,7 +27388,7 @@ meth_imp_317(id self, SEL sel, struct _NSPoint  *arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_317(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_320(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -27185,7 +27426,7 @@ static PyObject* super_317(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@16 */
 static char 
-meth_imp_318(id self, SEL sel, struct _NSRect  *arg_2, id arg_3)
+meth_imp_321(id self, SEL sel, struct _NSRect  *arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -27217,7 +27458,7 @@ meth_imp_318(id self, SEL sel, struct _NSRect  *arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_318(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_321(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -27262,7 +27503,7 @@ static PyObject* super_318(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}12f40 */
 static char 
-meth_imp_319(id self, SEL sel, struct _NSRect  *arg_2, float arg_3)
+meth_imp_322(id self, SEL sel, struct _NSRect  *arg_2, float arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -27294,7 +27535,7 @@ meth_imp_319(id self, SEL sel, struct _NSRect  *arg_2, float arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_319(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_322(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -27339,7 +27580,7 @@ static PyObject* super_319(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8s12 */
 static char 
-meth_imp_320(id self, SEL sel, short arg_2)
+meth_imp_323(id self, SEL sel, short arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -27368,7 +27609,7 @@ meth_imp_320(id self, SEL sel, short arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_320(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_323(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -27407,7 +27648,7 @@ static PyObject* super_320(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: c0@4:8s12r^{FSRef=[80C]}16^{FSRef=[80C]}20
 /* signature: c0@4:8{NSButtonState=iccc}12 */
 static char 
-meth_imp_321(id self, SEL sel, struct NSButtonState arg_2)
+meth_imp_324(id self, SEL sel, struct NSButtonState arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -27436,7 +27677,7 @@ meth_imp_321(id self, SEL sel, struct NSButtonState arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_321(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_324(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -27474,7 +27715,7 @@ static PyObject* super_321(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8{_NSPoint=ff}12 */
 static char 
-meth_imp_322(id self, SEL sel, struct _NSPoint arg_2)
+meth_imp_325(id self, SEL sel, struct _NSPoint arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -27503,7 +27744,7 @@ meth_imp_322(id self, SEL sel, struct _NSPoint arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_322(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_325(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -27541,7 +27782,7 @@ static PyObject* super_322(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8{_NSPoint=ff}12@20 */
 static char 
-meth_imp_323(id self, SEL sel, struct _NSPoint arg_2, id arg_3)
+meth_imp_326(id self, SEL sel, struct _NSPoint arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -27573,7 +27814,7 @@ meth_imp_323(id self, SEL sel, struct _NSPoint arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_323(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_326(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -27619,7 +27860,7 @@ static PyObject* super_323(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: c0@4:8{_NSPoint=ff}12^i20^i24
 /* signature: c0@4:8{_NSPoint=ff}12i20 */
 static char 
-meth_imp_324(id self, SEL sel, struct _NSPoint arg_2, int arg_3)
+meth_imp_327(id self, SEL sel, struct _NSPoint arg_2, int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -27651,7 +27892,7 @@ meth_imp_324(id self, SEL sel, struct _NSPoint arg_2, int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_324(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_327(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -27696,7 +27937,7 @@ static PyObject* super_324(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8{_NSPoint=ff}12{_NSPoint=ff}20@28 */
 static char 
-meth_imp_325(id self, SEL sel, struct _NSPoint arg_2, struct _NSPoint arg_3, id arg_4)
+meth_imp_328(id self, SEL sel, struct _NSPoint arg_2, struct _NSPoint arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -27731,7 +27972,7 @@ meth_imp_325(id self, SEL sel, struct _NSPoint arg_2, struct _NSPoint arg_3, id 
 	}
 	return objc_retval;
 }
-static PyObject* super_325(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_328(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -27783,7 +28024,7 @@ static PyObject* super_325(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8{_NSPoint=ff}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}20 */
 static char 
-meth_imp_326(id self, SEL sel, struct _NSPoint arg_2, struct _NSRect arg_3)
+meth_imp_329(id self, SEL sel, struct _NSPoint arg_2, struct _NSRect arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -27815,7 +28056,7 @@ meth_imp_326(id self, SEL sel, struct _NSPoint arg_2, struct _NSRect arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_326(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_329(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -27860,7 +28101,7 @@ static PyObject* super_326(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12 */
 static char 
-meth_imp_327(id self, SEL sel, struct _NSRect arg_2)
+meth_imp_330(id self, SEL sel, struct _NSRect arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -27889,7 +28130,7 @@ meth_imp_327(id self, SEL sel, struct _NSRect arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_327(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_330(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -27927,7 +28168,7 @@ static PyObject* super_327(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28 */
 static char 
-meth_imp_328(id self, SEL sel, struct _NSRect arg_2, id arg_3)
+meth_imp_331(id self, SEL sel, struct _NSRect arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -27959,7 +28200,7 @@ meth_imp_328(id self, SEL sel, struct _NSRect arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_328(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_331(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -28004,7 +28245,7 @@ static PyObject* super_328(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28@32 */
 static char 
-meth_imp_329(id self, SEL sel, struct _NSRect arg_2, id arg_3, id arg_4)
+meth_imp_332(id self, SEL sel, struct _NSRect arg_2, id arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -28039,7 +28280,7 @@ meth_imp_329(id self, SEL sel, struct _NSRect arg_2, id arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_329(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_332(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -28092,7 +28333,7 @@ static PyObject* super_329(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: c36@4:8@12^{FSRef=[80C]}16@20^{FSRef=[80C]}24i28^{_NSMapTable=}32@32
 /* signature: c36@4:8@12i16i20c24c28c32c35 */
 static char 
-meth_imp_330(id self, SEL sel, id arg_2, int arg_3, int arg_4, char arg_5, char arg_6, char arg_7, char arg_8)
+meth_imp_333(id self, SEL sel, id arg_2, int arg_3, int arg_4, char arg_5, char arg_6, char arg_7, char arg_8)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -28139,7 +28380,7 @@ meth_imp_330(id self, SEL sel, id arg_2, int arg_3, int arg_4, char arg_5, char 
 	}
 	return objc_retval;
 }
-static PyObject* super_330(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_333(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -28219,7 +28460,7 @@ static PyObject* super_330(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c36@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32I32 */
 static char 
-meth_imp_331(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4, unsigned int arg_5)
+meth_imp_334(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4, unsigned int arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -28257,7 +28498,7 @@ meth_imp_331(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4, unsigne
 	}
 	return objc_retval;
 }
-static PyObject* super_331(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_334(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -28316,7 +28557,7 @@ static PyObject* super_331(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c36@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32c35 */
 static char 
-meth_imp_332(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4, char arg_5)
+meth_imp_335(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -28354,7 +28595,7 @@ meth_imp_332(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4, char ar
 	}
 	return objc_retval;
 }
-static PyObject* super_332(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_335(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -28413,7 +28654,7 @@ static PyObject* super_332(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c36@4:8{_NSRange=II}12{_NSRange=II}20{_NSRange=II}28@32 */
 static char 
-meth_imp_333(id self, SEL sel, struct _NSRange arg_2, struct _NSRange arg_3, struct _NSRange arg_4, id arg_5)
+meth_imp_336(id self, SEL sel, struct _NSRange arg_2, struct _NSRange arg_3, struct _NSRange arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -28451,7 +28692,7 @@ meth_imp_333(id self, SEL sel, struct _NSRange arg_2, struct _NSRange arg_3, str
 	}
 	return objc_retval;
 }
-static PyObject* super_333(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_336(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -28510,7 +28751,7 @@ static PyObject* super_333(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28i32i32 */
 static char 
-meth_imp_334(id self, SEL sel, struct _NSRect arg_2, id arg_3, int arg_4, int arg_5)
+meth_imp_337(id self, SEL sel, struct _NSRect arg_2, id arg_3, int arg_4, int arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -28548,7 +28789,7 @@ meth_imp_334(id self, SEL sel, struct _NSRect arg_2, id arg_3, int arg_4, int ar
 	}
 	return objc_retval;
 }
-static PyObject* super_334(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_337(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -28608,7 +28849,7 @@ static PyObject* super_334(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: c40@4:8*12I16^I20I24c28{_NSRange=II}28^{_NSRange=II}36
 /* signature: c40@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32I32c39 */
 static char 
-meth_imp_335(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4, unsigned int arg_5, char arg_6)
+meth_imp_338(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4, unsigned int arg_5, char arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -28649,7 +28890,7 @@ meth_imp_335(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4, unsigne
 	}
 	return objc_retval;
 }
-static PyObject* super_335(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_338(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -28715,7 +28956,7 @@ static PyObject* super_335(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c40@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32c35@36 */
 static char 
-meth_imp_336(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4, char arg_5, id arg_6)
+meth_imp_339(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4, char arg_5, id arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -28756,7 +28997,7 @@ meth_imp_336(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4, char ar
 	}
 	return objc_retval;
 }
-static PyObject* super_336(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_339(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -28823,7 +29064,7 @@ static PyObject* super_336(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: c40@4:8^@12I16^I20I24c28{_NSRange=II}28^{_NSRange=II}36
 /* signature: c40@4:8d40@20@24@28@32I32I36 */
 static char 
-meth_imp_337(id self, SEL sel, double arg_2, id arg_3, id arg_4, id arg_5, id arg_6, unsigned int arg_7, unsigned int arg_8)
+meth_imp_340(id self, SEL sel, double arg_2, id arg_3, id arg_4, id arg_5, id arg_6, unsigned int arg_7, unsigned int arg_8)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -28870,7 +29111,7 @@ meth_imp_337(id self, SEL sel, double arg_2, id arg_3, id arg_4, id arg_5, id ar
 	}
 	return objc_retval;
 }
-static PyObject* super_337(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_340(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -28952,7 +29193,7 @@ static PyObject* super_337(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: c60@4:8@12@16{_NSSize=ff}20f40{_NSRect={_NSPoint=ff}{_NSSize=ff}}28@44c51c55^{_NSSize=ff}56
 /* signature: c60@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}24i40f40c51c55c59 */
 static char 
-meth_imp_338(id self, SEL sel, struct _NSRect arg_2, struct _NSRect arg_3, int arg_4, float arg_5, char arg_6, char arg_7, char arg_8)
+meth_imp_341(id self, SEL sel, struct _NSRect arg_2, struct _NSRect arg_3, int arg_4, float arg_5, char arg_6, char arg_7, char arg_8)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -28999,7 +29240,7 @@ meth_imp_338(id self, SEL sel, struct _NSRect arg_2, struct _NSRect arg_3, int a
 	}
 	return objc_retval;
 }
-static PyObject* super_338(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_341(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -29081,7 +29322,7 @@ static PyObject* super_338(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: c84@4:8^S12I16@20@24{_NSSize=ff}28{_NSRect={_NSPoint=ff}{_NSSize=ff}}32{_NSPoint=ff}48{_NSRect={_NSPoint=ff}{_NSSize=ff}}56@72@76c83
 /* signature: c@:@o^@ */
 static char 
-meth_imp_339(id self, SEL sel, id arg_2, id  *arg_3)
+meth_imp_342(id self, SEL sel, id arg_2, id  *arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -29132,7 +29373,7 @@ meth_imp_339(id self, SEL sel, id arg_2, id  *arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_339(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_342(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -29184,7 +29425,7 @@ static PyObject* super_339(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c@:@o^@o^@ */
 static char 
-meth_imp_340(id self, SEL sel, id arg_2, id  *arg_3, id  *arg_4)
+meth_imp_343(id self, SEL sel, id arg_2, id  *arg_3, id  *arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -29242,7 +29483,7 @@ meth_imp_340(id self, SEL sel, id arg_2, id  *arg_3, id  *arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_340(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_343(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -29299,7 +29540,7 @@ static PyObject* super_340(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c@:o^@@o^@ */
 static char 
-meth_imp_341(id self, SEL sel, id  *arg_2, id arg_3, id  *arg_4)
+meth_imp_344(id self, SEL sel, id  *arg_2, id arg_3, id  *arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -29357,7 +29598,7 @@ meth_imp_341(id self, SEL sel, id  *arg_2, id arg_3, id  *arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_341(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_344(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -29414,7 +29655,7 @@ static PyObject* super_341(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c@:o^I */
 static char 
-meth_imp_342(id self, SEL sel, unsigned int  *arg_2)
+meth_imp_345(id self, SEL sel, unsigned int  *arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -29462,7 +29703,7 @@ meth_imp_342(id self, SEL sel, unsigned int  *arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_342(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_345(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -29507,7 +29748,7 @@ static PyObject* super_342(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c@:o^d */
 static char 
-meth_imp_343(id self, SEL sel, double  *arg_2)
+meth_imp_346(id self, SEL sel, double  *arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -29555,7 +29796,7 @@ meth_imp_343(id self, SEL sel, double  *arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_343(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_346(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -29600,7 +29841,7 @@ static PyObject* super_343(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c@:o^f */
 static char 
-meth_imp_344(id self, SEL sel, float  *arg_2)
+meth_imp_347(id self, SEL sel, float  *arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -29648,7 +29889,7 @@ meth_imp_344(id self, SEL sel, float  *arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_344(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_347(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -29693,7 +29934,7 @@ static PyObject* super_344(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c@:o^i */
 static char 
-meth_imp_345(id self, SEL sel, int  *arg_2)
+meth_imp_348(id self, SEL sel, int  *arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -29741,7 +29982,7 @@ meth_imp_345(id self, SEL sel, int  *arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_345(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_348(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -29786,7 +30027,7 @@ static PyObject* super_345(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c@:o^q */
 static char 
-meth_imp_346(id self, SEL sel, long long  *arg_2)
+meth_imp_349(id self, SEL sel, long long  *arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -29834,7 +30075,7 @@ meth_imp_346(id self, SEL sel, long long  *arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_346(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_349(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -29879,7 +30120,7 @@ static PyObject* super_346(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: d0@4:8 */
 static double 
-meth_imp_347(id self, SEL sel)
+meth_imp_350(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -29905,7 +30146,7 @@ meth_imp_347(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_347(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_350(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -29936,7 +30177,7 @@ static PyObject* super_347(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: d0@4:8@12 */
 static double 
-meth_imp_348(id self, SEL sel, id arg_2)
+meth_imp_351(id self, SEL sel, id arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -29965,7 +30206,7 @@ meth_imp_348(id self, SEL sel, id arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_348(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_351(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -30003,7 +30244,7 @@ static PyObject* super_348(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: d0@4:8d40 */
 static double 
-meth_imp_349(id self, SEL sel, double arg_2)
+meth_imp_352(id self, SEL sel, double arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -30032,7 +30273,7 @@ meth_imp_349(id self, SEL sel, double arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_349(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_352(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -30070,7 +30311,7 @@ static PyObject* super_349(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: d0@4:8i12 */
 static double 
-meth_imp_350(id self, SEL sel, int arg_2)
+meth_imp_353(id self, SEL sel, int arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -30099,7 +30340,7 @@ meth_imp_350(id self, SEL sel, int arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_350(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_353(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -30137,7 +30378,7 @@ static PyObject* super_350(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: d0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12 */
 static double 
-meth_imp_351(id self, SEL sel, struct _NSRect arg_2)
+meth_imp_354(id self, SEL sel, struct _NSRect arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -30166,7 +30407,7 @@ meth_imp_351(id self, SEL sel, struct _NSRect arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_351(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_354(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -30204,7 +30445,7 @@ static PyObject* super_351(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: f0@4:8 */
 static float 
-meth_imp_352(id self, SEL sel)
+meth_imp_355(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -30230,7 +30471,7 @@ meth_imp_352(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_352(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_355(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -30261,7 +30502,7 @@ static PyObject* super_352(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: f0@4:8@12 */
 static float 
-meth_imp_353(id self, SEL sel, id arg_2)
+meth_imp_356(id self, SEL sel, id arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -30290,7 +30531,7 @@ meth_imp_353(id self, SEL sel, id arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_353(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_356(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -30328,7 +30569,7 @@ static PyObject* super_353(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: f0@4:8@12@16 */
 static float 
-meth_imp_354(id self, SEL sel, id arg_2, id arg_3)
+meth_imp_357(id self, SEL sel, id arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -30360,7 +30601,7 @@ meth_imp_354(id self, SEL sel, id arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_354(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_357(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -30405,7 +30646,7 @@ static PyObject* super_354(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: f0@4:8@12@16f40 */
 static float 
-meth_imp_355(id self, SEL sel, id arg_2, id arg_3, float arg_4)
+meth_imp_358(id self, SEL sel, id arg_2, id arg_3, float arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -30440,7 +30681,7 @@ meth_imp_355(id self, SEL sel, id arg_2, id arg_3, float arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_355(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_358(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -30492,7 +30733,7 @@ static PyObject* super_355(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: f0@4:8@12I16 */
 static float 
-meth_imp_356(id self, SEL sel, id arg_2, unsigned int arg_3)
+meth_imp_359(id self, SEL sel, id arg_2, unsigned int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -30524,7 +30765,7 @@ meth_imp_356(id self, SEL sel, id arg_2, unsigned int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_356(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_359(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -30569,7 +30810,7 @@ static PyObject* super_356(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: f0@4:8@12f40i20 */
 static float 
-meth_imp_357(id self, SEL sel, id arg_2, float arg_3, int arg_4)
+meth_imp_360(id self, SEL sel, id arg_2, float arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -30604,7 +30845,7 @@ meth_imp_357(id self, SEL sel, id arg_2, float arg_3, int arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_357(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_360(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -30656,7 +30897,7 @@ static PyObject* super_357(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: f0@4:8@12i16 */
 static float 
-meth_imp_358(id self, SEL sel, id arg_2, int arg_3)
+meth_imp_361(id self, SEL sel, id arg_2, int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -30688,7 +30929,7 @@ meth_imp_358(id self, SEL sel, id arg_2, int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_358(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_361(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -30733,7 +30974,7 @@ static PyObject* super_358(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: f0@4:8I12 */
 static float 
-meth_imp_359(id self, SEL sel, unsigned int arg_2)
+meth_imp_362(id self, SEL sel, unsigned int arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -30762,7 +31003,7 @@ meth_imp_359(id self, SEL sel, unsigned int arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_359(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_362(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -30800,7 +31041,7 @@ static PyObject* super_359(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: f0@4:8c12 */
 static float 
-meth_imp_360(id self, SEL sel, char arg_2)
+meth_imp_363(id self, SEL sel, char arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -30829,7 +31070,7 @@ meth_imp_360(id self, SEL sel, char arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_360(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_363(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -30867,7 +31108,7 @@ static PyObject* super_360(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: f0@4:8c12f40 */
 static float 
-meth_imp_361(id self, SEL sel, char arg_2, float arg_3)
+meth_imp_364(id self, SEL sel, char arg_2, float arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -30899,7 +31140,7 @@ meth_imp_361(id self, SEL sel, char arg_2, float arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_361(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_364(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -30944,7 +31185,7 @@ static PyObject* super_361(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: f0@4:8d40 */
 static float 
-meth_imp_362(id self, SEL sel, double arg_2)
+meth_imp_365(id self, SEL sel, double arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -30973,7 +31214,7 @@ meth_imp_362(id self, SEL sel, double arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_362(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_365(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -31011,7 +31252,7 @@ static PyObject* super_362(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: f0@4:8f40 */
 static float 
-meth_imp_363(id self, SEL sel, float arg_2)
+meth_imp_366(id self, SEL sel, float arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -31040,7 +31281,7 @@ meth_imp_363(id self, SEL sel, float arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_363(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_366(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -31078,7 +31319,7 @@ static PyObject* super_363(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: f0@4:8i12 */
 static float 
-meth_imp_364(id self, SEL sel, int arg_2)
+meth_imp_367(id self, SEL sel, int arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -31107,7 +31348,7 @@ meth_imp_364(id self, SEL sel, int arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_364(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_367(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -31145,7 +31386,7 @@ static PyObject* super_364(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: f0@4:8r*12I16 */
 static float 
-meth_imp_365(id self, SEL sel, char* arg_2, unsigned int arg_3)
+meth_imp_368(id self, SEL sel, char* arg_2, unsigned int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -31177,7 +31418,7 @@ meth_imp_365(id self, SEL sel, char* arg_2, unsigned int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_365(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_368(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -31222,7 +31463,7 @@ static PyObject* super_365(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: f0@4:8{_NSPoint=ff}12@20 */
 static float 
-meth_imp_366(id self, SEL sel, struct _NSPoint arg_2, id arg_3)
+meth_imp_369(id self, SEL sel, struct _NSPoint arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -31254,7 +31495,7 @@ meth_imp_366(id self, SEL sel, struct _NSPoint arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_366(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_369(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -31299,7 +31540,7 @@ static PyObject* super_366(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: f0@4:8{_NSSize=ff}12 */
 static float 
-meth_imp_367(id self, SEL sel, struct _NSSize arg_2)
+meth_imp_370(id self, SEL sel, struct _NSSize arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -31328,7 +31569,7 @@ meth_imp_367(id self, SEL sel, struct _NSSize arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_367(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_370(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -31366,7 +31607,7 @@ static PyObject* super_367(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8 */
 static int 
-meth_imp_368(id self, SEL sel)
+meth_imp_371(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -31392,7 +31633,7 @@ meth_imp_368(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_368(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_371(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -31423,7 +31664,7 @@ static PyObject* super_368(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8*12 */
 static int 
-meth_imp_369(id self, SEL sel, char* arg_2)
+meth_imp_372(id self, SEL sel, char* arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -31452,7 +31693,7 @@ meth_imp_369(id self, SEL sel, char* arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_369(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_372(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -31490,7 +31731,7 @@ static PyObject* super_369(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8*12@16 */
 static int 
-meth_imp_370(id self, SEL sel, char* arg_2, id arg_3)
+meth_imp_373(id self, SEL sel, char* arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -31522,7 +31763,7 @@ meth_imp_370(id self, SEL sel, char* arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_370(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_373(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -31567,7 +31808,7 @@ static PyObject* super_370(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8@12 */
 static int 
-meth_imp_371(id self, SEL sel, id arg_2)
+meth_imp_374(id self, SEL sel, id arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -31596,7 +31837,7 @@ meth_imp_371(id self, SEL sel, id arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_371(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_374(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -31634,7 +31875,7 @@ static PyObject* super_371(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8@12:16 */
 static int 
-meth_imp_372(id self, SEL sel, id arg_2, SEL arg_3)
+meth_imp_375(id self, SEL sel, id arg_2, SEL arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -31666,7 +31907,7 @@ meth_imp_372(id self, SEL sel, id arg_2, SEL arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_372(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_375(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -31711,7 +31952,7 @@ static PyObject* super_372(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8@12@16 */
 static int 
-meth_imp_373(id self, SEL sel, id arg_2, id arg_3)
+meth_imp_376(id self, SEL sel, id arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -31743,7 +31984,7 @@ meth_imp_373(id self, SEL sel, id arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_373(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_376(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -31788,7 +32029,7 @@ static PyObject* super_373(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8@12@16@20 */
 static int 
-meth_imp_374(id self, SEL sel, id arg_2, id arg_3, id arg_4)
+meth_imp_377(id self, SEL sel, id arg_2, id arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -31823,7 +32064,7 @@ meth_imp_374(id self, SEL sel, id arg_2, id arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_374(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_377(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -31875,7 +32116,7 @@ static PyObject* super_374(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8@12@16@20@24 */
 static int 
-meth_imp_375(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5)
+meth_imp_378(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -31913,7 +32154,7 @@ meth_imp_375(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_375(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_378(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -31972,7 +32213,7 @@ static PyObject* super_375(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8@12@16@20@24@28@32 */
 static int 
-meth_imp_376(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6, id arg_7)
+meth_imp_379(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6, id arg_7)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -32016,7 +32257,7 @@ meth_imp_376(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6,
 	}
 	return objc_retval;
 }
-static PyObject* super_376(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_379(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -32090,7 +32331,7 @@ static PyObject* super_376(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: i0@4:8@12@16@20@24^@28
 /* signature: i0@4:8@12@16@20c24 */
 static int 
-meth_imp_377(id self, SEL sel, id arg_2, id arg_3, id arg_4, char arg_5)
+meth_imp_380(id self, SEL sel, id arg_2, id arg_3, id arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -32128,7 +32369,7 @@ meth_imp_377(id self, SEL sel, id arg_2, id arg_3, id arg_4, char arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_377(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_380(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -32188,7 +32429,7 @@ static PyObject* super_377(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: i0@4:8@12@16^?20^v24
 /* signature: i0@4:8@12@16c20 */
 static int 
-meth_imp_378(id self, SEL sel, id arg_2, id arg_3, char arg_4)
+meth_imp_381(id self, SEL sel, id arg_2, id arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -32223,7 +32464,7 @@ meth_imp_378(id self, SEL sel, id arg_2, id arg_3, char arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_378(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_381(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -32275,7 +32516,7 @@ static PyObject* super_378(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8@12@16c20c24 */
 static int 
-meth_imp_379(id self, SEL sel, id arg_2, id arg_3, char arg_4, char arg_5)
+meth_imp_382(id self, SEL sel, id arg_2, id arg_3, char arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -32313,7 +32554,7 @@ meth_imp_379(id self, SEL sel, id arg_2, id arg_3, char arg_4, char arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_379(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_382(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -32372,7 +32613,7 @@ static PyObject* super_379(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8@12@16i20 */
 static int 
-meth_imp_380(id self, SEL sel, id arg_2, id arg_3, int arg_4)
+meth_imp_383(id self, SEL sel, id arg_2, id arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -32407,7 +32648,7 @@ meth_imp_380(id self, SEL sel, id arg_2, id arg_3, int arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_380(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_383(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -32459,7 +32700,7 @@ static PyObject* super_380(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8@12I16 */
 static int 
-meth_imp_381(id self, SEL sel, id arg_2, unsigned int arg_3)
+meth_imp_384(id self, SEL sel, id arg_2, unsigned int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -32491,7 +32732,7 @@ meth_imp_381(id self, SEL sel, id arg_2, unsigned int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_381(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_384(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -32536,7 +32777,7 @@ static PyObject* super_381(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8@12I16{_NSRange=II}20 */
 static int 
-meth_imp_382(id self, SEL sel, id arg_2, unsigned int arg_3, struct _NSRange arg_4)
+meth_imp_385(id self, SEL sel, id arg_2, unsigned int arg_3, struct _NSRange arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -32571,7 +32812,7 @@ meth_imp_382(id self, SEL sel, id arg_2, unsigned int arg_3, struct _NSRange arg
 	}
 	return objc_retval;
 }
-static PyObject* super_382(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_385(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -32623,7 +32864,7 @@ static PyObject* super_382(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8@12I16{_NSRange=II}20@28 */
 static int 
-meth_imp_383(id self, SEL sel, id arg_2, unsigned int arg_3, struct _NSRange arg_4, id arg_5)
+meth_imp_386(id self, SEL sel, id arg_2, unsigned int arg_3, struct _NSRange arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -32661,7 +32902,7 @@ meth_imp_383(id self, SEL sel, id arg_2, unsigned int arg_3, struct _NSRange arg
 	}
 	return objc_retval;
 }
-static PyObject* super_383(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_386(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -32722,7 +32963,7 @@ static PyObject* super_383(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: i0@4:8@12^i16
 /* signature: i0@4:8@12c16 */
 static int 
-meth_imp_384(id self, SEL sel, id arg_2, char arg_3)
+meth_imp_387(id self, SEL sel, id arg_2, char arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -32754,7 +32995,7 @@ meth_imp_384(id self, SEL sel, id arg_2, char arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_384(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_387(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -32799,7 +33040,7 @@ static PyObject* super_384(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8@12c16@20 */
 static int 
-meth_imp_385(id self, SEL sel, id arg_2, char arg_3, id arg_4)
+meth_imp_388(id self, SEL sel, id arg_2, char arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -32834,7 +33075,7 @@ meth_imp_385(id self, SEL sel, id arg_2, char arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_385(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_388(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -32886,7 +33127,7 @@ static PyObject* super_385(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8@12c16@20@24@28 */
 static int 
-meth_imp_386(id self, SEL sel, id arg_2, char arg_3, id arg_4, id arg_5, id arg_6)
+meth_imp_389(id self, SEL sel, id arg_2, char arg_3, id arg_4, id arg_5, id arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -32927,7 +33168,7 @@ meth_imp_386(id self, SEL sel, id arg_2, char arg_3, id arg_4, id arg_5, id arg_
 	}
 	return objc_retval;
 }
-static PyObject* super_386(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_389(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -32993,7 +33234,7 @@ static PyObject* super_386(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8@12c16c20 */
 static int 
-meth_imp_387(id self, SEL sel, id arg_2, char arg_3, char arg_4)
+meth_imp_390(id self, SEL sel, id arg_2, char arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -33028,7 +33269,7 @@ meth_imp_387(id self, SEL sel, id arg_2, char arg_3, char arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_387(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_390(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -33080,7 +33321,7 @@ static PyObject* super_387(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8@12i16 */
 static int 
-meth_imp_388(id self, SEL sel, id arg_2, int arg_3)
+meth_imp_391(id self, SEL sel, id arg_2, int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -33112,7 +33353,7 @@ meth_imp_388(id self, SEL sel, id arg_2, int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_388(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_391(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -33157,7 +33398,7 @@ static PyObject* super_388(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8@12i16c20 */
 static int 
-meth_imp_389(id self, SEL sel, id arg_2, int arg_3, char arg_4)
+meth_imp_392(id self, SEL sel, id arg_2, int arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -33192,7 +33433,7 @@ meth_imp_389(id self, SEL sel, id arg_2, int arg_3, char arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_389(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_392(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -33244,7 +33485,7 @@ static PyObject* super_389(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8@12{_NSRange=II}16 */
 static int 
-meth_imp_390(id self, SEL sel, id arg_2, struct _NSRange arg_3)
+meth_imp_393(id self, SEL sel, id arg_2, struct _NSRange arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -33276,7 +33517,7 @@ meth_imp_390(id self, SEL sel, id arg_2, struct _NSRange arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_390(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_393(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -33321,7 +33562,7 @@ static PyObject* super_390(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8I12 */
 static int 
-meth_imp_391(id self, SEL sel, unsigned int arg_2)
+meth_imp_394(id self, SEL sel, unsigned int arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -33350,7 +33591,7 @@ meth_imp_391(id self, SEL sel, unsigned int arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_391(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_394(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -33388,7 +33629,7 @@ static PyObject* super_391(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8S12 */
 static int 
-meth_imp_392(id self, SEL sel, unsigned short arg_2)
+meth_imp_395(id self, SEL sel, unsigned short arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -33417,7 +33658,7 @@ meth_imp_392(id self, SEL sel, unsigned short arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_392(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_395(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -33455,7 +33696,7 @@ static PyObject* super_392(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8S12i16 */
 static int 
-meth_imp_393(id self, SEL sel, unsigned short arg_2, int arg_3)
+meth_imp_396(id self, SEL sel, unsigned short arg_2, int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -33487,7 +33728,7 @@ meth_imp_393(id self, SEL sel, unsigned short arg_2, int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_393(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_396(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -33539,7 +33780,7 @@ static PyObject* super_393(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: i0@4:8^{__sFILE=*iiss{__sbuf=*i}i^v^?^?^?^?{__sbuf=*i}*i[3C][1C]{__sbuf=*i}iq}12i16
 /* signature: i0@4:8c12@16@20@24 */
 static int 
-meth_imp_394(id self, SEL sel, char arg_2, id arg_3, id arg_4, id arg_5)
+meth_imp_397(id self, SEL sel, char arg_2, id arg_3, id arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -33577,7 +33818,7 @@ meth_imp_394(id self, SEL sel, char arg_2, id arg_3, id arg_4, id arg_5)
 	}
 	return objc_retval;
 }
-static PyObject* super_394(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_397(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -33636,7 +33877,7 @@ static PyObject* super_394(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8d40 */
 static int 
-meth_imp_395(id self, SEL sel, double arg_2)
+meth_imp_398(id self, SEL sel, double arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -33665,7 +33906,7 @@ meth_imp_395(id self, SEL sel, double arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_395(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_398(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -33703,7 +33944,7 @@ static PyObject* super_395(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8f40 */
 static int 
-meth_imp_396(id self, SEL sel, float arg_2)
+meth_imp_399(id self, SEL sel, float arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -33732,7 +33973,7 @@ meth_imp_396(id self, SEL sel, float arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_396(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_399(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -33770,7 +34011,7 @@ static PyObject* super_396(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8i12 */
 static int 
-meth_imp_397(id self, SEL sel, int arg_2)
+meth_imp_400(id self, SEL sel, int arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -33799,7 +34040,7 @@ meth_imp_397(id self, SEL sel, int arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_397(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_400(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -33837,7 +34078,7 @@ static PyObject* super_397(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8i12@16 */
 static int 
-meth_imp_398(id self, SEL sel, int arg_2, id arg_3)
+meth_imp_401(id self, SEL sel, int arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -33869,7 +34110,7 @@ meth_imp_398(id self, SEL sel, int arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_398(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_401(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -33914,7 +34155,7 @@ static PyObject* super_398(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8i12I16 */
 static int 
-meth_imp_399(id self, SEL sel, int arg_2, unsigned int arg_3)
+meth_imp_402(id self, SEL sel, int arg_2, unsigned int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -33946,7 +34187,7 @@ meth_imp_399(id self, SEL sel, int arg_2, unsigned int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_399(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_402(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -33992,7 +34233,7 @@ static PyObject* super_399(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: i0@4:8i12^{_NSPoint=ff}16
 /* signature: i0@4:8i12c16@20 */
 static int 
-meth_imp_400(id self, SEL sel, int arg_2, char arg_3, id arg_4)
+meth_imp_403(id self, SEL sel, int arg_2, char arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -34027,7 +34268,7 @@ meth_imp_400(id self, SEL sel, int arg_2, char arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_400(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_403(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -34079,7 +34320,7 @@ static PyObject* super_400(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8i12f40 */
 static int 
-meth_imp_401(id self, SEL sel, int arg_2, float arg_3)
+meth_imp_404(id self, SEL sel, int arg_2, float arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -34111,7 +34352,7 @@ meth_imp_401(id self, SEL sel, int arg_2, float arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_401(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_404(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -34156,7 +34397,7 @@ static PyObject* super_401(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8i12i16 */
 static int 
-meth_imp_402(id self, SEL sel, int arg_2, int arg_3)
+meth_imp_405(id self, SEL sel, int arg_2, int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -34188,7 +34429,7 @@ meth_imp_402(id self, SEL sel, int arg_2, int arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_402(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_405(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -34233,7 +34474,7 @@ static PyObject* super_402(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8i12i16@20 */
 static int 
-meth_imp_403(id self, SEL sel, int arg_2, int arg_3, id arg_4)
+meth_imp_406(id self, SEL sel, int arg_2, int arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -34268,7 +34509,7 @@ meth_imp_403(id self, SEL sel, int arg_2, int arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_403(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_406(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -34320,7 +34561,7 @@ static PyObject* super_403(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8i12{_NSPoint=ff}16 */
 static int 
-meth_imp_404(id self, SEL sel, int arg_2, struct _NSPoint arg_3)
+meth_imp_407(id self, SEL sel, int arg_2, struct _NSPoint arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -34352,7 +34593,7 @@ meth_imp_404(id self, SEL sel, int arg_2, struct _NSPoint arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_404(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_407(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -34397,7 +34638,7 @@ static PyObject* super_404(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8i12{_NSPoint=ff}16@24i28 */
 static int 
-meth_imp_405(id self, SEL sel, int arg_2, struct _NSPoint arg_3, id arg_4, int arg_5)
+meth_imp_408(id self, SEL sel, int arg_2, struct _NSPoint arg_3, id arg_4, int arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -34435,7 +34676,7 @@ meth_imp_405(id self, SEL sel, int arg_2, struct _NSPoint arg_3, id arg_4, int a
 	}
 	return objc_retval;
 }
-static PyObject* super_405(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_408(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -34494,7 +34735,7 @@ static PyObject* super_405(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8n@12 */
 static int 
-meth_imp_406(id self, SEL sel, id arg_2)
+meth_imp_409(id self, SEL sel, id arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -34523,7 +34764,7 @@ meth_imp_406(id self, SEL sel, id arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_406(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_409(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -34562,7 +34803,7 @@ static PyObject* super_406(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: i0@4:8r*12^i16
 /* signature: i0@4:8r^{_NSPoint=ff}12 */
 static int 
-meth_imp_407(id self, SEL sel, struct _NSPoint  *arg_2)
+meth_imp_410(id self, SEL sel, struct _NSPoint  *arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -34591,7 +34832,7 @@ meth_imp_407(id self, SEL sel, struct _NSPoint  *arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_407(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_410(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -34629,7 +34870,7 @@ static PyObject* super_407(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8{NSButtonState=iccc}12 */
 static int 
-meth_imp_408(id self, SEL sel, struct NSButtonState arg_2)
+meth_imp_411(id self, SEL sel, struct NSButtonState arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -34658,7 +34899,7 @@ meth_imp_408(id self, SEL sel, struct NSButtonState arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_408(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_411(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -34696,7 +34937,7 @@ static PyObject* super_408(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8{_NSPoint=ff}12 */
 static int 
-meth_imp_409(id self, SEL sel, struct _NSPoint arg_2)
+meth_imp_412(id self, SEL sel, struct _NSPoint arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -34725,7 +34966,7 @@ meth_imp_409(id self, SEL sel, struct _NSPoint arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_409(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_412(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -34763,7 +35004,7 @@ static PyObject* super_409(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12 */
 static int 
-meth_imp_410(id self, SEL sel, struct _NSRect arg_2)
+meth_imp_413(id self, SEL sel, struct _NSRect arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -34792,7 +35033,7 @@ meth_imp_410(id self, SEL sel, struct _NSRect arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_410(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_413(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -34831,7 +35072,7 @@ static PyObject* super_410(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: i0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28^v32
 /* signature: i36@4:8@12@16i20c24c28c32c35 */
 static int 
-meth_imp_411(id self, SEL sel, id arg_2, id arg_3, int arg_4, char arg_5, char arg_6, char arg_7, char arg_8)
+meth_imp_414(id self, SEL sel, id arg_2, id arg_3, int arg_4, char arg_5, char arg_6, char arg_7, char arg_8)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -34878,7 +35119,7 @@ meth_imp_411(id self, SEL sel, id arg_2, id arg_3, int arg_4, char arg_5, char a
 	}
 	return objc_retval;
 }
-static PyObject* super_411(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_414(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -34958,7 +35199,7 @@ static PyObject* super_411(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: i36@4:8@12{_NSRange=II}16@24{_NSRange=II}28i32 */
 static int 
-meth_imp_412(id self, SEL sel, id arg_2, struct _NSRange arg_3, id arg_4, struct _NSRange arg_5, int arg_6)
+meth_imp_415(id self, SEL sel, id arg_2, struct _NSRange arg_3, id arg_4, struct _NSRange arg_5, int arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -34999,7 +35240,7 @@ meth_imp_412(id self, SEL sel, id arg_2, struct _NSRange arg_3, id arg_4, struct
 	}
 	return objc_retval;
 }
-static PyObject* super_412(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_415(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -35068,7 +35309,7 @@ static PyObject* super_412(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: i36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12c28@32^v32
 /* signature: i40@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12c28@32@32@36 */
 static int 
-meth_imp_413(id self, SEL sel, struct _NSRect arg_2, char arg_3, id arg_4, id arg_5, id arg_6)
+meth_imp_416(id self, SEL sel, struct _NSRect arg_2, char arg_3, id arg_4, id arg_5, id arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -35109,7 +35350,7 @@ meth_imp_413(id self, SEL sel, struct _NSRect arg_2, char arg_3, id arg_4, id ar
 	}
 	return objc_retval;
 }
-static PyObject* super_413(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_416(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -35176,7 +35417,7 @@ static PyObject* super_413(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: i48@4:8@12@16@20{_NSRect={_NSPoint=ff}{_NSSize=ff}}20@36c43^v44
 /* signature: i@:@ */
 static int 
-meth_imp_414(id self, SEL sel, id arg_2)
+meth_imp_417(id self, SEL sel, id arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -35205,7 +35446,7 @@ meth_imp_414(id self, SEL sel, id arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_414(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_417(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -35243,7 +35484,7 @@ static PyObject* super_414(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: l0@4:8 */
 static long 
-meth_imp_415(id self, SEL sel)
+meth_imp_418(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -35269,7 +35510,7 @@ meth_imp_415(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_415(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_418(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -35300,7 +35541,7 @@ static PyObject* super_415(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: l0@4:8i12r*16i20 */
 static long 
-meth_imp_416(id self, SEL sel, int arg_2, char* arg_3, int arg_4)
+meth_imp_419(id self, SEL sel, int arg_2, char* arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -35335,7 +35576,7 @@ meth_imp_416(id self, SEL sel, int arg_2, char* arg_3, int arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_416(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_419(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -35387,7 +35628,7 @@ static PyObject* super_416(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: q0@4:8 */
 static long long 
-meth_imp_417(id self, SEL sel)
+meth_imp_420(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -35413,7 +35654,7 @@ meth_imp_417(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_417(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_420(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -35445,7 +35686,7 @@ static PyObject* super_417(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: q0@4:8:12^v16
 /* signature: q0@4:8@12 */
 static long long 
-meth_imp_418(id self, SEL sel, id arg_2)
+meth_imp_421(id self, SEL sel, id arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -35474,7 +35715,7 @@ meth_imp_418(id self, SEL sel, id arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_418(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_421(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -35512,7 +35753,7 @@ static PyObject* super_418(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: r*0@4:8 */
 static char* 
-meth_imp_419(id self, SEL sel)
+meth_imp_422(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -35538,7 +35779,7 @@ meth_imp_419(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_419(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_422(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -35569,7 +35810,7 @@ static PyObject* super_419(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: r*0@4:8@12 */
 static char* 
-meth_imp_420(id self, SEL sel, id arg_2)
+meth_imp_423(id self, SEL sel, id arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -35598,7 +35839,7 @@ meth_imp_420(id self, SEL sel, id arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_420(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_423(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -35637,7 +35878,7 @@ static PyObject* super_420(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: r*0@4:8@12^I16
 /* signature: r*0@4:8I12 */
 static char* 
-meth_imp_421(id self, SEL sel, unsigned int arg_2)
+meth_imp_424(id self, SEL sel, unsigned int arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -35666,7 +35907,7 @@ meth_imp_421(id self, SEL sel, unsigned int arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_421(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_424(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -35704,7 +35945,7 @@ static PyObject* super_421(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: r*0@4:8c12 */
 static char* 
-meth_imp_422(id self, SEL sel, char arg_2)
+meth_imp_425(id self, SEL sel, char arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -35733,7 +35974,7 @@ meth_imp_422(id self, SEL sel, char arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_422(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_425(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -35771,7 +36012,7 @@ static PyObject* super_422(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: r^I0@4:8 */
 static unsigned int  *
-meth_imp_423(id self, SEL sel)
+meth_imp_426(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -35797,7 +36038,7 @@ meth_imp_423(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_423(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_426(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -35828,7 +36069,7 @@ static PyObject* super_423(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: r^S0@4:8 */
 static unsigned short  *
-meth_imp_424(id self, SEL sel)
+meth_imp_427(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -35854,7 +36095,7 @@ meth_imp_424(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_424(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_427(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -35885,7 +36126,7 @@ static PyObject* super_424(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: r^f0@4:8 */
 static float  *
-meth_imp_425(id self, SEL sel)
+meth_imp_428(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -35911,7 +36152,7 @@ meth_imp_425(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_425(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_428(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -35942,7 +36183,7 @@ static PyObject* super_425(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: r^f0@4:8@12 */
 static float  *
-meth_imp_426(id self, SEL sel, id arg_2)
+meth_imp_429(id self, SEL sel, id arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -35971,7 +36212,7 @@ meth_imp_426(id self, SEL sel, id arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_426(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_429(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -36009,7 +36250,7 @@ static PyObject* super_426(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: r^i0@4:8 */
 static int  *
-meth_imp_427(id self, SEL sel)
+meth_imp_430(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -36035,7 +36276,7 @@ meth_imp_427(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_427(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_430(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -36067,7 +36308,7 @@ static PyObject* super_427(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: r^v0@4:8
 /* signature: r^{AEDesc=I^^{OpaqueAEDataStorageType}}0@4:8 */
 static struct AEDesc  *
-meth_imp_428(id self, SEL sel)
+meth_imp_431(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -36093,7 +36334,7 @@ meth_imp_428(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_428(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_431(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -36124,7 +36365,7 @@ static PyObject* super_428(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: r^{FSRef=[80C]}0@4:8 */
 static struct FSRef  *
-meth_imp_429(id self, SEL sel)
+meth_imp_432(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -36150,7 +36391,7 @@ meth_imp_429(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_429(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_432(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -36181,7 +36422,7 @@ static PyObject* super_429(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: s0@4:8 */
 static short 
-meth_imp_430(id self, SEL sel)
+meth_imp_433(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -36207,7 +36448,7 @@ meth_imp_430(id self, SEL sel)
 	}
 	return objc_retval;
 }
-static PyObject* super_430(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_433(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -36238,7 +36479,7 @@ static PyObject* super_430(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: s0@4:8@12 */
 static short 
-meth_imp_431(id self, SEL sel, id arg_2)
+meth_imp_434(id self, SEL sel, id arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -36267,7 +36508,7 @@ meth_imp_431(id self, SEL sel, id arg_2)
 	}
 	return objc_retval;
 }
-static PyObject* super_431(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_434(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -36305,7 +36546,7 @@ static PyObject* super_431(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: s0@4:8@12@16 */
 static short 
-meth_imp_432(id self, SEL sel, id arg_2, id arg_3)
+meth_imp_435(id self, SEL sel, id arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -36337,7 +36578,7 @@ meth_imp_432(id self, SEL sel, id arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_432(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_435(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -36382,7 +36623,7 @@ static PyObject* super_432(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: s0@4:8@12@16@20 */
 static short 
-meth_imp_433(id self, SEL sel, id arg_2, id arg_3, id arg_4)
+meth_imp_436(id self, SEL sel, id arg_2, id arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -36417,7 +36658,7 @@ meth_imp_433(id self, SEL sel, id arg_2, id arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_433(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_436(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -36469,7 +36710,7 @@ static PyObject* super_433(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: s0@4:8L12@16 */
 static short 
-meth_imp_434(id self, SEL sel, unsigned long arg_2, id arg_3)
+meth_imp_437(id self, SEL sel, unsigned long arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -36501,7 +36742,7 @@ meth_imp_434(id self, SEL sel, unsigned long arg_2, id arg_3)
 	}
 	return objc_retval;
 }
-static PyObject* super_434(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_437(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -36546,7 +36787,7 @@ static PyObject* super_434(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: s0@4:8L12@16@20 */
 static short 
-meth_imp_435(id self, SEL sel, unsigned long arg_2, id arg_3, id arg_4)
+meth_imp_438(id self, SEL sel, unsigned long arg_2, id arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -36581,7 +36822,7 @@ meth_imp_435(id self, SEL sel, unsigned long arg_2, id arg_3, id arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_435(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_438(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -36634,7 +36875,7 @@ static PyObject* super_435(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: s0@4:8r^{AEDesc=I^^{OpaqueAEDataStorageType}}12^{AEDesc=I^^{OpaqueAEDataStorageType}}16I20
 /* signature: v0@4:8 */
 static void 
-meth_imp_436(id self, SEL sel)
+meth_imp_439(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -36652,7 +36893,7 @@ meth_imp_436(id self, SEL sel)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_436(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_439(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -36681,7 +36922,7 @@ static PyObject* super_436(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8#12 */
 static void 
-meth_imp_437(id self, SEL sel, Class arg_2)
+meth_imp_440(id self, SEL sel, Class arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -36702,7 +36943,7 @@ meth_imp_437(id self, SEL sel, Class arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_437(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_440(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -36739,7 +36980,7 @@ static PyObject* super_437(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8#12@16 */
 static void 
-meth_imp_438(id self, SEL sel, Class arg_2, id arg_3)
+meth_imp_441(id self, SEL sel, Class arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -36763,7 +37004,7 @@ meth_imp_438(id self, SEL sel, Class arg_2, id arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_438(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_441(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -36808,7 +37049,7 @@ static PyObject* super_438(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8#12^v16
 /* signature: v0@4:8*12 */
 static void 
-meth_imp_439(id self, SEL sel, char* arg_2)
+meth_imp_442(id self, SEL sel, char* arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -36829,7 +37070,7 @@ meth_imp_439(id self, SEL sel, char* arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_439(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_442(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -36866,7 +37107,7 @@ static PyObject* super_439(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8*12I16 */
 static void 
-meth_imp_440(id self, SEL sel, char* arg_2, unsigned int arg_3)
+meth_imp_443(id self, SEL sel, char* arg_2, unsigned int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -36890,7 +37131,7 @@ meth_imp_440(id self, SEL sel, char* arg_2, unsigned int arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_440(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_443(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -36935,7 +37176,7 @@ static PyObject* super_440(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8*12I16{_NSRange=II}20^{_NSRange=II}28
 /* signature: v0@4:8:12 */
 static void 
-meth_imp_441(id self, SEL sel, SEL arg_2)
+meth_imp_444(id self, SEL sel, SEL arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -36956,7 +37197,7 @@ meth_imp_441(id self, SEL sel, SEL arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_441(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_444(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -36993,7 +37234,7 @@ static PyObject* super_441(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8:12@16 */
 static void 
-meth_imp_442(id self, SEL sel, SEL arg_2, id arg_3)
+meth_imp_445(id self, SEL sel, SEL arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -37017,7 +37258,7 @@ meth_imp_442(id self, SEL sel, SEL arg_2, id arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_442(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_445(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -37061,7 +37302,7 @@ static PyObject* super_442(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8:12@16@20 */
 static void 
-meth_imp_443(id self, SEL sel, SEL arg_2, id arg_3, id arg_4)
+meth_imp_446(id self, SEL sel, SEL arg_2, id arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -37088,7 +37329,7 @@ meth_imp_443(id self, SEL sel, SEL arg_2, id arg_3, id arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_443(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_446(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -37139,7 +37380,7 @@ static PyObject* super_443(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8:12@16@20I24@28 */
 static void 
-meth_imp_444(id self, SEL sel, SEL arg_2, id arg_3, id arg_4, unsigned int arg_5, id arg_6)
+meth_imp_447(id self, SEL sel, SEL arg_2, id arg_3, id arg_4, unsigned int arg_5, id arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -37172,7 +37413,7 @@ meth_imp_444(id self, SEL sel, SEL arg_2, id arg_3, id arg_4, unsigned int arg_5
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_444(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_447(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -37237,7 +37478,7 @@ static PyObject* super_444(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8:12@16@20i24@28 */
 static void 
-meth_imp_445(id self, SEL sel, SEL arg_2, id arg_3, id arg_4, int arg_5, id arg_6)
+meth_imp_448(id self, SEL sel, SEL arg_2, id arg_3, id arg_4, int arg_5, id arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -37270,7 +37511,7 @@ meth_imp_445(id self, SEL sel, SEL arg_2, id arg_3, id arg_4, int arg_5, id arg_
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_445(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_448(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -37335,7 +37576,7 @@ static PyObject* super_445(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8:12@16c20 */
 static void 
-meth_imp_446(id self, SEL sel, SEL arg_2, id arg_3, char arg_4)
+meth_imp_449(id self, SEL sel, SEL arg_2, id arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -37362,7 +37603,7 @@ meth_imp_446(id self, SEL sel, SEL arg_2, id arg_3, char arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_446(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_449(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -37413,7 +37654,7 @@ static PyObject* super_446(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8:12@16c20@24 */
 static void 
-meth_imp_447(id self, SEL sel, SEL arg_2, id arg_3, char arg_4, id arg_5)
+meth_imp_450(id self, SEL sel, SEL arg_2, id arg_3, char arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -37443,7 +37684,7 @@ meth_imp_447(id self, SEL sel, SEL arg_2, id arg_3, char arg_4, id arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_447(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_450(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -37501,7 +37742,7 @@ static PyObject* super_447(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8:12@16d40 */
 static void 
-meth_imp_448(id self, SEL sel, SEL arg_2, id arg_3, double arg_4)
+meth_imp_451(id self, SEL sel, SEL arg_2, id arg_3, double arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -37528,7 +37769,7 @@ meth_imp_448(id self, SEL sel, SEL arg_2, id arg_3, double arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_448(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_451(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -37579,7 +37820,7 @@ static PyObject* super_448(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8:12@16d40@28 */
 static void 
-meth_imp_449(id self, SEL sel, SEL arg_2, id arg_3, double arg_4, id arg_5)
+meth_imp_452(id self, SEL sel, SEL arg_2, id arg_3, double arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -37609,7 +37850,7 @@ meth_imp_449(id self, SEL sel, SEL arg_2, id arg_3, double arg_4, id arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_449(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_452(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -37667,7 +37908,7 @@ static PyObject* super_449(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8:12i16i20 */
 static void 
-meth_imp_450(id self, SEL sel, SEL arg_2, int arg_3, int arg_4)
+meth_imp_453(id self, SEL sel, SEL arg_2, int arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -37694,7 +37935,7 @@ meth_imp_450(id self, SEL sel, SEL arg_2, int arg_3, int arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_450(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_453(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -37745,7 +37986,7 @@ static PyObject* super_450(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12 */
 static void 
-meth_imp_451(id self, SEL sel, id arg_2)
+meth_imp_454(id self, SEL sel, id arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -37766,7 +38007,7 @@ meth_imp_451(id self, SEL sel, id arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_451(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_454(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -37803,7 +38044,7 @@ static PyObject* super_451(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12#16 */
 static void 
-meth_imp_452(id self, SEL sel, id arg_2, Class arg_3)
+meth_imp_455(id self, SEL sel, id arg_2, Class arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -37827,7 +38068,7 @@ meth_imp_452(id self, SEL sel, id arg_2, Class arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_452(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_455(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -37871,7 +38112,7 @@ static PyObject* super_452(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12:16 */
 static void 
-meth_imp_453(id self, SEL sel, id arg_2, SEL arg_3)
+meth_imp_456(id self, SEL sel, id arg_2, SEL arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -37895,7 +38136,7 @@ meth_imp_453(id self, SEL sel, id arg_2, SEL arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_453(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_456(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -37939,7 +38180,7 @@ static PyObject* super_453(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12:16#20 */
 static void 
-meth_imp_454(id self, SEL sel, id arg_2, SEL arg_3, Class arg_4)
+meth_imp_457(id self, SEL sel, id arg_2, SEL arg_3, Class arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -37966,7 +38207,7 @@ meth_imp_454(id self, SEL sel, id arg_2, SEL arg_3, Class arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_454(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_457(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -38017,7 +38258,7 @@ static PyObject* super_454(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12:16#20#24 */
 static void 
-meth_imp_455(id self, SEL sel, id arg_2, SEL arg_3, Class arg_4, Class arg_5)
+meth_imp_458(id self, SEL sel, id arg_2, SEL arg_3, Class arg_4, Class arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -38047,7 +38288,7 @@ meth_imp_455(id self, SEL sel, id arg_2, SEL arg_3, Class arg_4, Class arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_455(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_458(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -38105,7 +38346,7 @@ static PyObject* super_455(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12:16@20 */
 static void 
-meth_imp_456(id self, SEL sel, id arg_2, SEL arg_3, id arg_4)
+meth_imp_459(id self, SEL sel, id arg_2, SEL arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -38132,7 +38373,7 @@ meth_imp_456(id self, SEL sel, id arg_2, SEL arg_3, id arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_456(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_459(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -38183,7 +38424,7 @@ static PyObject* super_456(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12:16@20@24 */
 static void 
-meth_imp_457(id self, SEL sel, id arg_2, SEL arg_3, id arg_4, id arg_5)
+meth_imp_460(id self, SEL sel, id arg_2, SEL arg_3, id arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -38213,7 +38454,7 @@ meth_imp_457(id self, SEL sel, id arg_2, SEL arg_3, id arg_4, id arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_457(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_460(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -38271,7 +38512,7 @@ static PyObject* super_457(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12:16@20@24I28 */
 static void 
-meth_imp_458(id self, SEL sel, id arg_2, SEL arg_3, id arg_4, id arg_5, unsigned int arg_6)
+meth_imp_461(id self, SEL sel, id arg_2, SEL arg_3, id arg_4, id arg_5, unsigned int arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -38304,7 +38545,7 @@ meth_imp_458(id self, SEL sel, id arg_2, SEL arg_3, id arg_4, id arg_5, unsigned
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_458(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_461(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -38369,7 +38610,7 @@ static PyObject* super_458(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12:16@20@24i28 */
 static void 
-meth_imp_459(id self, SEL sel, id arg_2, SEL arg_3, id arg_4, id arg_5, int arg_6)
+meth_imp_462(id self, SEL sel, id arg_2, SEL arg_3, id arg_4, id arg_5, int arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -38402,7 +38643,7 @@ meth_imp_459(id self, SEL sel, id arg_2, SEL arg_3, id arg_4, id arg_5, int arg_
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_459(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_462(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -38467,7 +38708,7 @@ static PyObject* super_459(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12:16I20 */
 static void 
-meth_imp_460(id self, SEL sel, id arg_2, SEL arg_3, unsigned int arg_4)
+meth_imp_463(id self, SEL sel, id arg_2, SEL arg_3, unsigned int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -38494,7 +38735,7 @@ meth_imp_460(id self, SEL sel, id arg_2, SEL arg_3, unsigned int arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_460(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_463(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -38545,7 +38786,7 @@ static PyObject* super_460(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12:16I20I24 */
 static void 
-meth_imp_461(id self, SEL sel, id arg_2, SEL arg_3, unsigned int arg_4, unsigned int arg_5)
+meth_imp_464(id self, SEL sel, id arg_2, SEL arg_3, unsigned int arg_4, unsigned int arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -38575,7 +38816,7 @@ meth_imp_461(id self, SEL sel, id arg_2, SEL arg_3, unsigned int arg_4, unsigned
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_461(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_464(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -38634,7 +38875,7 @@ static PyObject* super_461(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8@12:16^v20
 /* signature: v0@4:8@12@16 */
 static void 
-meth_imp_462(id self, SEL sel, id arg_2, id arg_3)
+meth_imp_465(id self, SEL sel, id arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -38658,7 +38899,7 @@ meth_imp_462(id self, SEL sel, id arg_2, id arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_462(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_465(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -38702,7 +38943,7 @@ static PyObject* super_462(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12@16*20 */
 static void 
-meth_imp_463(id self, SEL sel, id arg_2, id arg_3, char* arg_4)
+meth_imp_466(id self, SEL sel, id arg_2, id arg_3, char* arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -38729,7 +38970,7 @@ meth_imp_463(id self, SEL sel, id arg_2, id arg_3, char* arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_463(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_466(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -38781,7 +39022,7 @@ static PyObject* super_463(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8@12@16:20^v24
 /* signature: v0@4:8@12@16@20 */
 static void 
-meth_imp_464(id self, SEL sel, id arg_2, id arg_3, id arg_4)
+meth_imp_467(id self, SEL sel, id arg_2, id arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -38808,7 +39049,7 @@ meth_imp_464(id self, SEL sel, id arg_2, id arg_3, id arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_464(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_467(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -38860,7 +39101,7 @@ static PyObject* super_464(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8@12@16@20:24^v28
 /* signature: v0@4:8@12@16@20@24 */
 static void 
-meth_imp_465(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5)
+meth_imp_468(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -38890,7 +39131,7 @@ meth_imp_465(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_465(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_468(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -38949,7 +39190,7 @@ static PyObject* super_465(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8@12@16@20@24:28^v32
 /* signature: v0@4:8@12@16@20@24@28@32 */
 static void 
-meth_imp_466(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6, id arg_7)
+meth_imp_469(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6, id arg_7)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -38985,7 +39226,7 @@ meth_imp_466(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6,
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_466(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_469(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -39057,7 +39298,7 @@ static PyObject* super_466(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12@16@20@24c28 */
 static void 
-meth_imp_467(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, char arg_6)
+meth_imp_470(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, char arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -39090,7 +39331,7 @@ meth_imp_467(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, char arg_
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_467(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_470(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -39155,7 +39396,7 @@ static PyObject* super_467(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12@16@20I24 */
 static void 
-meth_imp_468(id self, SEL sel, id arg_2, id arg_3, id arg_4, unsigned int arg_5)
+meth_imp_471(id self, SEL sel, id arg_2, id arg_3, id arg_4, unsigned int arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -39185,7 +39426,7 @@ meth_imp_468(id self, SEL sel, id arg_2, id arg_3, id arg_4, unsigned int arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_468(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_471(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -39243,7 +39484,7 @@ static PyObject* super_468(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12@16@20I24@28 */
 static void 
-meth_imp_469(id self, SEL sel, id arg_2, id arg_3, id arg_4, unsigned int arg_5, id arg_6)
+meth_imp_472(id self, SEL sel, id arg_2, id arg_3, id arg_4, unsigned int arg_5, id arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -39276,7 +39517,7 @@ meth_imp_469(id self, SEL sel, id arg_2, id arg_3, id arg_4, unsigned int arg_5,
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_469(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_472(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -39342,7 +39583,7 @@ static PyObject* super_469(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8@12@16@20^i24c28
 /* signature: v0@4:8@12@16@20c24 */
 static void 
-meth_imp_470(id self, SEL sel, id arg_2, id arg_3, id arg_4, char arg_5)
+meth_imp_473(id self, SEL sel, id arg_2, id arg_3, id arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -39372,7 +39613,7 @@ meth_imp_470(id self, SEL sel, id arg_2, id arg_3, id arg_4, char arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_470(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_473(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -39430,7 +39671,7 @@ static PyObject* super_470(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12@16@20i24 */
 static void 
-meth_imp_471(id self, SEL sel, id arg_2, id arg_3, id arg_4, int arg_5)
+meth_imp_474(id self, SEL sel, id arg_2, id arg_3, id arg_4, int arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -39460,7 +39701,7 @@ meth_imp_471(id self, SEL sel, id arg_2, id arg_3, id arg_4, int arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_471(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_474(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -39518,7 +39759,7 @@ static PyObject* super_471(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12@16@20i24c28 */
 static void 
-meth_imp_472(id self, SEL sel, id arg_2, id arg_3, id arg_4, int arg_5, char arg_6)
+meth_imp_475(id self, SEL sel, id arg_2, id arg_3, id arg_4, int arg_5, char arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -39551,7 +39792,7 @@ meth_imp_472(id self, SEL sel, id arg_2, id arg_3, id arg_4, int arg_5, char arg
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_472(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_475(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -39616,7 +39857,7 @@ static PyObject* super_472(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12@16I20 */
 static void 
-meth_imp_473(id self, SEL sel, id arg_2, id arg_3, unsigned int arg_4)
+meth_imp_476(id self, SEL sel, id arg_2, id arg_3, unsigned int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -39643,7 +39884,7 @@ meth_imp_473(id self, SEL sel, id arg_2, id arg_3, unsigned int arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_473(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_476(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -39694,7 +39935,7 @@ static PyObject* super_473(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12@16I20@24 */
 static void 
-meth_imp_474(id self, SEL sel, id arg_2, id arg_3, unsigned int arg_4, id arg_5)
+meth_imp_477(id self, SEL sel, id arg_2, id arg_3, unsigned int arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -39724,7 +39965,7 @@ meth_imp_474(id self, SEL sel, id arg_2, id arg_3, unsigned int arg_4, id arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_474(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_477(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -39782,7 +40023,7 @@ static PyObject* super_474(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12@16L20 */
 static void 
-meth_imp_475(id self, SEL sel, id arg_2, id arg_3, unsigned long arg_4)
+meth_imp_478(id self, SEL sel, id arg_2, id arg_3, unsigned long arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -39809,7 +40050,7 @@ meth_imp_475(id self, SEL sel, id arg_2, id arg_3, unsigned long arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_475(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_478(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -39860,7 +40101,7 @@ static PyObject* super_475(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12@16c20 */
 static void 
-meth_imp_476(id self, SEL sel, id arg_2, id arg_3, char arg_4)
+meth_imp_479(id self, SEL sel, id arg_2, id arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -39887,7 +40128,7 @@ meth_imp_476(id self, SEL sel, id arg_2, id arg_3, char arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_476(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_479(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -39938,7 +40179,7 @@ static PyObject* super_476(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12@16c20c24 */
 static void 
-meth_imp_477(id self, SEL sel, id arg_2, id arg_3, char arg_4, char arg_5)
+meth_imp_480(id self, SEL sel, id arg_2, id arg_3, char arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -39968,7 +40209,7 @@ meth_imp_477(id self, SEL sel, id arg_2, id arg_3, char arg_4, char arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_477(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_480(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -40026,7 +40267,7 @@ static PyObject* super_477(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12@16f40@24@28 */
 static void 
-meth_imp_478(id self, SEL sel, id arg_2, id arg_3, float arg_4, id arg_5, id arg_6)
+meth_imp_481(id self, SEL sel, id arg_2, id arg_3, float arg_4, id arg_5, id arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -40059,7 +40300,7 @@ meth_imp_478(id self, SEL sel, id arg_2, id arg_3, float arg_4, id arg_5, id arg
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_478(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_481(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -40124,7 +40365,7 @@ static PyObject* super_478(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12@16i20 */
 static void 
-meth_imp_479(id self, SEL sel, id arg_2, id arg_3, int arg_4)
+meth_imp_482(id self, SEL sel, id arg_2, id arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -40151,7 +40392,7 @@ meth_imp_479(id self, SEL sel, id arg_2, id arg_3, int arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_479(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_482(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -40202,7 +40443,7 @@ static PyObject* super_479(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12@16i20@24 */
 static void 
-meth_imp_480(id self, SEL sel, id arg_2, id arg_3, int arg_4, id arg_5)
+meth_imp_483(id self, SEL sel, id arg_2, id arg_3, int arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -40232,7 +40473,7 @@ meth_imp_480(id self, SEL sel, id arg_2, id arg_3, int arg_4, id arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_480(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_483(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -40291,7 +40532,7 @@ static PyObject* super_480(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8@12@16i20@24:28^v32
 /* signature: v0@4:8@12@16i20i24 */
 static void 
-meth_imp_481(id self, SEL sel, id arg_2, id arg_3, int arg_4, int arg_5)
+meth_imp_484(id self, SEL sel, id arg_2, id arg_3, int arg_4, int arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -40321,7 +40562,7 @@ meth_imp_481(id self, SEL sel, id arg_2, id arg_3, int arg_4, int arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_481(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_484(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -40379,7 +40620,7 @@ static PyObject* super_481(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12@16l20@24 */
 static void 
-meth_imp_482(id self, SEL sel, id arg_2, id arg_3, long arg_4, id arg_5)
+meth_imp_485(id self, SEL sel, id arg_2, id arg_3, long arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -40409,7 +40650,7 @@ meth_imp_482(id self, SEL sel, id arg_2, id arg_3, long arg_4, id arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_482(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_485(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -40467,7 +40708,7 @@ static PyObject* super_482(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12@16{_NSRange=II}20 */
 static void 
-meth_imp_483(id self, SEL sel, id arg_2, id arg_3, struct _NSRange arg_4)
+meth_imp_486(id self, SEL sel, id arg_2, id arg_3, struct _NSRange arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -40494,7 +40735,7 @@ meth_imp_483(id self, SEL sel, id arg_2, id arg_3, struct _NSRange arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_483(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_486(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -40545,7 +40786,7 @@ static PyObject* super_483(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12@16{_NSRect={_NSPoint=ff}{_NSSize=ff}}20 */
 static void 
-meth_imp_484(id self, SEL sel, id arg_2, id arg_3, struct _NSRect arg_4)
+meth_imp_487(id self, SEL sel, id arg_2, id arg_3, struct _NSRect arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -40572,7 +40813,7 @@ meth_imp_484(id self, SEL sel, id arg_2, id arg_3, struct _NSRect arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_484(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_487(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -40623,7 +40864,7 @@ static PyObject* super_484(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12I16 */
 static void 
-meth_imp_485(id self, SEL sel, id arg_2, unsigned int arg_3)
+meth_imp_488(id self, SEL sel, id arg_2, unsigned int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -40647,7 +40888,7 @@ meth_imp_485(id self, SEL sel, id arg_2, unsigned int arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_485(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_488(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -40691,7 +40932,7 @@ static PyObject* super_485(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12I16@20 */
 static void 
-meth_imp_486(id self, SEL sel, id arg_2, unsigned int arg_3, id arg_4)
+meth_imp_489(id self, SEL sel, id arg_2, unsigned int arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -40718,7 +40959,7 @@ meth_imp_486(id self, SEL sel, id arg_2, unsigned int arg_3, id arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_486(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_489(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -40769,7 +41010,7 @@ static PyObject* super_486(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12I16@20*24 */
 static void 
-meth_imp_487(id self, SEL sel, id arg_2, unsigned int arg_3, id arg_4, char* arg_5)
+meth_imp_490(id self, SEL sel, id arg_2, unsigned int arg_3, id arg_4, char* arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -40799,7 +41040,7 @@ meth_imp_487(id self, SEL sel, id arg_2, unsigned int arg_3, id arg_4, char* arg
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_487(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_490(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -40858,7 +41099,7 @@ static PyObject* super_487(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8@12I16I20^I24
 /* signature: v0@4:8@12L16 */
 static void 
-meth_imp_488(id self, SEL sel, id arg_2, unsigned long arg_3)
+meth_imp_491(id self, SEL sel, id arg_2, unsigned long arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -40882,7 +41123,7 @@ meth_imp_488(id self, SEL sel, id arg_2, unsigned long arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_488(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_491(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -40933,7 +41174,7 @@ static PyObject* super_488(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8@12^{__CFPasteboard=}16i20^v24
 /* signature: v0@4:8@12c16 */
 static void 
-meth_imp_489(id self, SEL sel, id arg_2, char arg_3)
+meth_imp_492(id self, SEL sel, id arg_2, char arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -40957,7 +41198,7 @@ meth_imp_489(id self, SEL sel, id arg_2, char arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_489(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_492(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -41003,7 +41244,7 @@ static PyObject* super_489(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8@12c16^v20
 /* signature: v0@4:8@12c16c20 */
 static void 
-meth_imp_490(id self, SEL sel, id arg_2, char arg_3, char arg_4)
+meth_imp_493(id self, SEL sel, id arg_2, char arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -41030,7 +41271,7 @@ meth_imp_490(id self, SEL sel, id arg_2, char arg_3, char arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_490(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_493(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -41081,7 +41322,7 @@ static PyObject* super_490(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12c16c20c24 */
 static void 
-meth_imp_491(id self, SEL sel, id arg_2, char arg_3, char arg_4, char arg_5)
+meth_imp_494(id self, SEL sel, id arg_2, char arg_3, char arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -41111,7 +41352,7 @@ meth_imp_491(id self, SEL sel, id arg_2, char arg_3, char arg_4, char arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_491(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_494(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -41169,7 +41410,7 @@ static PyObject* super_491(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12c16i20i24 */
 static void 
-meth_imp_492(id self, SEL sel, id arg_2, char arg_3, int arg_4, int arg_5)
+meth_imp_495(id self, SEL sel, id arg_2, char arg_3, int arg_4, int arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -41199,7 +41440,7 @@ meth_imp_492(id self, SEL sel, id arg_2, char arg_3, int arg_4, int arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_492(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_495(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -41257,7 +41498,7 @@ static PyObject* super_492(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12d40 */
 static void 
-meth_imp_493(id self, SEL sel, id arg_2, double arg_3)
+meth_imp_496(id self, SEL sel, id arg_2, double arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -41281,7 +41522,7 @@ meth_imp_493(id self, SEL sel, id arg_2, double arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_493(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_496(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -41325,7 +41566,7 @@ static PyObject* super_493(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12f40 */
 static void 
-meth_imp_494(id self, SEL sel, id arg_2, float arg_3)
+meth_imp_497(id self, SEL sel, id arg_2, float arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -41349,7 +41590,7 @@ meth_imp_494(id self, SEL sel, id arg_2, float arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_494(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_497(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -41393,7 +41634,7 @@ static PyObject* super_494(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12f40f48c24 */
 static void 
-meth_imp_495(id self, SEL sel, id arg_2, float arg_3, float arg_4, char arg_5)
+meth_imp_498(id self, SEL sel, id arg_2, float arg_3, float arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -41423,7 +41664,7 @@ meth_imp_495(id self, SEL sel, id arg_2, float arg_3, float arg_4, char arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_495(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_498(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -41481,7 +41722,7 @@ static PyObject* super_495(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12i16 */
 static void 
-meth_imp_496(id self, SEL sel, id arg_2, int arg_3)
+meth_imp_499(id self, SEL sel, id arg_2, int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -41505,7 +41746,7 @@ meth_imp_496(id self, SEL sel, id arg_2, int arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_496(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_499(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -41549,7 +41790,7 @@ static PyObject* super_496(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12i16@20 */
 static void 
-meth_imp_497(id self, SEL sel, id arg_2, int arg_3, id arg_4)
+meth_imp_500(id self, SEL sel, id arg_2, int arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -41576,7 +41817,7 @@ meth_imp_497(id self, SEL sel, id arg_2, int arg_3, id arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_497(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_500(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -41628,7 +41869,7 @@ static PyObject* super_497(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8@12i16@20:24^v28
 /* signature: v0@4:8@12i16I20 */
 static void 
-meth_imp_498(id self, SEL sel, id arg_2, int arg_3, unsigned int arg_4)
+meth_imp_501(id self, SEL sel, id arg_2, int arg_3, unsigned int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -41655,7 +41896,7 @@ meth_imp_498(id self, SEL sel, id arg_2, int arg_3, unsigned int arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_498(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_501(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -41706,7 +41947,7 @@ static PyObject* super_498(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12i16I20@24 */
 static void 
-meth_imp_499(id self, SEL sel, id arg_2, int arg_3, unsigned int arg_4, id arg_5)
+meth_imp_502(id self, SEL sel, id arg_2, int arg_3, unsigned int arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -41736,7 +41977,7 @@ meth_imp_499(id self, SEL sel, id arg_2, int arg_3, unsigned int arg_4, id arg_5
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_499(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_502(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -41795,7 +42036,7 @@ static PyObject* super_499(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8@12i16^v20
 /* signature: v0@4:8@12i16c20c24c28 */
 static void 
-meth_imp_500(id self, SEL sel, id arg_2, int arg_3, char arg_4, char arg_5, char arg_6)
+meth_imp_503(id self, SEL sel, id arg_2, int arg_3, char arg_4, char arg_5, char arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -41828,7 +42069,7 @@ meth_imp_500(id self, SEL sel, id arg_2, int arg_3, char arg_4, char arg_5, char
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_500(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_503(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -41893,7 +42134,7 @@ static PyObject* super_500(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12i16d40 */
 static void 
-meth_imp_501(id self, SEL sel, id arg_2, int arg_3, double arg_4)
+meth_imp_504(id self, SEL sel, id arg_2, int arg_3, double arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -41920,7 +42161,7 @@ meth_imp_501(id self, SEL sel, id arg_2, int arg_3, double arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_501(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_504(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -41971,7 +42212,7 @@ static PyObject* super_501(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12i16f40 */
 static void 
-meth_imp_502(id self, SEL sel, id arg_2, int arg_3, float arg_4)
+meth_imp_505(id self, SEL sel, id arg_2, int arg_3, float arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -41998,7 +42239,7 @@ meth_imp_502(id self, SEL sel, id arg_2, int arg_3, float arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_502(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_505(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -42049,7 +42290,7 @@ static PyObject* super_502(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12i16i20 */
 static void 
-meth_imp_503(id self, SEL sel, id arg_2, int arg_3, int arg_4)
+meth_imp_506(id self, SEL sel, id arg_2, int arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -42076,7 +42317,7 @@ meth_imp_503(id self, SEL sel, id arg_2, int arg_3, int arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_503(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_506(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -42127,7 +42368,7 @@ static PyObject* super_503(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12i16i20i24c28 */
 static void 
-meth_imp_504(id self, SEL sel, id arg_2, int arg_3, int arg_4, int arg_5, char arg_6)
+meth_imp_507(id self, SEL sel, id arg_2, int arg_3, int arg_4, int arg_5, char arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -42160,7 +42401,7 @@ meth_imp_504(id self, SEL sel, id arg_2, int arg_3, int arg_4, int arg_5, char a
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_504(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_507(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -42225,7 +42466,7 @@ static PyObject* super_504(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12i16{_NSRange=II}20 */
 static void 
-meth_imp_505(id self, SEL sel, id arg_2, int arg_3, struct _NSRange arg_4)
+meth_imp_508(id self, SEL sel, id arg_2, int arg_3, struct _NSRange arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -42252,7 +42493,7 @@ meth_imp_505(id self, SEL sel, id arg_2, int arg_3, struct _NSRange arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_505(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_508(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -42303,7 +42544,7 @@ static PyObject* super_505(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12i16{_NSRect={_NSPoint=ff}{_NSSize=ff}}20 */
 static void 
-meth_imp_506(id self, SEL sel, id arg_2, int arg_3, struct _NSRect arg_4)
+meth_imp_509(id self, SEL sel, id arg_2, int arg_3, struct _NSRect arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -42330,7 +42571,7 @@ meth_imp_506(id self, SEL sel, id arg_2, int arg_3, struct _NSRect arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_506(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_509(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -42381,7 +42622,7 @@ static PyObject* super_506(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12l16 */
 static void 
-meth_imp_507(id self, SEL sel, id arg_2, long arg_3)
+meth_imp_510(id self, SEL sel, id arg_2, long arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -42405,7 +42646,7 @@ meth_imp_507(id self, SEL sel, id arg_2, long arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_507(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_510(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -42449,7 +42690,7 @@ static PyObject* super_507(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12s16 */
 static void 
-meth_imp_508(id self, SEL sel, id arg_2, short arg_3)
+meth_imp_511(id self, SEL sel, id arg_2, short arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -42473,7 +42714,7 @@ meth_imp_508(id self, SEL sel, id arg_2, short arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_508(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_511(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -42517,7 +42758,7 @@ static PyObject* super_508(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12{_NSPoint=ff}16 */
 static void 
-meth_imp_509(id self, SEL sel, id arg_2, struct _NSPoint arg_3)
+meth_imp_512(id self, SEL sel, id arg_2, struct _NSPoint arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -42541,7 +42782,7 @@ meth_imp_509(id self, SEL sel, id arg_2, struct _NSPoint arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_509(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_512(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -42585,7 +42826,7 @@ static PyObject* super_509(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12{_NSPoint=ff}16I24 */
 static void 
-meth_imp_510(id self, SEL sel, id arg_2, struct _NSPoint arg_3, unsigned int arg_4)
+meth_imp_513(id self, SEL sel, id arg_2, struct _NSPoint arg_3, unsigned int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -42612,7 +42853,7 @@ meth_imp_510(id self, SEL sel, id arg_2, struct _NSPoint arg_3, unsigned int arg
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_510(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_513(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -42663,7 +42904,7 @@ static PyObject* super_510(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12{_NSPoint=ff}16{_NSPoint=ff}24 */
 static void 
-meth_imp_511(id self, SEL sel, id arg_2, struct _NSPoint arg_3, struct _NSPoint arg_4)
+meth_imp_514(id self, SEL sel, id arg_2, struct _NSPoint arg_3, struct _NSPoint arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -42690,7 +42931,7 @@ meth_imp_511(id self, SEL sel, id arg_2, struct _NSPoint arg_3, struct _NSPoint 
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_511(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_514(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -42741,7 +42982,7 @@ static PyObject* super_511(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12{_NSRange=II}16 */
 static void 
-meth_imp_512(id self, SEL sel, id arg_2, struct _NSRange arg_3)
+meth_imp_515(id self, SEL sel, id arg_2, struct _NSRange arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -42765,7 +43006,7 @@ meth_imp_512(id self, SEL sel, id arg_2, struct _NSRange arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_512(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_515(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -42809,7 +43050,7 @@ static PyObject* super_512(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12{_NSRange=II}16@24 */
 static void 
-meth_imp_513(id self, SEL sel, id arg_2, struct _NSRange arg_3, id arg_4)
+meth_imp_516(id self, SEL sel, id arg_2, struct _NSRange arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -42836,7 +43077,7 @@ meth_imp_513(id self, SEL sel, id arg_2, struct _NSRange arg_3, id arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_513(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_516(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -42887,7 +43128,7 @@ static PyObject* super_513(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12{_NSRange=II}16c24 */
 static void 
-meth_imp_514(id self, SEL sel, id arg_2, struct _NSRange arg_3, char arg_4)
+meth_imp_517(id self, SEL sel, id arg_2, struct _NSRange arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -42914,7 +43155,7 @@ meth_imp_514(id self, SEL sel, id arg_2, struct _NSRange arg_3, char arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_514(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_517(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -42965,7 +43206,7 @@ static PyObject* super_514(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12{_NSRange=II}16{_NSRange=II}24 */
 static void 
-meth_imp_515(id self, SEL sel, id arg_2, struct _NSRange arg_3, struct _NSRange arg_4)
+meth_imp_518(id self, SEL sel, id arg_2, struct _NSRange arg_3, struct _NSRange arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -42992,7 +43233,7 @@ meth_imp_515(id self, SEL sel, id arg_2, struct _NSRange arg_3, struct _NSRange 
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_515(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_518(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -43043,7 +43284,7 @@ static PyObject* super_515(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16 */
 static void 
-meth_imp_516(id self, SEL sel, id arg_2, struct _NSRect arg_3)
+meth_imp_519(id self, SEL sel, id arg_2, struct _NSRect arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -43067,7 +43308,7 @@ meth_imp_516(id self, SEL sel, id arg_2, struct _NSRect arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_516(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_519(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -43111,7 +43352,7 @@ static PyObject* super_516(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32 */
 static void 
-meth_imp_517(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4)
+meth_imp_520(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -43138,7 +43379,7 @@ meth_imp_517(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_517(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_520(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -43189,7 +43430,7 @@ static PyObject* super_517(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16c32 */
 static void 
-meth_imp_518(id self, SEL sel, id arg_2, struct _NSRect arg_3, char arg_4)
+meth_imp_521(id self, SEL sel, id arg_2, struct _NSRect arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -43216,7 +43457,7 @@ meth_imp_518(id self, SEL sel, id arg_2, struct _NSRect arg_3, char arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_518(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_521(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -43267,7 +43508,7 @@ static PyObject* super_518(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8@12{_NSSize=ff}16 */
 static void 
-meth_imp_519(id self, SEL sel, id arg_2, struct _NSSize arg_3)
+meth_imp_522(id self, SEL sel, id arg_2, struct _NSSize arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -43291,7 +43532,7 @@ meth_imp_519(id self, SEL sel, id arg_2, struct _NSSize arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_519(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_522(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -43335,7 +43576,7 @@ static PyObject* super_519(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8C12 */
 static void 
-meth_imp_520(id self, SEL sel, unsigned char arg_2)
+meth_imp_523(id self, SEL sel, unsigned char arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -43356,7 +43597,7 @@ meth_imp_520(id self, SEL sel, unsigned char arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_520(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_523(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -43393,7 +43634,7 @@ static PyObject* super_520(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8I12 */
 static void 
-meth_imp_521(id self, SEL sel, unsigned int arg_2)
+meth_imp_524(id self, SEL sel, unsigned int arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -43414,7 +43655,7 @@ meth_imp_521(id self, SEL sel, unsigned int arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_521(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_524(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -43451,7 +43692,7 @@ static PyObject* super_521(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8I12@16 */
 static void 
-meth_imp_522(id self, SEL sel, unsigned int arg_2, id arg_3)
+meth_imp_525(id self, SEL sel, unsigned int arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -43475,7 +43716,7 @@ meth_imp_522(id self, SEL sel, unsigned int arg_2, id arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_522(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_525(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -43519,7 +43760,7 @@ static PyObject* super_522(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8I12@16@20 */
 static void 
-meth_imp_523(id self, SEL sel, unsigned int arg_2, id arg_3, id arg_4)
+meth_imp_526(id self, SEL sel, unsigned int arg_2, id arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -43546,7 +43787,7 @@ meth_imp_523(id self, SEL sel, unsigned int arg_2, id arg_3, id arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_523(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_526(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -43597,7 +43838,7 @@ static PyObject* super_523(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8I12I16 */
 static void 
-meth_imp_524(id self, SEL sel, unsigned int arg_2, unsigned int arg_3)
+meth_imp_527(id self, SEL sel, unsigned int arg_2, unsigned int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -43621,7 +43862,7 @@ meth_imp_524(id self, SEL sel, unsigned int arg_2, unsigned int arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_524(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_527(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -43665,7 +43906,7 @@ static PyObject* super_524(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8I12I16I20 */
 static void 
-meth_imp_525(id self, SEL sel, unsigned int arg_2, unsigned int arg_3, unsigned int arg_4)
+meth_imp_528(id self, SEL sel, unsigned int arg_2, unsigned int arg_3, unsigned int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -43692,7 +43933,7 @@ meth_imp_525(id self, SEL sel, unsigned int arg_2, unsigned int arg_3, unsigned 
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_525(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_528(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -43743,7 +43984,7 @@ static PyObject* super_525(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8I12Q16 */
 static void 
-meth_imp_526(id self, SEL sel, unsigned int arg_2, unsigned long long arg_3)
+meth_imp_529(id self, SEL sel, unsigned int arg_2, unsigned long long arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -43767,7 +44008,7 @@ meth_imp_526(id self, SEL sel, unsigned int arg_2, unsigned long long arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_526(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_529(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -43812,7 +44053,7 @@ static PyObject* super_526(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8I12^v16
 /* signature: v0@4:8I12{_NSPoint=ff}16I24@28 */
 static void 
-meth_imp_527(id self, SEL sel, unsigned int arg_2, struct _NSPoint arg_3, unsigned int arg_4, id arg_5)
+meth_imp_530(id self, SEL sel, unsigned int arg_2, struct _NSPoint arg_3, unsigned int arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -43842,7 +44083,7 @@ meth_imp_527(id self, SEL sel, unsigned int arg_2, struct _NSPoint arg_3, unsign
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_527(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_530(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -43900,7 +44141,7 @@ static PyObject* super_527(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8I12{_NSRange=II}16 */
 static void 
-meth_imp_528(id self, SEL sel, unsigned int arg_2, struct _NSRange arg_3)
+meth_imp_531(id self, SEL sel, unsigned int arg_2, struct _NSRange arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -43924,7 +44165,7 @@ meth_imp_528(id self, SEL sel, unsigned int arg_2, struct _NSRange arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_528(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_531(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -43968,7 +44209,7 @@ static PyObject* super_528(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8I12{_NSRange=II}16i24 */
 static void 
-meth_imp_529(id self, SEL sel, unsigned int arg_2, struct _NSRange arg_3, int arg_4)
+meth_imp_532(id self, SEL sel, unsigned int arg_2, struct _NSRange arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -43995,7 +44236,7 @@ meth_imp_529(id self, SEL sel, unsigned int arg_2, struct _NSRange arg_3, int ar
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_529(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_532(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -44046,7 +44287,7 @@ static PyObject* super_529(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8I12{_NSRange=II}16i24{_NSRange=II}28 */
 static void 
-meth_imp_530(id self, SEL sel, unsigned int arg_2, struct _NSRange arg_3, int arg_4, struct _NSRange arg_5)
+meth_imp_533(id self, SEL sel, unsigned int arg_2, struct _NSRange arg_3, int arg_4, struct _NSRange arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -44076,7 +44317,7 @@ meth_imp_530(id self, SEL sel, unsigned int arg_2, struct _NSRange arg_3, int ar
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_530(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_533(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -44134,7 +44375,7 @@ static PyObject* super_530(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8L12 */
 static void 
-meth_imp_531(id self, SEL sel, unsigned long arg_2)
+meth_imp_534(id self, SEL sel, unsigned long arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -44155,7 +44396,7 @@ meth_imp_531(id self, SEL sel, unsigned long arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_531(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_534(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -44192,7 +44433,7 @@ static PyObject* super_531(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8L12@16L20 */
 static void 
-meth_imp_532(id self, SEL sel, unsigned long arg_2, id arg_3, unsigned long arg_4)
+meth_imp_535(id self, SEL sel, unsigned long arg_2, id arg_3, unsigned long arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -44219,7 +44460,7 @@ meth_imp_532(id self, SEL sel, unsigned long arg_2, id arg_3, unsigned long arg_
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_532(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_535(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -44270,7 +44511,7 @@ static PyObject* super_532(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8Q12 */
 static void 
-meth_imp_533(id self, SEL sel, unsigned long long arg_2)
+meth_imp_536(id self, SEL sel, unsigned long long arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -44291,7 +44532,7 @@ meth_imp_533(id self, SEL sel, unsigned long long arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_533(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_536(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -44328,7 +44569,7 @@ static PyObject* super_533(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8S12 */
 static void 
-meth_imp_534(id self, SEL sel, unsigned short arg_2)
+meth_imp_537(id self, SEL sel, unsigned short arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -44349,7 +44590,7 @@ meth_imp_534(id self, SEL sel, unsigned short arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_534(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_537(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -44386,7 +44627,7 @@ static PyObject* super_534(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8S12I16 */
 static void 
-meth_imp_535(id self, SEL sel, unsigned short arg_2, unsigned int arg_3)
+meth_imp_538(id self, SEL sel, unsigned short arg_2, unsigned int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -44410,7 +44651,7 @@ meth_imp_535(id self, SEL sel, unsigned short arg_2, unsigned int arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_535(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_538(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -44541,7 +44782,7 @@ static PyObject* super_535(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8^{tiff=*^{_NXStream}sccsll{?=IIIIIISSSSSSSSSSIIIffSSffII[2S]ISSSSI^S^S^S^S[3^S]*********[2I]II^I^I[2S]^f[2S]S^f^f^f[4^S]S[2S]**I^v}{?=SSL}^i^i[10i]liillil^?^?^?^?^?^?^?^?^?^?^?^?*ii*l*llii}12
 /* signature: v0@4:8c12 */
 static void 
-meth_imp_536(id self, SEL sel, char arg_2)
+meth_imp_539(id self, SEL sel, char arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -44562,7 +44803,7 @@ meth_imp_536(id self, SEL sel, char arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_536(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_539(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -44599,7 +44840,7 @@ static PyObject* super_536(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8c12@16 */
 static void 
-meth_imp_537(id self, SEL sel, char arg_2, id arg_3)
+meth_imp_540(id self, SEL sel, char arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -44623,7 +44864,7 @@ meth_imp_537(id self, SEL sel, char arg_2, id arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_537(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_540(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -44667,7 +44908,7 @@ static PyObject* super_537(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8c12@16@20@24 */
 static void 
-meth_imp_538(id self, SEL sel, char arg_2, id arg_3, id arg_4, id arg_5)
+meth_imp_541(id self, SEL sel, char arg_2, id arg_3, id arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -44697,7 +44938,7 @@ meth_imp_538(id self, SEL sel, char arg_2, id arg_3, id arg_4, id arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_538(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_541(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -44755,7 +44996,7 @@ static PyObject* super_538(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8c12I16 */
 static void 
-meth_imp_539(id self, SEL sel, char arg_2, unsigned int arg_3)
+meth_imp_542(id self, SEL sel, char arg_2, unsigned int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -44779,7 +45020,7 @@ meth_imp_539(id self, SEL sel, char arg_2, unsigned int arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_539(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_542(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -44823,7 +45064,7 @@ static PyObject* super_539(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8c12I16I20 */
 static void 
-meth_imp_540(id self, SEL sel, char arg_2, unsigned int arg_3, unsigned int arg_4)
+meth_imp_543(id self, SEL sel, char arg_2, unsigned int arg_3, unsigned int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -44850,7 +45091,7 @@ meth_imp_540(id self, SEL sel, char arg_2, unsigned int arg_3, unsigned int arg_
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_540(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_543(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -44903,7 +45144,7 @@ static PyObject* super_540(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8c12I16r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}20r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}24^{_NSRect={_NSPoint=ff}{_NSSize=ff}}28
 /* signature: v0@4:8c12c16 */
 static void 
-meth_imp_541(id self, SEL sel, char arg_2, char arg_3)
+meth_imp_544(id self, SEL sel, char arg_2, char arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -44927,7 +45168,7 @@ meth_imp_541(id self, SEL sel, char arg_2, char arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_541(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_544(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -44971,7 +45212,7 @@ static PyObject* super_541(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8c12c16c20 */
 static void 
-meth_imp_542(id self, SEL sel, char arg_2, char arg_3, char arg_4)
+meth_imp_545(id self, SEL sel, char arg_2, char arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -44998,7 +45239,7 @@ meth_imp_542(id self, SEL sel, char arg_2, char arg_3, char arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_542(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_545(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -45049,7 +45290,7 @@ static PyObject* super_542(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8c12f40 */
 static void 
-meth_imp_543(id self, SEL sel, char arg_2, float arg_3)
+meth_imp_546(id self, SEL sel, char arg_2, float arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -45073,7 +45314,7 @@ meth_imp_543(id self, SEL sel, char arg_2, float arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_543(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_546(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -45117,7 +45358,7 @@ static PyObject* super_543(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8c12i16i20 */
 static void 
-meth_imp_544(id self, SEL sel, char arg_2, int arg_3, int arg_4)
+meth_imp_547(id self, SEL sel, char arg_2, int arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -45144,7 +45385,7 @@ meth_imp_544(id self, SEL sel, char arg_2, int arg_3, int arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_544(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_547(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -45195,7 +45436,7 @@ static PyObject* super_544(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8c12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16 */
 static void 
-meth_imp_545(id self, SEL sel, char arg_2, struct _NSRect arg_3)
+meth_imp_548(id self, SEL sel, char arg_2, struct _NSRect arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -45219,7 +45460,7 @@ meth_imp_545(id self, SEL sel, char arg_2, struct _NSRect arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_545(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_548(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -45263,7 +45504,7 @@ static PyObject* super_545(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8c12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32 */
 static void 
-meth_imp_546(id self, SEL sel, char arg_2, struct _NSRect arg_3, id arg_4)
+meth_imp_549(id self, SEL sel, char arg_2, struct _NSRect arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -45290,7 +45531,7 @@ meth_imp_546(id self, SEL sel, char arg_2, struct _NSRect arg_3, id arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_546(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_549(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -45341,7 +45582,7 @@ static PyObject* super_546(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8d40 */
 static void 
-meth_imp_547(id self, SEL sel, double arg_2)
+meth_imp_550(id self, SEL sel, double arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -45362,7 +45603,7 @@ meth_imp_547(id self, SEL sel, double arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_547(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_550(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -45399,7 +45640,7 @@ static PyObject* super_547(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8d40@20 */
 static void 
-meth_imp_548(id self, SEL sel, double arg_2, id arg_3)
+meth_imp_551(id self, SEL sel, double arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -45423,7 +45664,7 @@ meth_imp_548(id self, SEL sel, double arg_2, id arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_548(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_551(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -45467,7 +45708,7 @@ static PyObject* super_548(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8d40c20 */
 static void 
-meth_imp_549(id self, SEL sel, double arg_2, char arg_3)
+meth_imp_552(id self, SEL sel, double arg_2, char arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -45491,7 +45732,7 @@ meth_imp_549(id self, SEL sel, double arg_2, char arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_549(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_552(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -45535,7 +45776,7 @@ static PyObject* super_549(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8d40d48 */
 static void 
-meth_imp_550(id self, SEL sel, double arg_2, double arg_3)
+meth_imp_553(id self, SEL sel, double arg_2, double arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -45559,7 +45800,7 @@ meth_imp_550(id self, SEL sel, double arg_2, double arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_550(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_553(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -45603,7 +45844,7 @@ static PyObject* super_550(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8f40 */
 static void 
-meth_imp_551(id self, SEL sel, float arg_2)
+meth_imp_554(id self, SEL sel, float arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -45624,7 +45865,7 @@ meth_imp_551(id self, SEL sel, float arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_551(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_554(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -45661,7 +45902,7 @@ static PyObject* super_551(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8f40@16 */
 static void 
-meth_imp_552(id self, SEL sel, float arg_2, id arg_3)
+meth_imp_555(id self, SEL sel, float arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -45685,7 +45926,7 @@ meth_imp_552(id self, SEL sel, float arg_2, id arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_552(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_555(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -45729,7 +45970,7 @@ static PyObject* super_552(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8f40@16@20@24 */
 static void 
-meth_imp_553(id self, SEL sel, float arg_2, id arg_3, id arg_4, id arg_5)
+meth_imp_556(id self, SEL sel, float arg_2, id arg_3, id arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -45759,7 +46000,7 @@ meth_imp_553(id self, SEL sel, float arg_2, id arg_3, id arg_4, id arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_553(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_556(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -45817,7 +46058,7 @@ static PyObject* super_553(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8f40c16 */
 static void 
-meth_imp_554(id self, SEL sel, float arg_2, char arg_3)
+meth_imp_557(id self, SEL sel, float arg_2, char arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -45841,7 +46082,7 @@ meth_imp_554(id self, SEL sel, float arg_2, char arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_554(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_557(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -45885,7 +46126,7 @@ static PyObject* super_554(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8f40f48 */
 static void 
-meth_imp_555(id self, SEL sel, float arg_2, float arg_3)
+meth_imp_558(id self, SEL sel, float arg_2, float arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -45909,7 +46150,7 @@ meth_imp_555(id self, SEL sel, float arg_2, float arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_555(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_558(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -45953,7 +46194,7 @@ static PyObject* super_555(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8i12 */
 static void 
-meth_imp_556(id self, SEL sel, int arg_2)
+meth_imp_559(id self, SEL sel, int arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -45974,7 +46215,7 @@ meth_imp_556(id self, SEL sel, int arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_556(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_559(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -46011,7 +46252,7 @@ static PyObject* super_556(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8i12@16 */
 static void 
-meth_imp_557(id self, SEL sel, int arg_2, id arg_3)
+meth_imp_560(id self, SEL sel, int arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -46035,7 +46276,7 @@ meth_imp_557(id self, SEL sel, int arg_2, id arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_557(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_560(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -46080,7 +46321,7 @@ static PyObject* super_557(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8i12@16:20^v24
 /* signature: v0@4:8i12@16:20i24i28 */
 static void 
-meth_imp_558(id self, SEL sel, int arg_2, id arg_3, SEL arg_4, int arg_5, int arg_6)
+meth_imp_561(id self, SEL sel, int arg_2, id arg_3, SEL arg_4, int arg_5, int arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -46113,7 +46354,7 @@ meth_imp_558(id self, SEL sel, int arg_2, id arg_3, SEL arg_4, int arg_5, int ar
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_558(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_561(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -46178,7 +46419,7 @@ static PyObject* super_558(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8i12I16 */
 static void 
-meth_imp_559(id self, SEL sel, int arg_2, unsigned int arg_3)
+meth_imp_562(id self, SEL sel, int arg_2, unsigned int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -46202,7 +46443,7 @@ meth_imp_559(id self, SEL sel, int arg_2, unsigned int arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_559(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_562(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -46247,7 +46488,7 @@ static PyObject* super_559(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8i12^{_NSGlyphGenContext=iiiiiiiiiii@[32i][32i][32i][64i]{_NSRange=II}{_NSRange=II}ii^{_NSGlyphInsertBuffer}}16@20@24^{_NSRAStringBuffer=@IIIIII[100S]}28@32
 /* signature: v0@4:8i12c16 */
 static void 
-meth_imp_560(id self, SEL sel, int arg_2, char arg_3)
+meth_imp_563(id self, SEL sel, int arg_2, char arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -46271,7 +46512,7 @@ meth_imp_560(id self, SEL sel, int arg_2, char arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_560(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_563(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -46315,7 +46556,7 @@ static PyObject* super_560(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8i12c16c20 */
 static void 
-meth_imp_561(id self, SEL sel, int arg_2, char arg_3, char arg_4)
+meth_imp_564(id self, SEL sel, int arg_2, char arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -46342,7 +46583,7 @@ meth_imp_561(id self, SEL sel, int arg_2, char arg_3, char arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_561(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_564(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -46393,7 +46634,7 @@ static PyObject* super_561(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8i12c16c20c24 */
 static void 
-meth_imp_562(id self, SEL sel, int arg_2, char arg_3, char arg_4, char arg_5)
+meth_imp_565(id self, SEL sel, int arg_2, char arg_3, char arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -46423,7 +46664,7 @@ meth_imp_562(id self, SEL sel, int arg_2, char arg_3, char arg_4, char arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_562(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_565(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -46481,7 +46722,7 @@ static PyObject* super_562(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8i12f40 */
 static void 
-meth_imp_563(id self, SEL sel, int arg_2, float arg_3)
+meth_imp_566(id self, SEL sel, int arg_2, float arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -46505,7 +46746,7 @@ meth_imp_563(id self, SEL sel, int arg_2, float arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_563(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_566(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -46549,7 +46790,7 @@ static PyObject* super_563(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8i12f40f48f56 */
 static void 
-meth_imp_564(id self, SEL sel, int arg_2, float arg_3, float arg_4, float arg_5)
+meth_imp_567(id self, SEL sel, int arg_2, float arg_3, float arg_4, float arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -46579,7 +46820,7 @@ meth_imp_564(id self, SEL sel, int arg_2, float arg_3, float arg_4, float arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_564(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_567(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -46637,7 +46878,7 @@ static PyObject* super_564(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8i12i16 */
 static void 
-meth_imp_565(id self, SEL sel, int arg_2, int arg_3)
+meth_imp_568(id self, SEL sel, int arg_2, int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -46661,7 +46902,7 @@ meth_imp_565(id self, SEL sel, int arg_2, int arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_565(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_568(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -46705,7 +46946,7 @@ static PyObject* super_565(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8i12i16@20 */
 static void 
-meth_imp_566(id self, SEL sel, int arg_2, int arg_3, id arg_4)
+meth_imp_569(id self, SEL sel, int arg_2, int arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -46732,7 +46973,7 @@ meth_imp_566(id self, SEL sel, int arg_2, int arg_3, id arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_566(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_569(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -46783,7 +47024,7 @@ static PyObject* super_566(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8i12i16@20c24 */
 static void 
-meth_imp_567(id self, SEL sel, int arg_2, int arg_3, id arg_4, char arg_5)
+meth_imp_570(id self, SEL sel, int arg_2, int arg_3, id arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -46813,7 +47054,7 @@ meth_imp_567(id self, SEL sel, int arg_2, int arg_3, id arg_4, char arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_567(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_570(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -46871,7 +47112,7 @@ static PyObject* super_567(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8i12i16I20 */
 static void 
-meth_imp_568(id self, SEL sel, int arg_2, int arg_3, unsigned int arg_4)
+meth_imp_571(id self, SEL sel, int arg_2, int arg_3, unsigned int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -46898,7 +47139,7 @@ meth_imp_568(id self, SEL sel, int arg_2, int arg_3, unsigned int arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_568(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_571(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -46949,7 +47190,7 @@ static PyObject* super_568(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8i12i16c20 */
 static void 
-meth_imp_569(id self, SEL sel, int arg_2, int arg_3, char arg_4)
+meth_imp_572(id self, SEL sel, int arg_2, int arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -46976,7 +47217,7 @@ meth_imp_569(id self, SEL sel, int arg_2, int arg_3, char arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_569(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_572(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -47027,7 +47268,7 @@ static PyObject* super_569(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8i12i16c20c24c28 */
 static void 
-meth_imp_570(id self, SEL sel, int arg_2, int arg_3, char arg_4, char arg_5, char arg_6)
+meth_imp_573(id self, SEL sel, int arg_2, int arg_3, char arg_4, char arg_5, char arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -47060,7 +47301,7 @@ meth_imp_570(id self, SEL sel, int arg_2, int arg_3, char arg_4, char arg_5, cha
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_570(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_573(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -47125,7 +47366,7 @@ static PyObject* super_570(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8i12i16c20c24c28c32 */
 static void 
-meth_imp_571(id self, SEL sel, int arg_2, int arg_3, char arg_4, char arg_5, char arg_6, char arg_7)
+meth_imp_574(id self, SEL sel, int arg_2, int arg_3, char arg_4, char arg_5, char arg_6, char arg_7)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -47161,7 +47402,7 @@ meth_imp_571(id self, SEL sel, int arg_2, int arg_3, char arg_4, char arg_5, cha
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_571(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_574(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -47233,7 +47474,7 @@ static PyObject* super_571(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8i12i16f40 */
 static void 
-meth_imp_572(id self, SEL sel, int arg_2, int arg_3, float arg_4)
+meth_imp_575(id self, SEL sel, int arg_2, int arg_3, float arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -47260,7 +47501,7 @@ meth_imp_572(id self, SEL sel, int arg_2, int arg_3, float arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_572(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_575(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -47311,7 +47552,7 @@ static PyObject* super_572(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8i12i16i20 */
 static void 
-meth_imp_573(id self, SEL sel, int arg_2, int arg_3, int arg_4)
+meth_imp_576(id self, SEL sel, int arg_2, int arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -47338,7 +47579,7 @@ meth_imp_573(id self, SEL sel, int arg_2, int arg_3, int arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_573(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_576(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -47389,7 +47630,7 @@ static PyObject* super_573(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8i12i16i20c24 */
 static void 
-meth_imp_574(id self, SEL sel, int arg_2, int arg_3, int arg_4, char arg_5)
+meth_imp_577(id self, SEL sel, int arg_2, int arg_3, int arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -47419,7 +47660,7 @@ meth_imp_574(id self, SEL sel, int arg_2, int arg_3, int arg_4, char arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_574(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_577(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -47477,7 +47718,7 @@ static PyObject* super_574(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8i12r*16i20 */
 static void 
-meth_imp_575(id self, SEL sel, int arg_2, char* arg_3, int arg_4)
+meth_imp_578(id self, SEL sel, int arg_2, char* arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -47504,7 +47745,7 @@ meth_imp_575(id self, SEL sel, int arg_2, char* arg_3, int arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_575(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_578(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -47555,7 +47796,7 @@ static PyObject* super_575(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8i12{_NSRange=II}16 */
 static void 
-meth_imp_576(id self, SEL sel, int arg_2, struct _NSRange arg_3)
+meth_imp_579(id self, SEL sel, int arg_2, struct _NSRange arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -47579,7 +47820,7 @@ meth_imp_576(id self, SEL sel, int arg_2, struct _NSRange arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_576(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_579(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -47623,7 +47864,7 @@ static PyObject* super_576(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8i12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16 */
 static void 
-meth_imp_577(id self, SEL sel, int arg_2, struct _NSRect arg_3)
+meth_imp_580(id self, SEL sel, int arg_2, struct _NSRect arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -47647,7 +47888,7 @@ meth_imp_577(id self, SEL sel, int arg_2, struct _NSRect arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_577(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_580(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -47691,7 +47932,7 @@ static PyObject* super_577(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8l12 */
 static void 
-meth_imp_578(id self, SEL sel, long arg_2)
+meth_imp_581(id self, SEL sel, long arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -47712,7 +47953,7 @@ meth_imp_578(id self, SEL sel, long arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_578(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_581(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -47749,7 +47990,7 @@ static PyObject* super_578(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8q12@20 */
 static void 
-meth_imp_579(id self, SEL sel, long long arg_2, id arg_3)
+meth_imp_582(id self, SEL sel, long long arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -47773,7 +48014,7 @@ meth_imp_579(id self, SEL sel, long long arg_2, id arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_579(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_582(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -47817,7 +48058,7 @@ static PyObject* super_579(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8r*12 */
 static void 
-meth_imp_580(id self, SEL sel, char* arg_2)
+meth_imp_583(id self, SEL sel, char* arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -47838,7 +48079,7 @@ meth_imp_580(id self, SEL sel, char* arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_580(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_583(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -47875,7 +48116,7 @@ static PyObject* super_580(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8r*12I16@20 */
 static void 
-meth_imp_581(id self, SEL sel, char* arg_2, unsigned int arg_3, id arg_4)
+meth_imp_584(id self, SEL sel, char* arg_2, unsigned int arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -47902,7 +48143,7 @@ meth_imp_581(id self, SEL sel, char* arg_2, unsigned int arg_3, id arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_581(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_584(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -47956,7 +48197,7 @@ static PyObject* super_581(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8r*12^v16
 /* signature: v0@4:8r*12i16 */
 static void 
-meth_imp_582(id self, SEL sel, char* arg_2, int arg_3)
+meth_imp_585(id self, SEL sel, char* arg_2, int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -47980,7 +48221,7 @@ meth_imp_582(id self, SEL sel, char* arg_2, int arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_582(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_585(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -48025,7 +48266,7 @@ static PyObject* super_582(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8r*12r^v16
 /* signature: v0@4:8r*12{_NSPoint=ff}16 */
 static void 
-meth_imp_583(id self, SEL sel, char* arg_2, struct _NSPoint arg_3)
+meth_imp_586(id self, SEL sel, char* arg_2, struct _NSPoint arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -48049,7 +48290,7 @@ meth_imp_583(id self, SEL sel, char* arg_2, struct _NSPoint arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_583(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_586(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -48093,7 +48334,7 @@ static PyObject* super_583(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8r^S12I16 */
 static void 
-meth_imp_584(id self, SEL sel, unsigned short  *arg_2, unsigned int arg_3)
+meth_imp_587(id self, SEL sel, unsigned short  *arg_2, unsigned int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -48117,7 +48358,7 @@ meth_imp_584(id self, SEL sel, unsigned short  *arg_2, unsigned int arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_584(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_587(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -48162,7 +48403,7 @@ static PyObject* super_584(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8r^^i12^i16
 /* signature: v0@4:8r^f12f40 */
 static void 
-meth_imp_585(id self, SEL sel, float  *arg_2, float arg_3)
+meth_imp_588(id self, SEL sel, float  *arg_2, float arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -48186,7 +48427,7 @@ meth_imp_585(id self, SEL sel, float  *arg_2, float arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_585(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_588(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -48230,7 +48471,7 @@ static PyObject* super_585(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8r^f12i16f40 */
 static void 
-meth_imp_586(id self, SEL sel, float  *arg_2, int arg_3, float arg_4)
+meth_imp_589(id self, SEL sel, float  *arg_2, int arg_3, float arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -48257,7 +48498,7 @@ meth_imp_586(id self, SEL sel, float  *arg_2, int arg_3, float arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_586(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_589(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -48308,7 +48549,7 @@ static PyObject* super_586(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8r^i12i16 */
 static void 
-meth_imp_587(id self, SEL sel, int  *arg_2, int arg_3)
+meth_imp_590(id self, SEL sel, int  *arg_2, int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -48332,7 +48573,7 @@ meth_imp_587(id self, SEL sel, int  *arg_2, int arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_587(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_590(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -48381,7 +48622,7 @@ static PyObject* super_587(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8r^{ATSGlyphVector=III^v*I^v^{ATSStyleSetting}SsiiI{FixedRect=iiii}IiiiSS^S^s^s^i^i}12^{ATSGlyphVector=III^v*I^v^{ATSStyleSetting}SsiiI{FixedRect=iiii}IiiiSS^S^s^s^i^i}16I20
 /* signature: v0@4:8r^{_NSPoint=ff}12@16 */
 static void 
-meth_imp_588(id self, SEL sel, struct _NSPoint  *arg_2, id arg_3)
+meth_imp_591(id self, SEL sel, struct _NSPoint  *arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -48405,7 +48646,7 @@ meth_imp_588(id self, SEL sel, struct _NSPoint  *arg_2, id arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_588(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_591(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -48458,7 +48699,7 @@ struct pyobjcanonymous0 {
 };
 
 static void 
-meth_imp_589(id self, SEL sel, struct pyobjcanonymous0 arg_2)
+meth_imp_592(id self, SEL sel, struct pyobjcanonymous0 arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -48479,7 +48720,7 @@ meth_imp_589(id self, SEL sel, struct pyobjcanonymous0 arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_589(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_592(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -48525,7 +48766,7 @@ struct _NSAffineTransformStruct {
 };
 
 static void 
-meth_imp_590(id self, SEL sel, struct _NSAffineTransformStruct arg_2)
+meth_imp_593(id self, SEL sel, struct _NSAffineTransformStruct arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -48546,7 +48787,7 @@ meth_imp_590(id self, SEL sel, struct _NSAffineTransformStruct arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_590(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_593(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -48583,7 +48824,7 @@ static PyObject* super_590(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSPoint=ff}12 */
 static void 
-meth_imp_591(id self, SEL sel, struct _NSPoint arg_2)
+meth_imp_594(id self, SEL sel, struct _NSPoint arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -48604,7 +48845,7 @@ meth_imp_591(id self, SEL sel, struct _NSPoint arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_591(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_594(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -48641,7 +48882,7 @@ static PyObject* super_591(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSPoint=ff}12@20 */
 static void 
-meth_imp_592(id self, SEL sel, struct _NSPoint arg_2, id arg_3)
+meth_imp_595(id self, SEL sel, struct _NSPoint arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -48665,7 +48906,7 @@ meth_imp_592(id self, SEL sel, struct _NSPoint arg_2, id arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_592(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_595(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -48709,7 +48950,7 @@ static PyObject* super_592(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSPoint=ff}12d40 */
 static void 
-meth_imp_593(id self, SEL sel, struct _NSPoint arg_2, double arg_3)
+meth_imp_596(id self, SEL sel, struct _NSPoint arg_2, double arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -48733,7 +48974,7 @@ meth_imp_593(id self, SEL sel, struct _NSPoint arg_2, double arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_593(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_596(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -48777,7 +49018,7 @@ static PyObject* super_593(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSPoint=ff}12d40d48d56 */
 static void 
-meth_imp_594(id self, SEL sel, struct _NSPoint arg_2, double arg_3, double arg_4, double arg_5)
+meth_imp_597(id self, SEL sel, struct _NSPoint arg_2, double arg_3, double arg_4, double arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -48807,7 +49048,7 @@ meth_imp_594(id self, SEL sel, struct _NSPoint arg_2, double arg_3, double arg_4
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_594(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_597(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -48865,7 +49106,7 @@ static PyObject* super_594(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSPoint=ff}12f40 */
 static void 
-meth_imp_595(id self, SEL sel, struct _NSPoint arg_2, float arg_3)
+meth_imp_598(id self, SEL sel, struct _NSPoint arg_2, float arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -48889,7 +49130,7 @@ meth_imp_595(id self, SEL sel, struct _NSPoint arg_2, float arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_595(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_598(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -48933,7 +49174,7 @@ static PyObject* super_595(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSPoint=ff}12f40f48f56 */
 static void 
-meth_imp_596(id self, SEL sel, struct _NSPoint arg_2, float arg_3, float arg_4, float arg_5)
+meth_imp_599(id self, SEL sel, struct _NSPoint arg_2, float arg_3, float arg_4, float arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -48963,7 +49204,7 @@ meth_imp_596(id self, SEL sel, struct _NSPoint arg_2, float arg_3, float arg_4, 
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_596(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_599(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -49021,7 +49262,7 @@ static PyObject* super_596(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSPoint=ff}12f40f48f56c32 */
 static void 
-meth_imp_597(id self, SEL sel, struct _NSPoint arg_2, float arg_3, float arg_4, float arg_5, char arg_6)
+meth_imp_600(id self, SEL sel, struct _NSPoint arg_2, float arg_3, float arg_4, float arg_5, char arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -49054,7 +49295,7 @@ meth_imp_597(id self, SEL sel, struct _NSPoint arg_2, float arg_3, float arg_4, 
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_597(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_600(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -49119,7 +49360,7 @@ static PyObject* super_597(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSPoint=ff}12i20 */
 static void 
-meth_imp_598(id self, SEL sel, struct _NSPoint arg_2, int arg_3)
+meth_imp_601(id self, SEL sel, struct _NSPoint arg_2, int arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -49143,7 +49384,7 @@ meth_imp_598(id self, SEL sel, struct _NSPoint arg_2, int arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_598(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_601(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -49187,7 +49428,7 @@ static PyObject* super_598(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSPoint=ff}12i20f40 */
 static void 
-meth_imp_599(id self, SEL sel, struct _NSPoint arg_2, int arg_3, float arg_4)
+meth_imp_602(id self, SEL sel, struct _NSPoint arg_2, int arg_3, float arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -49214,7 +49455,7 @@ meth_imp_599(id self, SEL sel, struct _NSPoint arg_2, int arg_3, float arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_599(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_602(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -49265,7 +49506,7 @@ static PyObject* super_599(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSPoint=ff}12{_NSPoint=ff}20 */
 static void 
-meth_imp_600(id self, SEL sel, struct _NSPoint arg_2, struct _NSPoint arg_3)
+meth_imp_603(id self, SEL sel, struct _NSPoint arg_2, struct _NSPoint arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -49289,7 +49530,7 @@ meth_imp_600(id self, SEL sel, struct _NSPoint arg_2, struct _NSPoint arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_600(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_603(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -49333,7 +49574,7 @@ static PyObject* super_600(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSPoint=ff}12{_NSPoint=ff}20@28 */
 static void 
-meth_imp_601(id self, SEL sel, struct _NSPoint arg_2, struct _NSPoint arg_3, id arg_4)
+meth_imp_604(id self, SEL sel, struct _NSPoint arg_2, struct _NSPoint arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -49360,7 +49601,7 @@ meth_imp_601(id self, SEL sel, struct _NSPoint arg_2, struct _NSPoint arg_3, id 
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_601(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_604(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -49411,7 +49652,7 @@ static PyObject* super_601(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSPoint=ff}12{_NSPoint=ff}20@28c32 */
 static void 
-meth_imp_602(id self, SEL sel, struct _NSPoint arg_2, struct _NSPoint arg_3, id arg_4, char arg_5)
+meth_imp_605(id self, SEL sel, struct _NSPoint arg_2, struct _NSPoint arg_3, id arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -49441,7 +49682,7 @@ meth_imp_602(id self, SEL sel, struct _NSPoint arg_2, struct _NSPoint arg_3, id 
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_602(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_605(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -49499,7 +49740,7 @@ static PyObject* super_602(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSPoint=ff}12{_NSPoint=ff}20f40 */
 static void 
-meth_imp_603(id self, SEL sel, struct _NSPoint arg_2, struct _NSPoint arg_3, float arg_4)
+meth_imp_606(id self, SEL sel, struct _NSPoint arg_2, struct _NSPoint arg_3, float arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -49526,7 +49767,7 @@ meth_imp_603(id self, SEL sel, struct _NSPoint arg_2, struct _NSPoint arg_3, flo
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_603(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_606(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -49577,7 +49818,7 @@ static PyObject* super_603(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSPoint=ff}12{_NSPoint=ff}20{_NSPoint=ff}28 */
 static void 
-meth_imp_604(id self, SEL sel, struct _NSPoint arg_2, struct _NSPoint arg_3, struct _NSPoint arg_4)
+meth_imp_607(id self, SEL sel, struct _NSPoint arg_2, struct _NSPoint arg_3, struct _NSPoint arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -49604,7 +49845,7 @@ meth_imp_604(id self, SEL sel, struct _NSPoint arg_2, struct _NSPoint arg_3, str
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_604(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_607(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -49655,7 +49896,7 @@ static PyObject* super_604(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSPoint=ff}12{_NSRange=II}20 */
 static void 
-meth_imp_605(id self, SEL sel, struct _NSPoint arg_2, struct _NSRange arg_3)
+meth_imp_608(id self, SEL sel, struct _NSPoint arg_2, struct _NSRange arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -49679,7 +49920,7 @@ meth_imp_605(id self, SEL sel, struct _NSPoint arg_2, struct _NSRange arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_605(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_608(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -49723,7 +49964,7 @@ static PyObject* super_605(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSPoint=ff}12{_NSRange=II}20c28 */
 static void 
-meth_imp_606(id self, SEL sel, struct _NSPoint arg_2, struct _NSRange arg_3, char arg_4)
+meth_imp_609(id self, SEL sel, struct _NSPoint arg_2, struct _NSRange arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -49750,7 +49991,7 @@ meth_imp_606(id self, SEL sel, struct _NSPoint arg_2, struct _NSRange arg_3, cha
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_606(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_609(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -49801,7 +50042,7 @@ static PyObject* super_606(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSPoint=ff}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}20f40 */
 static void 
-meth_imp_607(id self, SEL sel, struct _NSPoint arg_2, struct _NSRect arg_3, float arg_4)
+meth_imp_610(id self, SEL sel, struct _NSPoint arg_2, struct _NSRect arg_3, float arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -49828,7 +50069,7 @@ meth_imp_607(id self, SEL sel, struct _NSPoint arg_2, struct _NSRect arg_3, floa
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_607(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_610(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -49879,7 +50120,7 @@ static PyObject* super_607(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSRange=II}12 */
 static void 
-meth_imp_608(id self, SEL sel, struct _NSRange arg_2)
+meth_imp_611(id self, SEL sel, struct _NSRange arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -49900,7 +50141,7 @@ meth_imp_608(id self, SEL sel, struct _NSRange arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_608(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_611(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -49937,7 +50178,7 @@ static PyObject* super_608(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSRange=II}12@20 */
 static void 
-meth_imp_609(id self, SEL sel, struct _NSRange arg_2, id arg_3)
+meth_imp_612(id self, SEL sel, struct _NSRange arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -49961,7 +50202,7 @@ meth_imp_609(id self, SEL sel, struct _NSRange arg_2, id arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_609(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_612(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -50005,7 +50246,7 @@ static PyObject* super_609(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSRange=II}12@20I24 */
 static void 
-meth_imp_610(id self, SEL sel, struct _NSRange arg_2, id arg_3, unsigned int arg_4)
+meth_imp_613(id self, SEL sel, struct _NSRange arg_2, id arg_3, unsigned int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -50032,7 +50273,7 @@ meth_imp_610(id self, SEL sel, struct _NSRange arg_2, id arg_3, unsigned int arg
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_610(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_613(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -50083,7 +50324,7 @@ static PyObject* super_610(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSRange=II}12@20{_NSRange=II}24 */
 static void 
-meth_imp_611(id self, SEL sel, struct _NSRange arg_2, id arg_3, struct _NSRange arg_4)
+meth_imp_614(id self, SEL sel, struct _NSRange arg_2, id arg_3, struct _NSRange arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -50110,7 +50351,7 @@ meth_imp_611(id self, SEL sel, struct _NSRange arg_2, id arg_3, struct _NSRange 
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_611(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_614(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -50163,7 +50404,7 @@ static PyObject* super_611(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8{_NSRange=II}12^v20c24
 /* signature: v0@4:8{_NSRange=II}12c20 */
 static void 
-meth_imp_612(id self, SEL sel, struct _NSRange arg_2, char arg_3)
+meth_imp_615(id self, SEL sel, struct _NSRange arg_2, char arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -50187,7 +50428,7 @@ meth_imp_612(id self, SEL sel, struct _NSRange arg_2, char arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_612(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_615(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -50233,7 +50474,7 @@ static PyObject* super_612(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8{_NSRange=II}12i20^{_NSRange=II}24
 /* signature: v0@4:8{_NSRange=II}12i20c24 */
 static void 
-meth_imp_613(id self, SEL sel, struct _NSRange arg_2, int arg_3, char arg_4)
+meth_imp_616(id self, SEL sel, struct _NSRange arg_2, int arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -50260,7 +50501,7 @@ meth_imp_613(id self, SEL sel, struct _NSRange arg_2, int arg_3, char arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_613(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_616(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -50311,7 +50552,7 @@ static PyObject* super_613(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSRange=II}12r*20I24 */
 static void 
-meth_imp_614(id self, SEL sel, struct _NSRange arg_2, char* arg_3, unsigned int arg_4)
+meth_imp_617(id self, SEL sel, struct _NSRange arg_2, char* arg_3, unsigned int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -50338,7 +50579,7 @@ meth_imp_614(id self, SEL sel, struct _NSRange arg_2, char* arg_3, unsigned int 
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_614(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_617(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -50389,7 +50630,7 @@ static PyObject* super_614(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSRange=II}12r^S20I24 */
 static void 
-meth_imp_615(id self, SEL sel, struct _NSRange arg_2, unsigned short  *arg_3, unsigned int arg_4)
+meth_imp_618(id self, SEL sel, struct _NSRange arg_2, unsigned short  *arg_3, unsigned int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -50416,7 +50657,7 @@ meth_imp_615(id self, SEL sel, struct _NSRange arg_2, unsigned short  *arg_3, un
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_615(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_618(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -50469,7 +50710,7 @@ static PyObject* super_615(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8{_NSRange=II}12r^v20I24
 /* signature: v0@4:8{_NSRange=II}12{_NSRange=II}20 */
 static void 
-meth_imp_616(id self, SEL sel, struct _NSRange arg_2, struct _NSRange arg_3)
+meth_imp_619(id self, SEL sel, struct _NSRange arg_2, struct _NSRange arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -50493,7 +50734,7 @@ meth_imp_616(id self, SEL sel, struct _NSRange arg_2, struct _NSRange arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_616(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_619(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -50538,7 +50779,7 @@ static PyObject* super_616(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8{_NSRange=II}12{_NSRange=II}20i28^{_NSRange=II}32
 /* signature: v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12 */
 static void 
-meth_imp_617(id self, SEL sel, struct _NSRect arg_2)
+meth_imp_620(id self, SEL sel, struct _NSRect arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -50559,7 +50800,7 @@ meth_imp_617(id self, SEL sel, struct _NSRect arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_617(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_620(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -50596,7 +50837,7 @@ static PyObject* super_617(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28 */
 static void 
-meth_imp_618(id self, SEL sel, struct _NSRect arg_2, id arg_3)
+meth_imp_621(id self, SEL sel, struct _NSRect arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -50620,7 +50861,7 @@ meth_imp_618(id self, SEL sel, struct _NSRect arg_2, id arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_618(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_621(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -50664,7 +50905,7 @@ static PyObject* super_618(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28@32 */
 static void 
-meth_imp_619(id self, SEL sel, struct _NSRect arg_2, id arg_3, id arg_4)
+meth_imp_622(id self, SEL sel, struct _NSRect arg_2, id arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -50691,7 +50932,7 @@ meth_imp_619(id self, SEL sel, struct _NSRect arg_2, id arg_3, id arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_619(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_622(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -50742,7 +50983,7 @@ static PyObject* super_619(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28I32 */
 static void 
-meth_imp_620(id self, SEL sel, struct _NSRect arg_2, id arg_3, unsigned int arg_4)
+meth_imp_623(id self, SEL sel, struct _NSRect arg_2, id arg_3, unsigned int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -50769,7 +51010,7 @@ meth_imp_620(id self, SEL sel, struct _NSRect arg_2, id arg_3, unsigned int arg_
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_620(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_623(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -50820,7 +51061,7 @@ static PyObject* super_620(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28c32 */
 static void 
-meth_imp_621(id self, SEL sel, struct _NSRect arg_2, id arg_3, char arg_4)
+meth_imp_624(id self, SEL sel, struct _NSRect arg_2, id arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -50847,7 +51088,7 @@ meth_imp_621(id self, SEL sel, struct _NSRect arg_2, id arg_3, char arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_621(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_624(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -50898,7 +51139,7 @@ static PyObject* super_621(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28i32 */
 static void 
-meth_imp_622(id self, SEL sel, struct _NSRect arg_2, id arg_3, int arg_4)
+meth_imp_625(id self, SEL sel, struct _NSRect arg_2, id arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -50925,7 +51166,7 @@ meth_imp_622(id self, SEL sel, struct _NSRect arg_2, id arg_3, int arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_622(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_625(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -50976,7 +51217,7 @@ static PyObject* super_622(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12c28 */
 static void 
-meth_imp_623(id self, SEL sel, struct _NSRect arg_2, char arg_3)
+meth_imp_626(id self, SEL sel, struct _NSRect arg_2, char arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -51000,7 +51241,7 @@ meth_imp_623(id self, SEL sel, struct _NSRect arg_2, char arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_623(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_626(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -51044,7 +51285,7 @@ static PyObject* super_623(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12c28@32 */
 static void 
-meth_imp_624(id self, SEL sel, struct _NSRect arg_2, char arg_3, id arg_4)
+meth_imp_627(id self, SEL sel, struct _NSRect arg_2, char arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -51071,7 +51312,7 @@ meth_imp_624(id self, SEL sel, struct _NSRect arg_2, char arg_3, id arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_624(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_627(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -51122,7 +51363,7 @@ static PyObject* super_624(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12c28c32 */
 static void 
-meth_imp_625(id self, SEL sel, struct _NSRect arg_2, char arg_3, char arg_4)
+meth_imp_628(id self, SEL sel, struct _NSRect arg_2, char arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -51149,7 +51390,7 @@ meth_imp_625(id self, SEL sel, struct _NSRect arg_2, char arg_3, char arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_625(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_628(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -51200,7 +51441,7 @@ static PyObject* super_625(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12f40 */
 static void 
-meth_imp_626(id self, SEL sel, struct _NSRect arg_2, float arg_3)
+meth_imp_629(id self, SEL sel, struct _NSRect arg_2, float arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -51224,7 +51465,7 @@ meth_imp_626(id self, SEL sel, struct _NSRect arg_2, float arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_626(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_629(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -51268,7 +51509,7 @@ static PyObject* super_626(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSSize=ff}28 */
 static void 
-meth_imp_627(id self, SEL sel, struct _NSRect arg_2, struct _NSSize arg_3)
+meth_imp_630(id self, SEL sel, struct _NSRect arg_2, struct _NSSize arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -51292,7 +51533,7 @@ meth_imp_627(id self, SEL sel, struct _NSRect arg_2, struct _NSSize arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_627(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_630(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -51336,7 +51577,7 @@ static PyObject* super_627(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSSize=ff}12 */
 static void 
-meth_imp_628(id self, SEL sel, struct _NSSize arg_2)
+meth_imp_631(id self, SEL sel, struct _NSSize arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -51357,7 +51598,7 @@ meth_imp_628(id self, SEL sel, struct _NSSize arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_628(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_631(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -51395,7 +51636,7 @@ static PyObject* super_628(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v0@4:8{_NSSize=ff}12^{_NSSize=ff}20^{_NSRect={_NSPoint=ff}{_NSSize=ff}}24^{_NSRect={_NSPoint=ff}{_NSSize=ff}}28
 /* signature: v0@4:8{_NSSize=ff}12c20 */
 static void 
-meth_imp_629(id self, SEL sel, struct _NSSize arg_2, char arg_3)
+meth_imp_632(id self, SEL sel, struct _NSSize arg_2, char arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -51419,7 +51660,7 @@ meth_imp_629(id self, SEL sel, struct _NSSize arg_2, char arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_629(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_632(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -51463,7 +51704,7 @@ static PyObject* super_629(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSSize=ff}12c20c24 */
 static void 
-meth_imp_630(id self, SEL sel, struct _NSSize arg_2, char arg_3, char arg_4)
+meth_imp_633(id self, SEL sel, struct _NSSize arg_2, char arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -51490,7 +51731,7 @@ meth_imp_630(id self, SEL sel, struct _NSSize arg_2, char arg_3, char arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_630(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_633(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -51541,7 +51782,7 @@ static PyObject* super_630(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSSize=ff}12c20{_NSSize=ff}24c32 */
 static void 
-meth_imp_631(id self, SEL sel, struct _NSSize arg_2, char arg_3, struct _NSSize arg_4, char arg_5)
+meth_imp_634(id self, SEL sel, struct _NSSize arg_2, char arg_3, struct _NSSize arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -51571,7 +51812,7 @@ meth_imp_631(id self, SEL sel, struct _NSSize arg_2, char arg_3, struct _NSSize 
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_631(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_634(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -51629,7 +51870,7 @@ static PyObject* super_631(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v0@4:8{_NSSize=ff}12{_NSRange=II}20 */
 static void 
-meth_imp_632(id self, SEL sel, struct _NSSize arg_2, struct _NSRange arg_3)
+meth_imp_635(id self, SEL sel, struct _NSSize arg_2, struct _NSRange arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -51653,7 +51894,7 @@ meth_imp_632(id self, SEL sel, struct _NSSize arg_2, struct _NSRange arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_632(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_635(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -51697,7 +51938,7 @@ static PyObject* super_632(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v104@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}24{_NSRect={_NSPoint=ff}{_NSSize=ff}}40{_NSRect={_NSPoint=ff}{_NSSize=ff}}56{_NSRect={_NSPoint=ff}{_NSSize=ff}}72{_NSRect={_NSPoint=ff}{_NSSize=ff}}88 */
 static void 
-meth_imp_633(id self, SEL sel, struct _NSRect arg_2, struct _NSRect arg_3, struct _NSRect arg_4, struct _NSRect arg_5, struct _NSRect arg_6, struct _NSRect arg_7)
+meth_imp_636(id self, SEL sel, struct _NSRect arg_2, struct _NSRect arg_3, struct _NSRect arg_4, struct _NSRect arg_5, struct _NSRect arg_6, struct _NSRect arg_7)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -51733,7 +51974,7 @@ meth_imp_633(id self, SEL sel, struct _NSRect arg_2, struct _NSRect arg_3, struc
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_633(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_636(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -51806,7 +52047,7 @@ static PyObject* super_633(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v36@4:8@12@16@20@24@28:32^v32
 /* signature: v36@4:8@12@16@20@24@28@32c35 */
 static void 
-meth_imp_634(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6, id arg_7, char arg_8)
+meth_imp_637(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6, id arg_7, char arg_8)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -51845,7 +52086,7 @@ meth_imp_634(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6,
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_634(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_637(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -51925,7 +52166,7 @@ static PyObject* super_634(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v36@4:8@12@16i20@24@28^i32c35
 /* signature: v36@4:8@12I16{_NSRange=II}20i28{_NSRange=II}28 */
 static void 
-meth_imp_635(id self, SEL sel, id arg_2, unsigned int arg_3, struct _NSRange arg_4, int arg_5, struct _NSRange arg_6)
+meth_imp_638(id self, SEL sel, id arg_2, unsigned int arg_3, struct _NSRange arg_4, int arg_5, struct _NSRange arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -51958,7 +52199,7 @@ meth_imp_635(id self, SEL sel, id arg_2, unsigned int arg_3, struct _NSRange arg
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_635(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_638(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -52024,7 +52265,7 @@ static PyObject* super_635(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v36@4:8@12^@16^c20^@24^@28^:32^I32
 /* signature: v36@4:8@12{_NSPoint=ff}16f40@28i32@32 */
 static void 
-meth_imp_636(id self, SEL sel, id arg_2, struct _NSPoint arg_3, float arg_4, id arg_5, int arg_6, id arg_7)
+meth_imp_639(id self, SEL sel, id arg_2, struct _NSPoint arg_3, float arg_4, id arg_5, int arg_6, id arg_7)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -52060,7 +52301,7 @@ meth_imp_636(id self, SEL sel, id arg_2, struct _NSPoint arg_3, float arg_4, id 
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_636(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_639(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -52133,7 +52374,7 @@ static PyObject* super_636(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v36@4:8@12{_NSRange=II}16I24I28^{_NSRange=II}32^I32
 /* signature: v36@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32c35 */
 static void 
-meth_imp_637(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4, char arg_5)
+meth_imp_640(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -52163,7 +52404,7 @@ meth_imp_637(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4, char ar
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_637(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_640(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -52223,7 +52464,7 @@ static PyObject* super_637(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v36@4:8c12c16c20c24@28:32^v32
 /* signature: v36@4:8c12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32@32 */
 static void 
-meth_imp_638(id self, SEL sel, char arg_2, struct _NSRect arg_3, id arg_4, id arg_5)
+meth_imp_641(id self, SEL sel, char arg_2, struct _NSRect arg_3, id arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -52253,7 +52494,7 @@ meth_imp_638(id self, SEL sel, char arg_2, struct _NSRect arg_3, id arg_4, id ar
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_638(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_641(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -52311,7 +52552,7 @@ static PyObject* super_638(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v36@4:8i12i16i20{_NSRect={_NSPoint=ff}{_NSSize=ff}}20 */
 static void 
-meth_imp_639(id self, SEL sel, int arg_2, int arg_3, int arg_4, struct _NSRect arg_5)
+meth_imp_642(id self, SEL sel, int arg_2, int arg_3, int arg_4, struct _NSRect arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -52341,7 +52582,7 @@ meth_imp_639(id self, SEL sel, int arg_2, int arg_3, int arg_4, struct _NSRect a
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_639(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_642(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -52399,7 +52640,7 @@ static PyObject* super_639(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v36@4:8{_NSPoint=ff}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}20i32 */
 static void 
-meth_imp_640(id self, SEL sel, struct _NSPoint arg_2, struct _NSRect arg_3, int arg_4)
+meth_imp_643(id self, SEL sel, struct _NSPoint arg_2, struct _NSRect arg_3, int arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -52426,7 +52667,7 @@ meth_imp_640(id self, SEL sel, struct _NSPoint arg_2, struct _NSRect arg_3, int 
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_640(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_643(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -52477,7 +52718,7 @@ static PyObject* super_640(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v36@4:8{_NSPoint=ff}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}20i32f40 */
 static void 
-meth_imp_641(id self, SEL sel, struct _NSPoint arg_2, struct _NSRect arg_3, int arg_4, float arg_5)
+meth_imp_644(id self, SEL sel, struct _NSPoint arg_2, struct _NSRect arg_3, int arg_4, float arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -52507,7 +52748,7 @@ meth_imp_641(id self, SEL sel, struct _NSPoint arg_2, struct _NSRect arg_3, int 
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_641(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_644(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -52565,7 +52806,7 @@ static PyObject* super_641(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28@32@32 */
 static void 
-meth_imp_642(id self, SEL sel, struct _NSRect arg_2, id arg_3, id arg_4, id arg_5)
+meth_imp_645(id self, SEL sel, struct _NSRect arg_2, id arg_3, id arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -52595,7 +52836,7 @@ meth_imp_642(id self, SEL sel, struct _NSRect arg_2, id arg_3, id arg_4, id arg_
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_642(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_645(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -52653,7 +52894,7 @@ static PyObject* super_642(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28I32@32 */
 static void 
-meth_imp_643(id self, SEL sel, struct _NSRect arg_2, id arg_3, unsigned int arg_4, id arg_5)
+meth_imp_646(id self, SEL sel, struct _NSRect arg_2, id arg_3, unsigned int arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -52683,7 +52924,7 @@ meth_imp_643(id self, SEL sel, struct _NSRect arg_2, id arg_3, unsigned int arg_
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_643(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_646(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -52741,7 +52982,7 @@ static PyObject* super_643(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28c32i32 */
 static void 
-meth_imp_644(id self, SEL sel, struct _NSRect arg_2, id arg_3, char arg_4, int arg_5)
+meth_imp_647(id self, SEL sel, struct _NSRect arg_2, id arg_3, char arg_4, int arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -52771,7 +53012,7 @@ meth_imp_644(id self, SEL sel, struct _NSRect arg_2, id arg_3, char arg_4, int a
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_644(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_647(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -52829,7 +53070,7 @@ static PyObject* super_644(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28i32i32 */
 static void 
-meth_imp_645(id self, SEL sel, struct _NSRect arg_2, id arg_3, int arg_4, int arg_5)
+meth_imp_648(id self, SEL sel, struct _NSRect arg_2, id arg_3, int arg_4, int arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -52859,7 +53100,7 @@ meth_imp_645(id self, SEL sel, struct _NSRect arg_2, id arg_3, int arg_4, int ar
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_645(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_648(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -52917,7 +53158,7 @@ static PyObject* super_645(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12I28i32c35 */
 static void 
-meth_imp_646(id self, SEL sel, struct _NSRect arg_2, unsigned int arg_3, int arg_4, char arg_5)
+meth_imp_649(id self, SEL sel, struct _NSRect arg_2, unsigned int arg_3, int arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -52947,7 +53188,7 @@ meth_imp_646(id self, SEL sel, struct _NSRect arg_2, unsigned int arg_3, int arg
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_646(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_649(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -53005,7 +53246,7 @@ static PyObject* super_646(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12c28@32c35 */
 static void 
-meth_imp_647(id self, SEL sel, struct _NSRect arg_2, char arg_3, id arg_4, char arg_5)
+meth_imp_650(id self, SEL sel, struct _NSRect arg_2, char arg_3, id arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -53035,7 +53276,7 @@ meth_imp_647(id self, SEL sel, struct _NSRect arg_2, char arg_3, id arg_4, char 
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_647(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_650(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -53093,7 +53334,7 @@ static PyObject* super_647(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v40@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32I32@36 */
 static void 
-meth_imp_648(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4, unsigned int arg_5, id arg_6)
+meth_imp_651(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4, unsigned int arg_5, id arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -53126,7 +53367,7 @@ meth_imp_648(id self, SEL sel, id arg_2, struct _NSRect arg_3, id arg_4, unsigne
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_648(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_651(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -53191,7 +53432,7 @@ static PyObject* super_648(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v40@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16c32@32c39 */
 static void 
-meth_imp_649(id self, SEL sel, id arg_2, struct _NSRect arg_3, char arg_4, id arg_5, char arg_6)
+meth_imp_652(id self, SEL sel, id arg_2, struct _NSRect arg_3, char arg_4, id arg_5, char arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -53224,7 +53465,7 @@ meth_imp_649(id self, SEL sel, id arg_2, struct _NSRect arg_3, char arg_4, id ar
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_649(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_652(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -53289,7 +53530,7 @@ static PyObject* super_649(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v40@4:8{_NSPoint=ff}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}20c35c39 */
 static void 
-meth_imp_650(id self, SEL sel, struct _NSPoint arg_2, struct _NSRect arg_3, char arg_4, char arg_5)
+meth_imp_653(id self, SEL sel, struct _NSPoint arg_2, struct _NSRect arg_3, char arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -53319,7 +53560,7 @@ meth_imp_650(id self, SEL sel, struct _NSPoint arg_2, struct _NSRect arg_3, char
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_650(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_653(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -53377,7 +53618,7 @@ static PyObject* super_650(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v40@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28@32@32@36 */
 static void 
-meth_imp_651(id self, SEL sel, struct _NSRect arg_2, id arg_3, id arg_4, id arg_5, id arg_6)
+meth_imp_654(id self, SEL sel, struct _NSRect arg_2, id arg_3, id arg_4, id arg_5, id arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -53410,7 +53651,7 @@ meth_imp_651(id self, SEL sel, struct _NSRect arg_2, id arg_3, id arg_4, id arg_
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_651(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_654(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -53475,7 +53716,7 @@ static PyObject* super_651(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v40@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}24 */
 static void 
-meth_imp_652(id self, SEL sel, struct _NSRect arg_2, struct _NSRect arg_3)
+meth_imp_655(id self, SEL sel, struct _NSRect arg_2, struct _NSRect arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -53499,7 +53740,7 @@ meth_imp_652(id self, SEL sel, struct _NSRect arg_2, struct _NSRect arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_652(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_655(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -53543,7 +53784,7 @@ static PyObject* super_652(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v44@4:8@12{_NSPoint=ff}16{_NSSize=ff}24@32@32@36c43 */
 static void 
-meth_imp_653(id self, SEL sel, id arg_2, struct _NSPoint arg_3, struct _NSSize arg_4, id arg_5, id arg_6, id arg_7, char arg_8)
+meth_imp_656(id self, SEL sel, id arg_2, struct _NSPoint arg_3, struct _NSSize arg_4, id arg_5, id arg_6, id arg_7, char arg_8)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -53582,7 +53823,7 @@ meth_imp_653(id self, SEL sel, id arg_2, struct _NSPoint arg_3, struct _NSSize a
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_653(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_656(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -53661,7 +53902,7 @@ static PyObject* super_653(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v44@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16{_NSRect={_NSPoint=ff}{_NSSize=ff}}28 */
 static void 
-meth_imp_654(id self, SEL sel, id arg_2, struct _NSRect arg_3, struct _NSRect arg_4)
+meth_imp_657(id self, SEL sel, id arg_2, struct _NSRect arg_3, struct _NSRect arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -53688,7 +53929,7 @@ meth_imp_654(id self, SEL sel, id arg_2, struct _NSRect arg_3, struct _NSRect ar
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_654(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_657(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -53739,7 +53980,7 @@ static PyObject* super_654(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v44@4:8f40{_NSPoint=ff}16{_NSPoint=ff}24{_NSPoint=ff}28{_NSPoint=ff}36 */
 static void 
-meth_imp_655(id self, SEL sel, float arg_2, struct _NSPoint arg_3, struct _NSPoint arg_4, struct _NSPoint arg_5, struct _NSPoint arg_6)
+meth_imp_658(id self, SEL sel, float arg_2, struct _NSPoint arg_3, struct _NSPoint arg_4, struct _NSPoint arg_5, struct _NSPoint arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -53772,7 +54013,7 @@ meth_imp_655(id self, SEL sel, float arg_2, struct _NSPoint arg_3, struct _NSPoi
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_655(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_658(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -53837,7 +54078,7 @@ static PyObject* super_655(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v44@4:8i12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16{_NSRect={_NSPoint=ff}{_NSSize=ff}}28 */
 static void 
-meth_imp_656(id self, SEL sel, int arg_2, struct _NSRect arg_3, struct _NSRect arg_4)
+meth_imp_659(id self, SEL sel, int arg_2, struct _NSRect arg_3, struct _NSRect arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -53864,7 +54105,7 @@ meth_imp_656(id self, SEL sel, int arg_2, struct _NSRect arg_3, struct _NSRect a
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_656(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_659(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -53915,7 +54156,7 @@ static PyObject* super_656(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v44@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28@32@32i36i40 */
 static void 
-meth_imp_657(id self, SEL sel, struct _NSRect arg_2, id arg_3, id arg_4, id arg_5, int arg_6, int arg_7)
+meth_imp_660(id self, SEL sel, struct _NSRect arg_2, id arg_3, id arg_4, id arg_5, int arg_6, int arg_7)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -53951,7 +54192,7 @@ meth_imp_657(id self, SEL sel, struct _NSRect arg_2, id arg_3, id arg_4, id arg_
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_657(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_660(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -54023,7 +54264,7 @@ static PyObject* super_657(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v44@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}24@40 */
 static void 
-meth_imp_658(id self, SEL sel, struct _NSRect arg_2, struct _NSRect arg_3, id arg_4)
+meth_imp_661(id self, SEL sel, struct _NSRect arg_2, struct _NSRect arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -54050,7 +54291,7 @@ meth_imp_658(id self, SEL sel, struct _NSRect arg_2, struct _NSRect arg_3, id ar
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_658(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_661(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -54101,7 +54342,7 @@ static PyObject* super_658(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v44@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}24c43 */
 static void 
-meth_imp_659(id self, SEL sel, struct _NSRect arg_2, struct _NSRect arg_3, char arg_4)
+meth_imp_662(id self, SEL sel, struct _NSRect arg_2, struct _NSRect arg_3, char arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -54128,7 +54369,7 @@ meth_imp_659(id self, SEL sel, struct _NSRect arg_2, struct _NSRect arg_3, char 
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_659(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_662(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -54179,7 +54420,7 @@ static PyObject* super_659(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v44@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}24i40f40 */
 static void 
-meth_imp_660(id self, SEL sel, struct _NSRect arg_2, struct _NSRect arg_3, int arg_4, float arg_5)
+meth_imp_663(id self, SEL sel, struct _NSRect arg_2, struct _NSRect arg_3, int arg_4, float arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -54209,7 +54450,7 @@ meth_imp_660(id self, SEL sel, struct _NSRect arg_2, struct _NSRect arg_3, int a
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_660(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_663(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -54267,7 +54508,7 @@ static PyObject* super_660(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v48@4:8@12@16{_NSPoint=ff}20{_NSSize=ff}28@32@36@40c47 */
 static void 
-meth_imp_661(id self, SEL sel, id arg_2, id arg_3, struct _NSPoint arg_4, struct _NSSize arg_5, id arg_6, id arg_7, id arg_8, char arg_9)
+meth_imp_664(id self, SEL sel, id arg_2, id arg_3, struct _NSPoint arg_4, struct _NSSize arg_5, id arg_6, id arg_7, id arg_8, char arg_9)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -54309,7 +54550,7 @@ meth_imp_661(id self, SEL sel, id arg_2, id arg_3, struct _NSPoint arg_4, struct
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_661(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_664(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -54395,7 +54636,7 @@ static PyObject* super_661(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v48@4:8@12@16{_NSRect={_NSPoint=ff}{_NSSize=ff}}20{_NSRect={_NSPoint=ff}{_NSSize=ff}}32f40 */
 static void 
-meth_imp_662(id self, SEL sel, id arg_2, id arg_3, struct _NSRect arg_4, struct _NSRect arg_5, float arg_6)
+meth_imp_665(id self, SEL sel, id arg_2, id arg_3, struct _NSRect arg_4, struct _NSRect arg_5, float arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -54428,7 +54669,7 @@ meth_imp_662(id self, SEL sel, id arg_2, id arg_3, struct _NSRect arg_4, struct 
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_662(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_665(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -54493,7 +54734,7 @@ static PyObject* super_662(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v48@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRange=II}28{_NSRect={_NSPoint=ff}{_NSSize=ff}}32 */
 static void 
-meth_imp_663(id self, SEL sel, struct _NSRect arg_2, struct _NSRange arg_3, struct _NSRect arg_4)
+meth_imp_666(id self, SEL sel, struct _NSRect arg_2, struct _NSRange arg_3, struct _NSRect arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -54520,7 +54761,7 @@ meth_imp_663(id self, SEL sel, struct _NSRect arg_2, struct _NSRange arg_3, stru
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_663(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_666(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -54571,7 +54812,7 @@ static PyObject* super_663(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v48@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}24c43c47 */
 static void 
-meth_imp_664(id self, SEL sel, struct _NSRect arg_2, struct _NSRect arg_3, char arg_4, char arg_5)
+meth_imp_667(id self, SEL sel, struct _NSRect arg_2, struct _NSRect arg_3, char arg_4, char arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -54601,7 +54842,7 @@ meth_imp_664(id self, SEL sel, struct _NSRect arg_2, struct _NSRect arg_3, char 
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_664(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_667(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -54659,7 +54900,7 @@ static PyObject* super_664(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v52@4:8i12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16{_NSRect={_NSPoint=ff}{_NSSize=ff}}28c47i48 */
 static void 
-meth_imp_665(id self, SEL sel, int arg_2, struct _NSRect arg_3, struct _NSRect arg_4, char arg_5, int arg_6)
+meth_imp_668(id self, SEL sel, int arg_2, struct _NSRect arg_3, struct _NSRect arg_4, char arg_5, int arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -54692,7 +54933,7 @@ meth_imp_665(id self, SEL sel, int arg_2, struct _NSRect arg_3, struct _NSRect a
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_665(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_668(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -54791,7 +55032,7 @@ struct ATSGlyphVector {
 };
 
 static void 
-meth_imp_666(id self, SEL sel, struct _NSRange arg_2, struct ATSGlyphVector  *arg_3, struct _NSPoint arg_4, char arg_5, struct _NSRect arg_6, char arg_7)
+meth_imp_669(id self, SEL sel, struct _NSRange arg_2, struct ATSGlyphVector  *arg_3, struct _NSPoint arg_4, char arg_5, struct _NSRect arg_6, char arg_7)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -54827,7 +55068,7 @@ meth_imp_666(id self, SEL sel, struct _NSRange arg_2, struct ATSGlyphVector  *ar
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_666(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_669(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -54900,7 +55141,7 @@ static PyObject* super_666(PyObject* meth, PyObject* self, PyObject* args)
 // Skipped complex signature: v52@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28^{_NSRect={_NSPoint=ff}{_NSSize=ff}}32^{_NSRect={_NSPoint=ff}{_NSSize=ff}}32^{_NSRect={_NSPoint=ff}{_NSSize=ff}}36^{_NSRect={_NSPoint=ff}{_NSSize=ff}}40^{_NSRect={_NSPoint=ff}{_NSSize=ff}}44^{_NSRect={_NSPoint=ff}{_NSSize=ff}}48
 /* signature: v@: */
 static void 
-meth_imp_667(id self, SEL sel)
+meth_imp_670(id self, SEL sel)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -54918,7 +55159,7 @@ meth_imp_667(id self, SEL sel)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_667(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_670(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -54947,7 +55188,7 @@ static PyObject* super_667(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v@:@ */
 static void 
-meth_imp_668(id self, SEL sel, id arg_2)
+meth_imp_671(id self, SEL sel, id arg_2)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -54968,7 +55209,7 @@ meth_imp_668(id self, SEL sel, id arg_2)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_668(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_671(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -55005,7 +55246,7 @@ static PyObject* super_668(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v@:@@ */
 static void 
-meth_imp_669(id self, SEL sel, id arg_2, id arg_3)
+meth_imp_672(id self, SEL sel, id arg_2, id arg_3)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -55029,7 +55270,7 @@ meth_imp_669(id self, SEL sel, id arg_2, id arg_3)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_669(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_672(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -55073,7 +55314,7 @@ static PyObject* super_669(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v@:@@@ */
 static void 
-meth_imp_670(id self, SEL sel, id arg_2, id arg_3, id arg_4)
+meth_imp_673(id self, SEL sel, id arg_2, id arg_3, id arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -55100,7 +55341,7 @@ meth_imp_670(id self, SEL sel, id arg_2, id arg_3, id arg_4)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_670(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_673(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -55151,7 +55392,7 @@ static PyObject* super_670(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v@:@@@@ */
 static void 
-meth_imp_671(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5)
+meth_imp_674(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -55181,7 +55422,7 @@ meth_imp_671(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_671(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_674(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -55239,7 +55480,7 @@ static PyObject* super_671(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v@:@@@@@ */
 static void 
-meth_imp_672(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6)
+meth_imp_675(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -55272,7 +55513,7 @@ meth_imp_672(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6)
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_672(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_675(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -55337,7 +55578,7 @@ static PyObject* super_672(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v@:@@@@@@ */
 static void 
-meth_imp_673(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6, id arg_7)
+meth_imp_676(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6, id arg_7)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -55373,7 +55614,7 @@ meth_imp_673(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6,
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_673(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_676(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -55445,7 +55686,7 @@ static PyObject* super_673(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: v@:@@@@@@@ */
 static void 
-meth_imp_674(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6, id arg_7, id arg_8)
+meth_imp_677(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6, id arg_7, id arg_8)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -55484,7 +55725,7 @@ meth_imp_674(id self, SEL sel, id arg_2, id arg_3, id arg_4, id arg_5, id arg_6,
 	if (retval == NULL) ObjCErr_ToObjC();
 	Py_DECREF(retval);
 }
-static PyObject* super_674(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_677(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -55563,7 +55804,7 @@ static PyObject* super_674(PyObject* meth, PyObject* self, PyObject* args)
 
 /* signature: c@:o^@@o^@ */
 static char 
-meth_imp_675(id self, SEL sel, id  *arg_2, id arg_3, id  *arg_4)
+meth_imp_678(id self, SEL sel, id  *arg_2, id arg_3, id  *arg_4)
 {
 	PyObject* arglist;
 	PyObject* retval;
@@ -55621,7 +55862,7 @@ meth_imp_675(id self, SEL sel, id  *arg_2, id arg_3, id  *arg_4)
 	}
 	return objc_retval;
 }
-static PyObject* super_675(PyObject* meth, PyObject* self, PyObject* args)
+static PyObject* super_678(PyObject* meth, PyObject* self, PyObject* args)
 {
 	id objc_self;
 	const char* errstr;
@@ -55681,682 +55922,685 @@ static struct method_table {
 	superfunc call_super;
 	IMP implementation;
 } method_table[] = {
-	{ "#0@4:8", (superfunc)super_0, (IMP)meth_imp_0 },
-	{ "#0@4:8@12", (superfunc)super_1, (IMP)meth_imp_1 },
-	{ "#0@4:8@12@16", (superfunc)super_2, (IMP)meth_imp_2 },
-	{ "#0@4:8I12", (superfunc)super_3, (IMP)meth_imp_3 },
-	{ "*0@4:8", (superfunc)super_4, (IMP)meth_imp_4 },
-	{ "8@12o^@16", (superfunc)super_5, (IMP)meth_imp_5 },
-	{ ":0@4:8", (superfunc)super_6, (IMP)meth_imp_6 },
-	{ ":0@4:8@12", (superfunc)super_7, (IMP)meth_imp_7 },
-	{ "@0@4:8", (superfunc)super_8, (IMP)meth_imp_8 },
-	{ "@0@4:8#12", (superfunc)super_9, (IMP)meth_imp_9 },
-	{ "@0@4:8#12@16@20:24", (superfunc)super_10, (IMP)meth_imp_10 },
-	{ "@0@4:8*12", (superfunc)super_11, (IMP)meth_imp_11 },
-	{ "@0@4:8*12*16", (superfunc)super_12, (IMP)meth_imp_12 },
-	{ "@0@4:8*12*16*20*24*28c32", (superfunc)super_13, (IMP)meth_imp_13 },
-	{ "@0@4:8*12@16*20", (superfunc)super_14, (IMP)meth_imp_14 },
-	{ "@0@4:8*12I16", (superfunc)super_15, (IMP)meth_imp_15 },
-	{ "@0@4:8*12I16c20", (superfunc)super_16, (IMP)meth_imp_16 },
-	{ "@0@4:8*12i16", (superfunc)super_17, (IMP)meth_imp_17 },
-	{ "@0@4:8:12", (superfunc)super_18, (IMP)meth_imp_18 },
-	{ "@0@4:8:12@16", (superfunc)super_19, (IMP)meth_imp_19 },
-	{ "@0@4:8:12@16@20", (superfunc)super_20, (IMP)meth_imp_20 },
-	{ "@0@4:8:12c16", (superfunc)super_21, (IMP)meth_imp_21 },
-	{ "@0@4:8:12i16@20@24", (superfunc)super_22, (IMP)meth_imp_22 },
-	{ "@0@4:8:12{_NSRange=II}16@24", (superfunc)super_23, (IMP)meth_imp_23 },
-	{ "@0@4:8@12", (superfunc)super_24, (IMP)meth_imp_24 },
-	{ "@0@4:8@12#16", (superfunc)super_25, (IMP)meth_imp_25 },
-	{ "@0@4:8@12*16", (superfunc)super_26, (IMP)meth_imp_26 },
-	{ "@0@4:8@12:16", (superfunc)super_27, (IMP)meth_imp_27 },
-	{ "@0@4:8@12:16@20", (superfunc)super_28, (IMP)meth_imp_28 },
-	{ "@0@4:8@12:16@20i24", (superfunc)super_29, (IMP)meth_imp_29 },
-	{ "@0@4:8@12:16i20", (superfunc)super_30, (IMP)meth_imp_30 },
-	{ "@0@4:8@12@16", (superfunc)super_31, (IMP)meth_imp_31 },
-	{ "@0@4:8@12@16*20", (superfunc)super_32, (IMP)meth_imp_32 },
-	{ "@0@4:8@12@16:20@24", (superfunc)super_33, (IMP)meth_imp_33 },
-	{ "@0@4:8@12@16@20", (superfunc)super_34, (IMP)meth_imp_34 },
-	{ "@0@4:8@12@16@20@24", (superfunc)super_35, (IMP)meth_imp_35 },
-	{ "@0@4:8@12@16@20@24@28", (superfunc)super_36, (IMP)meth_imp_36 },
-	{ "@0@4:8@12@16@20@24@28@32", (superfunc)super_37, (IMP)meth_imp_37 },
-	{ "@0@4:8@12@16@20@24c28", (superfunc)super_38, (IMP)meth_imp_38 },
-	{ "@0@4:8@12@16@20@24c28i32", (superfunc)super_39, (IMP)meth_imp_39 },
-	{ "@0@4:8@12@16@20@24i28", (superfunc)super_40, (IMP)meth_imp_40 },
-	{ "@0@4:8@12@16@20c24", (superfunc)super_41, (IMP)meth_imp_41 },
-	{ "@0@4:8@12@16@20c24@28", (superfunc)super_42, (IMP)meth_imp_42 },
-	{ "@0@4:8@12@16@20i24", (superfunc)super_43, (IMP)meth_imp_43 },
-	{ "@0@4:8@12@16@20i24@28", (superfunc)super_44, (IMP)meth_imp_44 },
-	{ "@0@4:8@12@16@20{_NSPoint=ff}24", (superfunc)super_45, (IMP)meth_imp_45 },
-	{ "@0@4:8@12@16I20", (superfunc)super_46, (IMP)meth_imp_46 },
-	{ "@0@4:8@12@16I20@24", (superfunc)super_47, (IMP)meth_imp_47 },
-	{ "@0@4:8@12@16I20@24@28", (superfunc)super_48, (IMP)meth_imp_48 },
-	{ "@0@4:8@12@16S20", (superfunc)super_49, (IMP)meth_imp_49 },
-	{ "@0@4:8@12@16c20", (superfunc)super_50, (IMP)meth_imp_50 },
-	{ "@0@4:8@12@16c20@24", (superfunc)super_51, (IMP)meth_imp_51 },
-	{ "@0@4:8@12@16f40", (superfunc)super_52, (IMP)meth_imp_52 },
-	{ "@0@4:8@12@16i20", (superfunc)super_53, (IMP)meth_imp_53 },
-	{ "@0@4:8@12@16i20c24", (superfunc)super_54, (IMP)meth_imp_54 },
-	{ "@0@4:8@12@16i20i24", (superfunc)super_55, (IMP)meth_imp_55 },
-	{ "@0@4:8@12@16o^@20", (superfunc)super_56, (IMP)meth_imp_56 },
-	{ "@0@4:8@12@16{_NSRange=II}20@28", (superfunc)super_57, (IMP)meth_imp_57 },
-	{ "@0@4:8@12I16", (superfunc)super_58, (IMP)meth_imp_58 },
-	{ "@0@4:8@12I16@20", (superfunc)super_59, (IMP)meth_imp_59 },
-	{ "@0@4:8@12I16@20@24", (superfunc)super_60, (IMP)meth_imp_60 },
-	{ "@0@4:8@12I16I20", (superfunc)super_61, (IMP)meth_imp_61 },
-	{ "@0@4:8@12I16i20", (superfunc)super_62, (IMP)meth_imp_62 },
-	{ "@0@4:8@12I16i20f40", (superfunc)super_63, (IMP)meth_imp_63 },
-	{ "@0@4:8@12I16o^{_NSRange=II}20", (superfunc)super_64, (IMP)meth_imp_64 },
-	{ "@0@4:8@12I16o^{_NSRange=II}20{_NSRange=II}24", (superfunc)super_65, (IMP)meth_imp_65 },
-	{ "@0@4:8@12L16", (superfunc)super_66, (IMP)meth_imp_66 },
-	{ "@0@4:8@12c16", (superfunc)super_67, (IMP)meth_imp_67 },
-	{ "@0@4:8@12c16c20", (superfunc)super_68, (IMP)meth_imp_68 },
-	{ "@0@4:8@12f40", (superfunc)super_69, (IMP)meth_imp_69 },
-	{ "@0@4:8@12f40@20{_NSPoint=ff}24", (superfunc)super_70, (IMP)meth_imp_70 },
-	{ "@0@4:8@12f40r^f20", (superfunc)super_71, (IMP)meth_imp_71 },
-	{ "@0@4:8@12f40r^f20I24", (superfunc)super_72, (IMP)meth_imp_72 },
-	{ "@0@4:8@12f40r^f20i24", (superfunc)super_73, (IMP)meth_imp_73 },
-	{ "@0@4:8@12i16", (superfunc)super_74, (IMP)meth_imp_74 },
-	{ "@0@4:8@12i16:20", (superfunc)super_75, (IMP)meth_imp_75 },
-	{ "@0@4:8@12i16@20", (superfunc)super_76, (IMP)meth_imp_76 },
-	{ "@0@4:8@12i16I20", (superfunc)super_77, (IMP)meth_imp_77 },
-	{ "@0@4:8@12i16f40", (superfunc)super_78, (IMP)meth_imp_78 },
-	{ "@0@4:8@12i16i20", (superfunc)super_79, (IMP)meth_imp_79 },
-	{ "@0@4:8@12i16i20@24", (superfunc)super_80, (IMP)meth_imp_80 },
-	{ "@0@4:8@12i16{_NSRect={_NSPoint=ff}{_NSSize=ff}}20", (superfunc)super_81, (IMP)meth_imp_81 },
-	{ "@0@4:8@12o^@16", (superfunc)super_82, (IMP)meth_imp_82 },
-	{ "@0@4:8@12r*16I20", (superfunc)super_83, (IMP)meth_imp_83 },
-	{ "@0@4:8@12r^f16", (superfunc)super_84, (IMP)meth_imp_84 },
-	{ "@0@4:8@12r^{FSRef=[80C]}16", (superfunc)super_85, (IMP)meth_imp_85 },
-	{ "@0@4:8@12{_NSPoint=ff}16", (superfunc)super_86, (IMP)meth_imp_86 },
-	{ "@0@4:8@12{_NSRange=II}16", (superfunc)super_87, (IMP)meth_imp_87 },
-	{ "@0@4:8@12{_NSRange=II}16i24", (superfunc)super_88, (IMP)meth_imp_88 },
-	{ "@0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16", (superfunc)super_89, (IMP)meth_imp_89 },
-	{ "@0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32", (superfunc)super_90, (IMP)meth_imp_90 },
-	{ "@0@4:8C12", (superfunc)super_91, (IMP)meth_imp_91 },
-	{ "@0@4:8I12", (superfunc)super_92, (IMP)meth_imp_92 },
-	{ "@0@4:8I12:16", (superfunc)super_93, (IMP)meth_imp_93 },
-	{ "@0@4:8I12@16", (superfunc)super_94, (IMP)meth_imp_94 },
-	{ "@0@4:8I12@16@20", (superfunc)super_95, (IMP)meth_imp_95 },
-	{ "@0@4:8I12@16@20c24", (superfunc)super_96, (IMP)meth_imp_96 },
-	{ "@0@4:8I12@16@20l24", (superfunc)super_97, (IMP)meth_imp_97 },
-	{ "@0@4:8I12@16I20", (superfunc)super_98, (IMP)meth_imp_98 },
-	{ "@0@4:8I12I16", (superfunc)super_99, (IMP)meth_imp_99 },
-	{ "@0@4:8I12I16@20s24i28", (superfunc)super_100, (IMP)meth_imp_100 },
-	{ "@0@4:8I12c16", (superfunc)super_101, (IMP)meth_imp_101 },
-	{ "@0@4:8I12i16@20", (superfunc)super_102, (IMP)meth_imp_102 },
-	{ "@0@4:8I12o^{_NSRange=II}16", (superfunc)super_103, (IMP)meth_imp_103 },
-	{ "@0@4:8I12o^{_NSRange=II}16{_NSRange=II}20", (superfunc)super_104, (IMP)meth_imp_104 },
-	{ "@0@4:8I12{_NSPoint=ff}16@24", (superfunc)super_105, (IMP)meth_imp_105 },
-	{ "@0@4:8I12{_NSRange=II}16", (superfunc)super_106, (IMP)meth_imp_106 },
-	{ "@0@4:8L12", (superfunc)super_107, (IMP)meth_imp_107 },
-	{ "@0@4:8L12L16", (superfunc)super_108, (IMP)meth_imp_108 },
-	{ "@0@4:8Q12", (superfunc)super_109, (IMP)meth_imp_109 },
-	{ "@0@4:8Q12s20c24", (superfunc)super_110, (IMP)meth_imp_110 },
-	{ "@0@4:8S12", (superfunc)super_111, (IMP)meth_imp_111 },
-	{ "@0@4:8S12@16", (superfunc)super_112, (IMP)meth_imp_112 },
-	{ "@0@4:8S12I16@20", (superfunc)super_113, (IMP)meth_imp_113 },
-	{ "@0@4:8S12S16", (superfunc)super_114, (IMP)meth_imp_114 },
-	{ "@0@4:8S12S16@20", (superfunc)super_115, (IMP)meth_imp_115 },
-	{ "@0@4:8S12i16", (superfunc)super_116, (IMP)meth_imp_116 },
-	{ "@0@4:8c12", (superfunc)super_117, (IMP)meth_imp_117 },
-	{ "@0@4:8c12@16", (superfunc)super_118, (IMP)meth_imp_118 },
-	{ "@0@4:8c12c16", (superfunc)super_119, (IMP)meth_imp_119 },
-	{ "@0@4:8c12i16", (superfunc)super_120, (IMP)meth_imp_120 },
-	{ "@0@4:8c12i16i20c24", (superfunc)super_121, (IMP)meth_imp_121 },
-	{ "@0@4:8d40", (superfunc)super_122, (IMP)meth_imp_122 },
-	{ "@0@4:8d40@20", (superfunc)super_123, (IMP)meth_imp_123 },
-	{ "@0@4:8d40@20:24@28c32", (superfunc)super_124, (IMP)meth_imp_124 },
-	{ "@0@4:8d40@20c24", (superfunc)super_125, (IMP)meth_imp_125 },
-	{ "@0@4:8f40", (superfunc)super_126, (IMP)meth_imp_126 },
-	{ "@0@4:8f40@16", (superfunc)super_127, (IMP)meth_imp_127 },
-	{ "@0@4:8f40f48", (superfunc)super_128, (IMP)meth_imp_128 },
-	{ "@0@4:8f40f48c20", (superfunc)super_129, (IMP)meth_imp_129 },
-	{ "@0@4:8f40f48f56f64", (superfunc)super_130, (IMP)meth_imp_130 },
-	{ "@0@4:8f40f48f56f64f72", (superfunc)super_131, (IMP)meth_imp_131 },
-	{ "@0@4:8i12", (superfunc)super_132, (IMP)meth_imp_132 },
-	{ "@0@4:8i12@16", (superfunc)super_133, (IMP)meth_imp_133 },
-	{ "@0@4:8i12@16@20@24i28", (superfunc)super_134, (IMP)meth_imp_134 },
-	{ "@0@4:8i12@16i20", (superfunc)super_135, (IMP)meth_imp_135 },
-	{ "@0@4:8i12I16", (superfunc)super_136, (IMP)meth_imp_136 },
-	{ "@0@4:8i12c16", (superfunc)super_137, (IMP)meth_imp_137 },
-	{ "@0@4:8i12f40", (superfunc)super_138, (IMP)meth_imp_138 },
-	{ "@0@4:8i12f40r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}20r^{_NSPoint=ff}24", (superfunc)super_139, (IMP)meth_imp_139 },
-	{ "@0@4:8i12i16", (superfunc)super_140, (IMP)meth_imp_140 },
-	{ "@0@4:8i12i16@20", (superfunc)super_141, (IMP)meth_imp_141 },
-	{ "@0@4:8i12i16c20", (superfunc)super_142, (IMP)meth_imp_142 },
-	{ "@0@4:8i12i16i20", (superfunc)super_143, (IMP)meth_imp_143 },
-	{ "@0@4:8i12i16i20@24", (superfunc)super_144, (IMP)meth_imp_144 },
-	{ "@0@4:8i12i16i20i24", (superfunc)super_145, (IMP)meth_imp_145 },
-	{ "@0@4:8i12i16i20i24i28i32", (superfunc)super_146, (IMP)meth_imp_146 },
-	{ "@0@4:8i12r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}16", (superfunc)super_147, (IMP)meth_imp_147 },
-	{ "@0@4:8i12r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}16I20", (superfunc)super_148, (IMP)meth_imp_148 },
-	{ "@0@4:8i12s16c20c24c28c32", (superfunc)super_149, (IMP)meth_imp_149 },
-	{ "@0@4:8i12{_NSRange=II}16", (superfunc)super_150, (IMP)meth_imp_150 },
-	{ "@0@4:8i12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16", (superfunc)super_151, (IMP)meth_imp_151 },
-	{ "@0@4:8l12", (superfunc)super_152, (IMP)meth_imp_152 },
-	{ "@0@4:8q12", (superfunc)super_153, (IMP)meth_imp_153 },
-	{ "@0@4:8r*12", (superfunc)super_154, (IMP)meth_imp_154 },
-	{ "@0@4:8r*12I16", (superfunc)super_155, (IMP)meth_imp_155 },
-	{ "@0@4:8r*12I16I20", (superfunc)super_156, (IMP)meth_imp_156 },
-	{ "@0@4:8r^S12I16", (superfunc)super_157, (IMP)meth_imp_157 },
-	{ "@0@4:8r^{AEDesc=I^^{OpaqueAEDataStorageType}}12", (superfunc)super_158, (IMP)meth_imp_158 },
-	{ "@0@4:8r^{FSRef=[80C]}12", (superfunc)super_159, (IMP)meth_imp_159 },
-	{ "@0@4:8r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}12", (superfunc)super_160, (IMP)meth_imp_160 },
-	{ "@0@4:8r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}12I16i20c24@28", (superfunc)super_161, (IMP)meth_imp_161 },
-	{ "@0@4:8r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}12I16i20c24@28@32", (superfunc)super_162, (IMP)meth_imp_162 },
-	{ "@0@4:8r^{_NSSize=ff}12@16", (superfunc)super_163, (IMP)meth_imp_163 },
-	{ "@0@4:8s12", (superfunc)super_164, (IMP)meth_imp_164 },
-	{ "@0@4:8s12@16", (superfunc)super_165, (IMP)meth_imp_165 },
-	{ "@0@4:8{CGPoint=ff}12", (superfunc)super_166, (IMP)meth_imp_166 },
-	{ "@0@4:8{NSButtonState=iccc}12", (superfunc)super_167, (IMP)meth_imp_167 },
-	{ "@0@4:8{_NSPoint=ff}12", (superfunc)super_168, (IMP)meth_imp_168 },
-	{ "@0@4:8{_NSPoint=ff}12c20", (superfunc)super_169, (IMP)meth_imp_169 },
-	{ "@0@4:8{_NSRange=II}12", (superfunc)super_170, (IMP)meth_imp_170 },
-	{ "@0@4:8{_NSRange=II}12@20", (superfunc)super_171, (IMP)meth_imp_171 },
-	{ "@0@4:8{_NSRange=II}12@20@24", (superfunc)super_172, (IMP)meth_imp_172 },
-	{ "@0@4:8{_NSRange=II}12@20@24{_NSRange=II}28", (superfunc)super_173, (IMP)meth_imp_173 },
-	{ "@0@4:8{_NSRange=II}12c20", (superfunc)super_174, (IMP)meth_imp_174 },
-	{ "@0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12", (superfunc)super_175, (IMP)meth_imp_175 },
-	{ "@0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28", (superfunc)super_176, (IMP)meth_imp_176 },
-	{ "@0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28@32", (superfunc)super_177, (IMP)meth_imp_177 },
-	{ "@0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28i32", (superfunc)super_178, (IMP)meth_imp_178 },
-	{ "@0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12I28@32", (superfunc)super_179, (IMP)meth_imp_179 },
-	{ "@0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12c28", (superfunc)super_180, (IMP)meth_imp_180 },
-	{ "@0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12i28", (superfunc)super_181, (IMP)meth_imp_181 },
-	{ "@0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12s28", (superfunc)super_182, (IMP)meth_imp_182 },
-	{ "@0@4:8{_NSSize=ff}12", (superfunc)super_183, (IMP)meth_imp_183 },
-	{ "@0@4:8{_NSSize=ff}12@20", (superfunc)super_184, (IMP)meth_imp_184 },
-	{ "@0@4:8{_NSSize=ff}12i20", (superfunc)super_185, (IMP)meth_imp_185 },
-	{ "@0@4:8{_NSSize=ff}12i20c24c28", (superfunc)super_186, (IMP)meth_imp_186 },
-	{ "@0@4:8{_NSSize=ff}12i20c24c28c32", (superfunc)super_187, (IMP)meth_imp_187 },
-	{ "@36@4:8@12:16@20@24@28@32I32", (superfunc)super_188, (IMP)meth_imp_188 },
-	{ "@36@4:8@12@16c20@24@28:32I32", (superfunc)super_189, (IMP)meth_imp_189 },
-	{ "@36@4:8@12d40@24:28@32c35", (superfunc)super_190, (IMP)meth_imp_190 },
-	{ "@36@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32@32", (superfunc)super_191, (IMP)meth_imp_191 },
-	{ "@36@4:8@12{_NSSize=ff}16f40f48{_NSPoint=ff}28", (superfunc)super_192, (IMP)meth_imp_192 },
-	{ "@36@4:8i12@16@20@24@28@32*32", (superfunc)super_193, (IMP)meth_imp_193 },
-	{ "@36@4:8i12I16I20I24I28I32@32", (superfunc)super_194, (IMP)meth_imp_194 },
-	{ "@36@4:8r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@16@20@24@28i32i32", (superfunc)super_195, (IMP)meth_imp_195 },
-	{ "@36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28I32@32", (superfunc)super_196, (IMP)meth_imp_196 },
-	{ "@36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12I28i32c35", (superfunc)super_197, (IMP)meth_imp_197 },
-	{ "@40@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12I28i32c35@36", (superfunc)super_198, (IMP)meth_imp_198 },
-	{ "@40@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12i28#32i32i36", (superfunc)super_199, (IMP)meth_imp_199 },
-	{ "@40@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12i28@32i32i36", (superfunc)super_200, (IMP)meth_imp_200 },
-	{ "@48@4:8i12{_NSPoint=ff}16I24d40i32@36i40i44f48", (superfunc)super_201, (IMP)meth_imp_201 },
-	{ "@52@4:8i12{_NSPoint=ff}16I24d40i32@36s42i44i48", (superfunc)super_202, (IMP)meth_imp_202 },
-	{ "@56@4:8i12{_NSPoint=ff}16I24d40i32@36@40@44c51S54", (superfunc)super_203, (IMP)meth_imp_203 },
-	{ "@@:", (superfunc)super_204, (IMP)meth_imp_204 },
-	{ "@@:@", (superfunc)super_205, (IMP)meth_imp_205 },
-	{ "@@:@@", (superfunc)super_206, (IMP)meth_imp_206 },
-	{ "@@:@@@", (superfunc)super_207, (IMP)meth_imp_207 },
-	{ "@@:@@@@", (superfunc)super_208, (IMP)meth_imp_208 },
-	{ "@@:@@@@@", (superfunc)super_209, (IMP)meth_imp_209 },
-	{ "@@:@@@@@@", (superfunc)super_210, (IMP)meth_imp_210 },
-	{ "@@:@@@@@@@", (superfunc)super_211, (IMP)meth_imp_211 },
-	{ "@@:@@i", (superfunc)super_212, (IMP)meth_imp_212 },
-	{ "C0@4:8", (superfunc)super_213, (IMP)meth_imp_213 },
-	{ "I0@4:8", (superfunc)super_214, (IMP)meth_imp_214 },
-	{ "I0@4:8:12", (superfunc)super_215, (IMP)meth_imp_215 },
-	{ "I0@4:8:12@16", (superfunc)super_216, (IMP)meth_imp_216 },
-	{ "I0@4:8@12", (superfunc)super_217, (IMP)meth_imp_217 },
-	{ "I0@4:8@12@16", (superfunc)super_218, (IMP)meth_imp_218 },
-	{ "I0@4:8@12@16@20", (superfunc)super_219, (IMP)meth_imp_219 },
-	{ "I0@4:8@12@16I20{_NSRange=II}24", (superfunc)super_220, (IMP)meth_imp_220 },
-	{ "I0@4:8@12@16c20", (superfunc)super_221, (IMP)meth_imp_221 },
-	{ "I0@4:8@12I16", (superfunc)super_222, (IMP)meth_imp_222 },
-	{ "I0@4:8@12I16{_NSRange=II}20@28", (superfunc)super_223, (IMP)meth_imp_223 },
-	{ "I0@4:8@12i16@20c24", (superfunc)super_224, (IMP)meth_imp_224 },
-	{ "I0@4:8@12{_NSRange=II}16", (superfunc)super_225, (IMP)meth_imp_225 },
-	{ "I0@4:8@12{_NSRange=II}16c24", (superfunc)super_226, (IMP)meth_imp_226 },
-	{ "I0@4:8I12", (superfunc)super_227, (IMP)meth_imp_227 },
-	{ "I0@4:8I12*16", (superfunc)super_228, (IMP)meth_imp_228 },
-	{ "I0@4:8I12c16", (superfunc)super_229, (IMP)meth_imp_229 },
-	{ "I0@4:8I12{_NSRange=II}16", (superfunc)super_230, (IMP)meth_imp_230 },
-	{ "I0@4:8S12", (superfunc)super_231, (IMP)meth_imp_231 },
-	{ "I0@4:8c12", (superfunc)super_232, (IMP)meth_imp_232 },
-	{ "I0@4:8i12", (superfunc)super_233, (IMP)meth_imp_233 },
-	{ "I0@4:8l12", (superfunc)super_234, (IMP)meth_imp_234 },
-	{ "I0@4:8{_NSPoint=ff}12", (superfunc)super_235, (IMP)meth_imp_235 },
-	{ "I0@4:8{_NSPoint=ff}12@20", (superfunc)super_236, (IMP)meth_imp_236 },
-	{ "Io^@co^@@", (superfunc)super_237, (IMP)meth_imp_237 },
-	{ "L0@4:8", (superfunc)super_238, (IMP)meth_imp_238 },
-	{ "L0@4:8@12", (superfunc)super_239, (IMP)meth_imp_239 },
-	{ "O@0@4:8nO@12", (superfunc)super_240, (IMP)meth_imp_240 },
-	{ "O@0@4:8nO@12nO@16", (superfunc)super_241, (IMP)meth_imp_241 },
-	{ "Q0@4:8", (superfunc)super_242, (IMP)meth_imp_242 },
-	{ "S0@4:8", (superfunc)super_243, (IMP)meth_imp_243 },
-	{ "S0@4:8I12", (superfunc)super_244, (IMP)meth_imp_244 },
-	{ "Vv0@4:8", (superfunc)super_245, (IMP)meth_imp_245 },
-	{ "Vv0@4:8@12", (superfunc)super_246, (IMP)meth_imp_246 },
-	{ "Vv0@4:8@12i16", (superfunc)super_247, (IMP)meth_imp_247 },
-	{ "Vv0@4:8i12c16", (superfunc)super_248, (IMP)meth_imp_248 },
-	{ "Vv0@4:8nO@12nO@16", (superfunc)super_249, (IMP)meth_imp_249 },
-	{ "Vv0@4:8nO@12ni16", (superfunc)super_250, (IMP)meth_imp_250 },
-	{ "c0@4:8", (superfunc)super_251, (IMP)meth_imp_251 },
-	{ "c0@4:8#12", (superfunc)super_252, (IMP)meth_imp_252 },
-	{ "c0@4:8#12@16", (superfunc)super_253, (IMP)meth_imp_253 },
-	{ "c0@4:8*12@16*20@24i28", (superfunc)super_254, (IMP)meth_imp_254 },
-	{ "c0@4:8*12I16", (superfunc)super_255, (IMP)meth_imp_255 },
-	{ "c0@4:8*12I16@20", (superfunc)super_256, (IMP)meth_imp_256 },
-	{ "c0@4:8*12I16I20", (superfunc)super_257, (IMP)meth_imp_257 },
-	{ "c0@4:8*12i16c20c24c28", (superfunc)super_258, (IMP)meth_imp_258 },
-	{ "c0@4:8:12", (superfunc)super_259, (IMP)meth_imp_259 },
-	{ "c0@4:8:12@16", (superfunc)super_260, (IMP)meth_imp_260 },
-	{ "c0@4:8:12@16@20", (superfunc)super_261, (IMP)meth_imp_261 },
-	{ "c0@4:8:12@16i20i24", (superfunc)super_262, (IMP)meth_imp_262 },
-	{ "c0@4:8@12", (superfunc)super_263, (IMP)meth_imp_263 },
-	{ "c0@4:8@12:16", (superfunc)super_264, (IMP)meth_imp_264 },
-	{ "c0@4:8@12@16", (superfunc)super_265, (IMP)meth_imp_265 },
-	{ "c0@4:8@12@16:20", (superfunc)super_266, (IMP)meth_imp_266 },
-	{ "c0@4:8@12@16@20", (superfunc)super_267, (IMP)meth_imp_267 },
-	{ "c0@4:8@12@16@20I24", (superfunc)super_268, (IMP)meth_imp_268 },
-	{ "c0@4:8@12@16@20i24", (superfunc)super_269, (IMP)meth_imp_269 },
-	{ "c0@4:8@12@16I20", (superfunc)super_270, (IMP)meth_imp_270 },
-	{ "c0@4:8@12@16S20", (superfunc)super_271, (IMP)meth_imp_271 },
-	{ "c0@4:8@12@16c20", (superfunc)super_272, (IMP)meth_imp_272 },
-	{ "c0@4:8@12@16c20c24", (superfunc)super_273, (IMP)meth_imp_273 },
-	{ "c0@4:8@12@16c20c24c28", (superfunc)super_274, (IMP)meth_imp_274 },
-	{ "c0@4:8@12@16i20", (superfunc)super_275, (IMP)meth_imp_275 },
-	{ "c0@4:8@12@16{_NSPoint=ff}20@28", (superfunc)super_276, (IMP)meth_imp_276 },
-	{ "c0@4:8@12I16", (superfunc)super_277, (IMP)meth_imp_277 },
-	{ "c0@4:8@12I16@20@24I28", (superfunc)super_278, (IMP)meth_imp_278 },
-	{ "c0@4:8@12c16", (superfunc)super_279, (IMP)meth_imp_279 },
-	{ "c0@4:8@12c16c20", (superfunc)super_280, (IMP)meth_imp_280 },
-	{ "c0@4:8@12i16", (superfunc)super_281, (IMP)meth_imp_281 },
-	{ "c0@4:8@12i16@20", (superfunc)super_282, (IMP)meth_imp_282 },
-	{ "c0@4:8@12o^c16", (superfunc)super_283, (IMP)meth_imp_283 },
-	{ "c0@4:8@12r^{FSRef=[80C]}16r^{FSRef=[80C]}20", (superfunc)super_284, (IMP)meth_imp_284 },
-	{ "c0@4:8@12r^{FSRef=[80C]}16r^{FSRef=[80C]}20@24i28", (superfunc)super_285, (IMP)meth_imp_285 },
-	{ "c0@4:8@12r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}16", (superfunc)super_286, (IMP)meth_imp_286 },
-	{ "c0@4:8@12r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}16i20", (superfunc)super_287, (IMP)meth_imp_287 },
-	{ "c0@4:8@12{_NSPoint=ff}16", (superfunc)super_288, (IMP)meth_imp_288 },
-	{ "c0@4:8@12{_NSRange=II}16", (superfunc)super_289, (IMP)meth_imp_289 },
-	{ "c0@4:8@12{_NSRange=II}16@24", (superfunc)super_290, (IMP)meth_imp_290 },
-	{ "c0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16", (superfunc)super_291, (IMP)meth_imp_291 },
-	{ "c0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32", (superfunc)super_292, (IMP)meth_imp_292 },
-	{ "c0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16c32", (superfunc)super_293, (IMP)meth_imp_293 },
-	{ "c0@4:8C12", (superfunc)super_294, (IMP)meth_imp_294 },
-	{ "c0@4:8I12", (superfunc)super_295, (IMP)meth_imp_295 },
-	{ "c0@4:8I12I16", (superfunc)super_296, (IMP)meth_imp_296 },
-	{ "c0@4:8I12I16@20", (superfunc)super_297, (IMP)meth_imp_297 },
-	{ "c0@4:8I12{_NSPoint=ff}16I24@28", (superfunc)super_298, (IMP)meth_imp_298 },
-	{ "c0@4:8L12", (superfunc)super_299, (IMP)meth_imp_299 },
-	{ "c0@4:8S12", (superfunc)super_300, (IMP)meth_imp_300 },
-	{ "c0@4:8c12", (superfunc)super_301, (IMP)meth_imp_301 },
-	{ "c0@4:8d40", (superfunc)super_302, (IMP)meth_imp_302 },
-	{ "c0@4:8f40", (superfunc)super_303, (IMP)meth_imp_303 },
-	{ "c0@4:8f40c16", (superfunc)super_304, (IMP)meth_imp_304 },
-	{ "c0@4:8i12", (superfunc)super_305, (IMP)meth_imp_305 },
-	{ "c0@4:8i12@16", (superfunc)super_306, (IMP)meth_imp_306 },
-	{ "c0@4:8i12@16@20", (superfunc)super_307, (IMP)meth_imp_307 },
-	{ "c0@4:8i12@16@20@24", (superfunc)super_308, (IMP)meth_imp_308 },
-	{ "c0@4:8i12c16", (superfunc)super_309, (IMP)meth_imp_309 },
-	{ "c0@4:8i12f40r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}20r^{_NSPoint=ff}24", (superfunc)super_310, (IMP)meth_imp_310 },
-	{ "c0@4:8i12i16", (superfunc)super_311, (IMP)meth_imp_311 },
-	{ "c0@4:8i12i16i20", (superfunc)super_312, (IMP)meth_imp_312 },
-	{ "c0@4:8l12", (superfunc)super_313, (IMP)meth_imp_313 },
-	{ "c0@4:8nO@12nO@16", (superfunc)super_314, (IMP)meth_imp_314 },
-	{ "c0@4:8r*12", (superfunc)super_315, (IMP)meth_imp_315 },
-	{ "c0@4:8r^{FSRef=[80C]}12", (superfunc)super_316, (IMP)meth_imp_316 },
-	{ "c0@4:8r^{_NSPoint=ff}12", (superfunc)super_317, (IMP)meth_imp_317 },
-	{ "c0@4:8r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@16", (superfunc)super_318, (IMP)meth_imp_318 },
-	{ "c0@4:8r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}12f40", (superfunc)super_319, (IMP)meth_imp_319 },
-	{ "c0@4:8s12", (superfunc)super_320, (IMP)meth_imp_320 },
-	{ "c0@4:8{NSButtonState=iccc}12", (superfunc)super_321, (IMP)meth_imp_321 },
-	{ "c0@4:8{_NSPoint=ff}12", (superfunc)super_322, (IMP)meth_imp_322 },
-	{ "c0@4:8{_NSPoint=ff}12@20", (superfunc)super_323, (IMP)meth_imp_323 },
-	{ "c0@4:8{_NSPoint=ff}12i20", (superfunc)super_324, (IMP)meth_imp_324 },
-	{ "c0@4:8{_NSPoint=ff}12{_NSPoint=ff}20@28", (superfunc)super_325, (IMP)meth_imp_325 },
-	{ "c0@4:8{_NSPoint=ff}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}20", (superfunc)super_326, (IMP)meth_imp_326 },
-	{ "c0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12", (superfunc)super_327, (IMP)meth_imp_327 },
-	{ "c0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28", (superfunc)super_328, (IMP)meth_imp_328 },
-	{ "c0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28@32", (superfunc)super_329, (IMP)meth_imp_329 },
-	{ "c36@4:8@12i16i20c24c28c32c35", (superfunc)super_330, (IMP)meth_imp_330 },
-	{ "c36@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32I32", (superfunc)super_331, (IMP)meth_imp_331 },
-	{ "c36@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32c35", (superfunc)super_332, (IMP)meth_imp_332 },
-	{ "c36@4:8{_NSRange=II}12{_NSRange=II}20{_NSRange=II}28@32", (superfunc)super_333, (IMP)meth_imp_333 },
-	{ "c36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28i32i32", (superfunc)super_334, (IMP)meth_imp_334 },
-	{ "c40@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32I32c39", (superfunc)super_335, (IMP)meth_imp_335 },
-	{ "c40@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32c35@36", (superfunc)super_336, (IMP)meth_imp_336 },
-	{ "c40@4:8d40@20@24@28@32I32I36", (superfunc)super_337, (IMP)meth_imp_337 },
-	{ "c60@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}24i40f40c51c55c59", (superfunc)super_338, (IMP)meth_imp_338 },
-	{ "c@:@o^@", (superfunc)super_339, (IMP)meth_imp_339 },
-	{ "c@:@o^@o^@", (superfunc)super_340, (IMP)meth_imp_340 },
-	{ "c@:o^@@o^@", (superfunc)super_341, (IMP)meth_imp_341 },
-	{ "c@:o^I", (superfunc)super_342, (IMP)meth_imp_342 },
-	{ "c@:o^d", (superfunc)super_343, (IMP)meth_imp_343 },
-	{ "c@:o^f", (superfunc)super_344, (IMP)meth_imp_344 },
-	{ "c@:o^i", (superfunc)super_345, (IMP)meth_imp_345 },
-	{ "c@:o^q", (superfunc)super_346, (IMP)meth_imp_346 },
-	{ "d0@4:8", (superfunc)super_347, (IMP)meth_imp_347 },
-	{ "d0@4:8@12", (superfunc)super_348, (IMP)meth_imp_348 },
-	{ "d0@4:8d40", (superfunc)super_349, (IMP)meth_imp_349 },
-	{ "d0@4:8i12", (superfunc)super_350, (IMP)meth_imp_350 },
-	{ "d0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12", (superfunc)super_351, (IMP)meth_imp_351 },
-	{ "f0@4:8", (superfunc)super_352, (IMP)meth_imp_352 },
-	{ "f0@4:8@12", (superfunc)super_353, (IMP)meth_imp_353 },
-	{ "f0@4:8@12@16", (superfunc)super_354, (IMP)meth_imp_354 },
-	{ "f0@4:8@12@16f40", (superfunc)super_355, (IMP)meth_imp_355 },
-	{ "f0@4:8@12I16", (superfunc)super_356, (IMP)meth_imp_356 },
-	{ "f0@4:8@12f40i20", (superfunc)super_357, (IMP)meth_imp_357 },
-	{ "f0@4:8@12i16", (superfunc)super_358, (IMP)meth_imp_358 },
-	{ "f0@4:8I12", (superfunc)super_359, (IMP)meth_imp_359 },
-	{ "f0@4:8c12", (superfunc)super_360, (IMP)meth_imp_360 },
-	{ "f0@4:8c12f40", (superfunc)super_361, (IMP)meth_imp_361 },
-	{ "f0@4:8d40", (superfunc)super_362, (IMP)meth_imp_362 },
-	{ "f0@4:8f40", (superfunc)super_363, (IMP)meth_imp_363 },
-	{ "f0@4:8i12", (superfunc)super_364, (IMP)meth_imp_364 },
-	{ "f0@4:8r*12I16", (superfunc)super_365, (IMP)meth_imp_365 },
-	{ "f0@4:8{_NSPoint=ff}12@20", (superfunc)super_366, (IMP)meth_imp_366 },
-	{ "f0@4:8{_NSSize=ff}12", (superfunc)super_367, (IMP)meth_imp_367 },
-	{ "i0@4:8", (superfunc)super_368, (IMP)meth_imp_368 },
-	{ "i0@4:8*12", (superfunc)super_369, (IMP)meth_imp_369 },
-	{ "i0@4:8*12@16", (superfunc)super_370, (IMP)meth_imp_370 },
-	{ "i0@4:8@12", (superfunc)super_371, (IMP)meth_imp_371 },
-	{ "i0@4:8@12:16", (superfunc)super_372, (IMP)meth_imp_372 },
-	{ "i0@4:8@12@16", (superfunc)super_373, (IMP)meth_imp_373 },
-	{ "i0@4:8@12@16@20", (superfunc)super_374, (IMP)meth_imp_374 },
-	{ "i0@4:8@12@16@20@24", (superfunc)super_375, (IMP)meth_imp_375 },
-	{ "i0@4:8@12@16@20@24@28@32", (superfunc)super_376, (IMP)meth_imp_376 },
-	{ "i0@4:8@12@16@20c24", (superfunc)super_377, (IMP)meth_imp_377 },
-	{ "i0@4:8@12@16c20", (superfunc)super_378, (IMP)meth_imp_378 },
-	{ "i0@4:8@12@16c20c24", (superfunc)super_379, (IMP)meth_imp_379 },
-	{ "i0@4:8@12@16i20", (superfunc)super_380, (IMP)meth_imp_380 },
-	{ "i0@4:8@12I16", (superfunc)super_381, (IMP)meth_imp_381 },
-	{ "i0@4:8@12I16{_NSRange=II}20", (superfunc)super_382, (IMP)meth_imp_382 },
-	{ "i0@4:8@12I16{_NSRange=II}20@28", (superfunc)super_383, (IMP)meth_imp_383 },
-	{ "i0@4:8@12c16", (superfunc)super_384, (IMP)meth_imp_384 },
-	{ "i0@4:8@12c16@20", (superfunc)super_385, (IMP)meth_imp_385 },
-	{ "i0@4:8@12c16@20@24@28", (superfunc)super_386, (IMP)meth_imp_386 },
-	{ "i0@4:8@12c16c20", (superfunc)super_387, (IMP)meth_imp_387 },
-	{ "i0@4:8@12i16", (superfunc)super_388, (IMP)meth_imp_388 },
-	{ "i0@4:8@12i16c20", (superfunc)super_389, (IMP)meth_imp_389 },
-	{ "i0@4:8@12{_NSRange=II}16", (superfunc)super_390, (IMP)meth_imp_390 },
-	{ "i0@4:8I12", (superfunc)super_391, (IMP)meth_imp_391 },
-	{ "i0@4:8S12", (superfunc)super_392, (IMP)meth_imp_392 },
-	{ "i0@4:8S12i16", (superfunc)super_393, (IMP)meth_imp_393 },
-	{ "i0@4:8c12@16@20@24", (superfunc)super_394, (IMP)meth_imp_394 },
-	{ "i0@4:8d40", (superfunc)super_395, (IMP)meth_imp_395 },
-	{ "i0@4:8f40", (superfunc)super_396, (IMP)meth_imp_396 },
-	{ "i0@4:8i12", (superfunc)super_397, (IMP)meth_imp_397 },
-	{ "i0@4:8i12@16", (superfunc)super_398, (IMP)meth_imp_398 },
-	{ "i0@4:8i12I16", (superfunc)super_399, (IMP)meth_imp_399 },
-	{ "i0@4:8i12c16@20", (superfunc)super_400, (IMP)meth_imp_400 },
-	{ "i0@4:8i12f40", (superfunc)super_401, (IMP)meth_imp_401 },
-	{ "i0@4:8i12i16", (superfunc)super_402, (IMP)meth_imp_402 },
-	{ "i0@4:8i12i16@20", (superfunc)super_403, (IMP)meth_imp_403 },
-	{ "i0@4:8i12{_NSPoint=ff}16", (superfunc)super_404, (IMP)meth_imp_404 },
-	{ "i0@4:8i12{_NSPoint=ff}16@24i28", (superfunc)super_405, (IMP)meth_imp_405 },
-	{ "i0@4:8n@12", (superfunc)super_406, (IMP)meth_imp_406 },
-	{ "i0@4:8r^{_NSPoint=ff}12", (superfunc)super_407, (IMP)meth_imp_407 },
-	{ "i0@4:8{NSButtonState=iccc}12", (superfunc)super_408, (IMP)meth_imp_408 },
-	{ "i0@4:8{_NSPoint=ff}12", (superfunc)super_409, (IMP)meth_imp_409 },
-	{ "i0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12", (superfunc)super_410, (IMP)meth_imp_410 },
-	{ "i36@4:8@12@16i20c24c28c32c35", (superfunc)super_411, (IMP)meth_imp_411 },
-	{ "i36@4:8@12{_NSRange=II}16@24{_NSRange=II}28i32", (superfunc)super_412, (IMP)meth_imp_412 },
-	{ "i40@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12c28@32@32@36", (superfunc)super_413, (IMP)meth_imp_413 },
-	{ "i@:@", (superfunc)super_414, (IMP)meth_imp_414 },
-	{ "l0@4:8", (superfunc)super_415, (IMP)meth_imp_415 },
-	{ "l0@4:8i12r*16i20", (superfunc)super_416, (IMP)meth_imp_416 },
-	{ "q0@4:8", (superfunc)super_417, (IMP)meth_imp_417 },
-	{ "q0@4:8@12", (superfunc)super_418, (IMP)meth_imp_418 },
-	{ "r*0@4:8", (superfunc)super_419, (IMP)meth_imp_419 },
-	{ "r*0@4:8@12", (superfunc)super_420, (IMP)meth_imp_420 },
-	{ "r*0@4:8I12", (superfunc)super_421, (IMP)meth_imp_421 },
-	{ "r*0@4:8c12", (superfunc)super_422, (IMP)meth_imp_422 },
-	{ "r^I0@4:8", (superfunc)super_423, (IMP)meth_imp_423 },
-	{ "r^S0@4:8", (superfunc)super_424, (IMP)meth_imp_424 },
-	{ "r^f0@4:8", (superfunc)super_425, (IMP)meth_imp_425 },
-	{ "r^f0@4:8@12", (superfunc)super_426, (IMP)meth_imp_426 },
-	{ "r^i0@4:8", (superfunc)super_427, (IMP)meth_imp_427 },
-	{ "r^{AEDesc=I^^{OpaqueAEDataStorageType}}0@4:8", (superfunc)super_428, (IMP)meth_imp_428 },
-	{ "r^{FSRef=[80C]}0@4:8", (superfunc)super_429, (IMP)meth_imp_429 },
-	{ "s0@4:8", (superfunc)super_430, (IMP)meth_imp_430 },
-	{ "s0@4:8@12", (superfunc)super_431, (IMP)meth_imp_431 },
-	{ "s0@4:8@12@16", (superfunc)super_432, (IMP)meth_imp_432 },
-	{ "s0@4:8@12@16@20", (superfunc)super_433, (IMP)meth_imp_433 },
-	{ "s0@4:8L12@16", (superfunc)super_434, (IMP)meth_imp_434 },
-	{ "s0@4:8L12@16@20", (superfunc)super_435, (IMP)meth_imp_435 },
-	{ "v0@4:8", (superfunc)super_436, (IMP)meth_imp_436 },
-	{ "v0@4:8#12", (superfunc)super_437, (IMP)meth_imp_437 },
-	{ "v0@4:8#12@16", (superfunc)super_438, (IMP)meth_imp_438 },
-	{ "v0@4:8*12", (superfunc)super_439, (IMP)meth_imp_439 },
-	{ "v0@4:8*12I16", (superfunc)super_440, (IMP)meth_imp_440 },
-	{ "v0@4:8:12", (superfunc)super_441, (IMP)meth_imp_441 },
-	{ "v0@4:8:12@16", (superfunc)super_442, (IMP)meth_imp_442 },
-	{ "v0@4:8:12@16@20", (superfunc)super_443, (IMP)meth_imp_443 },
-	{ "v0@4:8:12@16@20I24@28", (superfunc)super_444, (IMP)meth_imp_444 },
-	{ "v0@4:8:12@16@20i24@28", (superfunc)super_445, (IMP)meth_imp_445 },
-	{ "v0@4:8:12@16c20", (superfunc)super_446, (IMP)meth_imp_446 },
-	{ "v0@4:8:12@16c20@24", (superfunc)super_447, (IMP)meth_imp_447 },
-	{ "v0@4:8:12@16d40", (superfunc)super_448, (IMP)meth_imp_448 },
-	{ "v0@4:8:12@16d40@28", (superfunc)super_449, (IMP)meth_imp_449 },
-	{ "v0@4:8:12i16i20", (superfunc)super_450, (IMP)meth_imp_450 },
-	{ "v0@4:8@12", (superfunc)super_451, (IMP)meth_imp_451 },
-	{ "v0@4:8@12#16", (superfunc)super_452, (IMP)meth_imp_452 },
-	{ "v0@4:8@12:16", (superfunc)super_453, (IMP)meth_imp_453 },
-	{ "v0@4:8@12:16#20", (superfunc)super_454, (IMP)meth_imp_454 },
-	{ "v0@4:8@12:16#20#24", (superfunc)super_455, (IMP)meth_imp_455 },
-	{ "v0@4:8@12:16@20", (superfunc)super_456, (IMP)meth_imp_456 },
-	{ "v0@4:8@12:16@20@24", (superfunc)super_457, (IMP)meth_imp_457 },
-	{ "v0@4:8@12:16@20@24I28", (superfunc)super_458, (IMP)meth_imp_458 },
-	{ "v0@4:8@12:16@20@24i28", (superfunc)super_459, (IMP)meth_imp_459 },
-	{ "v0@4:8@12:16I20", (superfunc)super_460, (IMP)meth_imp_460 },
-	{ "v0@4:8@12:16I20I24", (superfunc)super_461, (IMP)meth_imp_461 },
-	{ "v0@4:8@12@16", (superfunc)super_462, (IMP)meth_imp_462 },
-	{ "v0@4:8@12@16*20", (superfunc)super_463, (IMP)meth_imp_463 },
-	{ "v0@4:8@12@16@20", (superfunc)super_464, (IMP)meth_imp_464 },
-	{ "v0@4:8@12@16@20@24", (superfunc)super_465, (IMP)meth_imp_465 },
-	{ "v0@4:8@12@16@20@24@28@32", (superfunc)super_466, (IMP)meth_imp_466 },
-	{ "v0@4:8@12@16@20@24c28", (superfunc)super_467, (IMP)meth_imp_467 },
-	{ "v0@4:8@12@16@20I24", (superfunc)super_468, (IMP)meth_imp_468 },
-	{ "v0@4:8@12@16@20I24@28", (superfunc)super_469, (IMP)meth_imp_469 },
-	{ "v0@4:8@12@16@20c24", (superfunc)super_470, (IMP)meth_imp_470 },
-	{ "v0@4:8@12@16@20i24", (superfunc)super_471, (IMP)meth_imp_471 },
-	{ "v0@4:8@12@16@20i24c28", (superfunc)super_472, (IMP)meth_imp_472 },
-	{ "v0@4:8@12@16I20", (superfunc)super_473, (IMP)meth_imp_473 },
-	{ "v0@4:8@12@16I20@24", (superfunc)super_474, (IMP)meth_imp_474 },
-	{ "v0@4:8@12@16L20", (superfunc)super_475, (IMP)meth_imp_475 },
-	{ "v0@4:8@12@16c20", (superfunc)super_476, (IMP)meth_imp_476 },
-	{ "v0@4:8@12@16c20c24", (superfunc)super_477, (IMP)meth_imp_477 },
-	{ "v0@4:8@12@16f40@24@28", (superfunc)super_478, (IMP)meth_imp_478 },
-	{ "v0@4:8@12@16i20", (superfunc)super_479, (IMP)meth_imp_479 },
-	{ "v0@4:8@12@16i20@24", (superfunc)super_480, (IMP)meth_imp_480 },
-	{ "v0@4:8@12@16i20i24", (superfunc)super_481, (IMP)meth_imp_481 },
-	{ "v0@4:8@12@16l20@24", (superfunc)super_482, (IMP)meth_imp_482 },
-	{ "v0@4:8@12@16{_NSRange=II}20", (superfunc)super_483, (IMP)meth_imp_483 },
-	{ "v0@4:8@12@16{_NSRect={_NSPoint=ff}{_NSSize=ff}}20", (superfunc)super_484, (IMP)meth_imp_484 },
-	{ "v0@4:8@12I16", (superfunc)super_485, (IMP)meth_imp_485 },
-	{ "v0@4:8@12I16@20", (superfunc)super_486, (IMP)meth_imp_486 },
-	{ "v0@4:8@12I16@20*24", (superfunc)super_487, (IMP)meth_imp_487 },
-	{ "v0@4:8@12L16", (superfunc)super_488, (IMP)meth_imp_488 },
-	{ "v0@4:8@12c16", (superfunc)super_489, (IMP)meth_imp_489 },
-	{ "v0@4:8@12c16c20", (superfunc)super_490, (IMP)meth_imp_490 },
-	{ "v0@4:8@12c16c20c24", (superfunc)super_491, (IMP)meth_imp_491 },
-	{ "v0@4:8@12c16i20i24", (superfunc)super_492, (IMP)meth_imp_492 },
-	{ "v0@4:8@12d40", (superfunc)super_493, (IMP)meth_imp_493 },
-	{ "v0@4:8@12f40", (superfunc)super_494, (IMP)meth_imp_494 },
-	{ "v0@4:8@12f40f48c24", (superfunc)super_495, (IMP)meth_imp_495 },
-	{ "v0@4:8@12i16", (superfunc)super_496, (IMP)meth_imp_496 },
-	{ "v0@4:8@12i16@20", (superfunc)super_497, (IMP)meth_imp_497 },
-	{ "v0@4:8@12i16I20", (superfunc)super_498, (IMP)meth_imp_498 },
-	{ "v0@4:8@12i16I20@24", (superfunc)super_499, (IMP)meth_imp_499 },
-	{ "v0@4:8@12i16c20c24c28", (superfunc)super_500, (IMP)meth_imp_500 },
-	{ "v0@4:8@12i16d40", (superfunc)super_501, (IMP)meth_imp_501 },
-	{ "v0@4:8@12i16f40", (superfunc)super_502, (IMP)meth_imp_502 },
-	{ "v0@4:8@12i16i20", (superfunc)super_503, (IMP)meth_imp_503 },
-	{ "v0@4:8@12i16i20i24c28", (superfunc)super_504, (IMP)meth_imp_504 },
-	{ "v0@4:8@12i16{_NSRange=II}20", (superfunc)super_505, (IMP)meth_imp_505 },
-	{ "v0@4:8@12i16{_NSRect={_NSPoint=ff}{_NSSize=ff}}20", (superfunc)super_506, (IMP)meth_imp_506 },
-	{ "v0@4:8@12l16", (superfunc)super_507, (IMP)meth_imp_507 },
-	{ "v0@4:8@12s16", (superfunc)super_508, (IMP)meth_imp_508 },
-	{ "v0@4:8@12{_NSPoint=ff}16", (superfunc)super_509, (IMP)meth_imp_509 },
-	{ "v0@4:8@12{_NSPoint=ff}16I24", (superfunc)super_510, (IMP)meth_imp_510 },
-	{ "v0@4:8@12{_NSPoint=ff}16{_NSPoint=ff}24", (superfunc)super_511, (IMP)meth_imp_511 },
-	{ "v0@4:8@12{_NSRange=II}16", (superfunc)super_512, (IMP)meth_imp_512 },
-	{ "v0@4:8@12{_NSRange=II}16@24", (superfunc)super_513, (IMP)meth_imp_513 },
-	{ "v0@4:8@12{_NSRange=II}16c24", (superfunc)super_514, (IMP)meth_imp_514 },
-	{ "v0@4:8@12{_NSRange=II}16{_NSRange=II}24", (superfunc)super_515, (IMP)meth_imp_515 },
-	{ "v0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16", (superfunc)super_516, (IMP)meth_imp_516 },
-	{ "v0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32", (superfunc)super_517, (IMP)meth_imp_517 },
-	{ "v0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16c32", (superfunc)super_518, (IMP)meth_imp_518 },
-	{ "v0@4:8@12{_NSSize=ff}16", (superfunc)super_519, (IMP)meth_imp_519 },
-	{ "v0@4:8C12", (superfunc)super_520, (IMP)meth_imp_520 },
-	{ "v0@4:8I12", (superfunc)super_521, (IMP)meth_imp_521 },
-	{ "v0@4:8I12@16", (superfunc)super_522, (IMP)meth_imp_522 },
-	{ "v0@4:8I12@16@20", (superfunc)super_523, (IMP)meth_imp_523 },
-	{ "v0@4:8I12I16", (superfunc)super_524, (IMP)meth_imp_524 },
-	{ "v0@4:8I12I16I20", (superfunc)super_525, (IMP)meth_imp_525 },
-	{ "v0@4:8I12Q16", (superfunc)super_526, (IMP)meth_imp_526 },
-	{ "v0@4:8I12{_NSPoint=ff}16I24@28", (superfunc)super_527, (IMP)meth_imp_527 },
-	{ "v0@4:8I12{_NSRange=II}16", (superfunc)super_528, (IMP)meth_imp_528 },
-	{ "v0@4:8I12{_NSRange=II}16i24", (superfunc)super_529, (IMP)meth_imp_529 },
-	{ "v0@4:8I12{_NSRange=II}16i24{_NSRange=II}28", (superfunc)super_530, (IMP)meth_imp_530 },
-	{ "v0@4:8L12", (superfunc)super_531, (IMP)meth_imp_531 },
-	{ "v0@4:8L12@16L20", (superfunc)super_532, (IMP)meth_imp_532 },
-	{ "v0@4:8Q12", (superfunc)super_533, (IMP)meth_imp_533 },
-	{ "v0@4:8S12", (superfunc)super_534, (IMP)meth_imp_534 },
-	{ "v0@4:8S12I16", (superfunc)super_535, (IMP)meth_imp_535 },
-	{ "v0@4:8c12", (superfunc)super_536, (IMP)meth_imp_536 },
-	{ "v0@4:8c12@16", (superfunc)super_537, (IMP)meth_imp_537 },
-	{ "v0@4:8c12@16@20@24", (superfunc)super_538, (IMP)meth_imp_538 },
-	{ "v0@4:8c12I16", (superfunc)super_539, (IMP)meth_imp_539 },
-	{ "v0@4:8c12I16I20", (superfunc)super_540, (IMP)meth_imp_540 },
-	{ "v0@4:8c12c16", (superfunc)super_541, (IMP)meth_imp_541 },
-	{ "v0@4:8c12c16c20", (superfunc)super_542, (IMP)meth_imp_542 },
-	{ "v0@4:8c12f40", (superfunc)super_543, (IMP)meth_imp_543 },
-	{ "v0@4:8c12i16i20", (superfunc)super_544, (IMP)meth_imp_544 },
-	{ "v0@4:8c12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16", (superfunc)super_545, (IMP)meth_imp_545 },
-	{ "v0@4:8c12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32", (superfunc)super_546, (IMP)meth_imp_546 },
-	{ "v0@4:8d40", (superfunc)super_547, (IMP)meth_imp_547 },
-	{ "v0@4:8d40@20", (superfunc)super_548, (IMP)meth_imp_548 },
-	{ "v0@4:8d40c20", (superfunc)super_549, (IMP)meth_imp_549 },
-	{ "v0@4:8d40d48", (superfunc)super_550, (IMP)meth_imp_550 },
-	{ "v0@4:8f40", (superfunc)super_551, (IMP)meth_imp_551 },
-	{ "v0@4:8f40@16", (superfunc)super_552, (IMP)meth_imp_552 },
-	{ "v0@4:8f40@16@20@24", (superfunc)super_553, (IMP)meth_imp_553 },
-	{ "v0@4:8f40c16", (superfunc)super_554, (IMP)meth_imp_554 },
-	{ "v0@4:8f40f48", (superfunc)super_555, (IMP)meth_imp_555 },
-	{ "v0@4:8i12", (superfunc)super_556, (IMP)meth_imp_556 },
-	{ "v0@4:8i12@16", (superfunc)super_557, (IMP)meth_imp_557 },
-	{ "v0@4:8i12@16:20i24i28", (superfunc)super_558, (IMP)meth_imp_558 },
-	{ "v0@4:8i12I16", (superfunc)super_559, (IMP)meth_imp_559 },
-	{ "v0@4:8i12c16", (superfunc)super_560, (IMP)meth_imp_560 },
-	{ "v0@4:8i12c16c20", (superfunc)super_561, (IMP)meth_imp_561 },
-	{ "v0@4:8i12c16c20c24", (superfunc)super_562, (IMP)meth_imp_562 },
-	{ "v0@4:8i12f40", (superfunc)super_563, (IMP)meth_imp_563 },
-	{ "v0@4:8i12f40f48f56", (superfunc)super_564, (IMP)meth_imp_564 },
-	{ "v0@4:8i12i16", (superfunc)super_565, (IMP)meth_imp_565 },
-	{ "v0@4:8i12i16@20", (superfunc)super_566, (IMP)meth_imp_566 },
-	{ "v0@4:8i12i16@20c24", (superfunc)super_567, (IMP)meth_imp_567 },
-	{ "v0@4:8i12i16I20", (superfunc)super_568, (IMP)meth_imp_568 },
-	{ "v0@4:8i12i16c20", (superfunc)super_569, (IMP)meth_imp_569 },
-	{ "v0@4:8i12i16c20c24c28", (superfunc)super_570, (IMP)meth_imp_570 },
-	{ "v0@4:8i12i16c20c24c28c32", (superfunc)super_571, (IMP)meth_imp_571 },
-	{ "v0@4:8i12i16f40", (superfunc)super_572, (IMP)meth_imp_572 },
-	{ "v0@4:8i12i16i20", (superfunc)super_573, (IMP)meth_imp_573 },
-	{ "v0@4:8i12i16i20c24", (superfunc)super_574, (IMP)meth_imp_574 },
-	{ "v0@4:8i12r*16i20", (superfunc)super_575, (IMP)meth_imp_575 },
-	{ "v0@4:8i12{_NSRange=II}16", (superfunc)super_576, (IMP)meth_imp_576 },
-	{ "v0@4:8i12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16", (superfunc)super_577, (IMP)meth_imp_577 },
-	{ "v0@4:8l12", (superfunc)super_578, (IMP)meth_imp_578 },
-	{ "v0@4:8q12@20", (superfunc)super_579, (IMP)meth_imp_579 },
-	{ "v0@4:8r*12", (superfunc)super_580, (IMP)meth_imp_580 },
-	{ "v0@4:8r*12I16@20", (superfunc)super_581, (IMP)meth_imp_581 },
-	{ "v0@4:8r*12i16", (superfunc)super_582, (IMP)meth_imp_582 },
-	{ "v0@4:8r*12{_NSPoint=ff}16", (superfunc)super_583, (IMP)meth_imp_583 },
-	{ "v0@4:8r^S12I16", (superfunc)super_584, (IMP)meth_imp_584 },
-	{ "v0@4:8r^f12f40", (superfunc)super_585, (IMP)meth_imp_585 },
-	{ "v0@4:8r^f12i16f40", (superfunc)super_586, (IMP)meth_imp_586 },
-	{ "v0@4:8r^i12i16", (superfunc)super_587, (IMP)meth_imp_587 },
-	{ "v0@4:8r^{_NSPoint=ff}12@16", (superfunc)super_588, (IMP)meth_imp_588 },
-	{ "v0@4:8{?=ii}12", (superfunc)super_589, (IMP)meth_imp_589 },
-	{ "v0@4:8{_NSAffineTransformStruct=ffffff}12", (superfunc)super_590, (IMP)meth_imp_590 },
-	{ "v0@4:8{_NSPoint=ff}12", (superfunc)super_591, (IMP)meth_imp_591 },
-	{ "v0@4:8{_NSPoint=ff}12@20", (superfunc)super_592, (IMP)meth_imp_592 },
-	{ "v0@4:8{_NSPoint=ff}12d40", (superfunc)super_593, (IMP)meth_imp_593 },
-	{ "v0@4:8{_NSPoint=ff}12d40d48d56", (superfunc)super_594, (IMP)meth_imp_594 },
-	{ "v0@4:8{_NSPoint=ff}12f40", (superfunc)super_595, (IMP)meth_imp_595 },
-	{ "v0@4:8{_NSPoint=ff}12f40f48f56", (superfunc)super_596, (IMP)meth_imp_596 },
-	{ "v0@4:8{_NSPoint=ff}12f40f48f56c32", (superfunc)super_597, (IMP)meth_imp_597 },
-	{ "v0@4:8{_NSPoint=ff}12i20", (superfunc)super_598, (IMP)meth_imp_598 },
-	{ "v0@4:8{_NSPoint=ff}12i20f40", (superfunc)super_599, (IMP)meth_imp_599 },
-	{ "v0@4:8{_NSPoint=ff}12{_NSPoint=ff}20", (superfunc)super_600, (IMP)meth_imp_600 },
-	{ "v0@4:8{_NSPoint=ff}12{_NSPoint=ff}20@28", (superfunc)super_601, (IMP)meth_imp_601 },
-	{ "v0@4:8{_NSPoint=ff}12{_NSPoint=ff}20@28c32", (superfunc)super_602, (IMP)meth_imp_602 },
-	{ "v0@4:8{_NSPoint=ff}12{_NSPoint=ff}20f40", (superfunc)super_603, (IMP)meth_imp_603 },
-	{ "v0@4:8{_NSPoint=ff}12{_NSPoint=ff}20{_NSPoint=ff}28", (superfunc)super_604, (IMP)meth_imp_604 },
-	{ "v0@4:8{_NSPoint=ff}12{_NSRange=II}20", (superfunc)super_605, (IMP)meth_imp_605 },
-	{ "v0@4:8{_NSPoint=ff}12{_NSRange=II}20c28", (superfunc)super_606, (IMP)meth_imp_606 },
-	{ "v0@4:8{_NSPoint=ff}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}20f40", (superfunc)super_607, (IMP)meth_imp_607 },
-	{ "v0@4:8{_NSRange=II}12", (superfunc)super_608, (IMP)meth_imp_608 },
-	{ "v0@4:8{_NSRange=II}12@20", (superfunc)super_609, (IMP)meth_imp_609 },
-	{ "v0@4:8{_NSRange=II}12@20I24", (superfunc)super_610, (IMP)meth_imp_610 },
-	{ "v0@4:8{_NSRange=II}12@20{_NSRange=II}24", (superfunc)super_611, (IMP)meth_imp_611 },
-	{ "v0@4:8{_NSRange=II}12c20", (superfunc)super_612, (IMP)meth_imp_612 },
-	{ "v0@4:8{_NSRange=II}12i20c24", (superfunc)super_613, (IMP)meth_imp_613 },
-	{ "v0@4:8{_NSRange=II}12r*20I24", (superfunc)super_614, (IMP)meth_imp_614 },
-	{ "v0@4:8{_NSRange=II}12r^S20I24", (superfunc)super_615, (IMP)meth_imp_615 },
-	{ "v0@4:8{_NSRange=II}12{_NSRange=II}20", (superfunc)super_616, (IMP)meth_imp_616 },
-	{ "v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12", (superfunc)super_617, (IMP)meth_imp_617 },
-	{ "v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28", (superfunc)super_618, (IMP)meth_imp_618 },
-	{ "v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28@32", (superfunc)super_619, (IMP)meth_imp_619 },
-	{ "v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28I32", (superfunc)super_620, (IMP)meth_imp_620 },
-	{ "v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28c32", (superfunc)super_621, (IMP)meth_imp_621 },
-	{ "v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28i32", (superfunc)super_622, (IMP)meth_imp_622 },
-	{ "v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12c28", (superfunc)super_623, (IMP)meth_imp_623 },
-	{ "v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12c28@32", (superfunc)super_624, (IMP)meth_imp_624 },
-	{ "v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12c28c32", (superfunc)super_625, (IMP)meth_imp_625 },
-	{ "v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12f40", (superfunc)super_626, (IMP)meth_imp_626 },
-	{ "v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSSize=ff}28", (superfunc)super_627, (IMP)meth_imp_627 },
-	{ "v0@4:8{_NSSize=ff}12", (superfunc)super_628, (IMP)meth_imp_628 },
-	{ "v0@4:8{_NSSize=ff}12c20", (superfunc)super_629, (IMP)meth_imp_629 },
-	{ "v0@4:8{_NSSize=ff}12c20c24", (superfunc)super_630, (IMP)meth_imp_630 },
-	{ "v0@4:8{_NSSize=ff}12c20{_NSSize=ff}24c32", (superfunc)super_631, (IMP)meth_imp_631 },
-	{ "v0@4:8{_NSSize=ff}12{_NSRange=II}20", (superfunc)super_632, (IMP)meth_imp_632 },
-	{ "v104@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}24{_NSRect={_NSPoint=ff}{_NSSize=ff}}40{_NSRect={_NSPoint=ff}{_NSSize=ff}}56{_NSRect={_NSPoint=ff}{_NSSize=ff}}72{_NSRect={_NSPoint=ff}{_NSSize=ff}}88", (superfunc)super_633, (IMP)meth_imp_633 },
-	{ "v36@4:8@12@16@20@24@28@32c35", (superfunc)super_634, (IMP)meth_imp_634 },
-	{ "v36@4:8@12I16{_NSRange=II}20i28{_NSRange=II}28", (superfunc)super_635, (IMP)meth_imp_635 },
-	{ "v36@4:8@12{_NSPoint=ff}16f40@28i32@32", (superfunc)super_636, (IMP)meth_imp_636 },
-	{ "v36@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32c35", (superfunc)super_637, (IMP)meth_imp_637 },
-	{ "v36@4:8c12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32@32", (superfunc)super_638, (IMP)meth_imp_638 },
-	{ "v36@4:8i12i16i20{_NSRect={_NSPoint=ff}{_NSSize=ff}}20", (superfunc)super_639, (IMP)meth_imp_639 },
-	{ "v36@4:8{_NSPoint=ff}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}20i32", (superfunc)super_640, (IMP)meth_imp_640 },
-	{ "v36@4:8{_NSPoint=ff}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}20i32f40", (superfunc)super_641, (IMP)meth_imp_641 },
-	{ "v36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28@32@32", (superfunc)super_642, (IMP)meth_imp_642 },
-	{ "v36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28I32@32", (superfunc)super_643, (IMP)meth_imp_643 },
-	{ "v36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28c32i32", (superfunc)super_644, (IMP)meth_imp_644 },
-	{ "v36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28i32i32", (superfunc)super_645, (IMP)meth_imp_645 },
-	{ "v36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12I28i32c35", (superfunc)super_646, (IMP)meth_imp_646 },
-	{ "v36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12c28@32c35", (superfunc)super_647, (IMP)meth_imp_647 },
-	{ "v40@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32I32@36", (superfunc)super_648, (IMP)meth_imp_648 },
-	{ "v40@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16c32@32c39", (superfunc)super_649, (IMP)meth_imp_649 },
-	{ "v40@4:8{_NSPoint=ff}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}20c35c39", (superfunc)super_650, (IMP)meth_imp_650 },
-	{ "v40@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28@32@32@36", (superfunc)super_651, (IMP)meth_imp_651 },
-	{ "v40@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}24", (superfunc)super_652, (IMP)meth_imp_652 },
-	{ "v44@4:8@12{_NSPoint=ff}16{_NSSize=ff}24@32@32@36c43", (superfunc)super_653, (IMP)meth_imp_653 },
-	{ "v44@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16{_NSRect={_NSPoint=ff}{_NSSize=ff}}28", (superfunc)super_654, (IMP)meth_imp_654 },
-	{ "v44@4:8f40{_NSPoint=ff}16{_NSPoint=ff}24{_NSPoint=ff}28{_NSPoint=ff}36", (superfunc)super_655, (IMP)meth_imp_655 },
-	{ "v44@4:8i12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16{_NSRect={_NSPoint=ff}{_NSSize=ff}}28", (superfunc)super_656, (IMP)meth_imp_656 },
-	{ "v44@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28@32@32i36i40", (superfunc)super_657, (IMP)meth_imp_657 },
-	{ "v44@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}24@40", (superfunc)super_658, (IMP)meth_imp_658 },
-	{ "v44@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}24c43", (superfunc)super_659, (IMP)meth_imp_659 },
-	{ "v44@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}24i40f40", (superfunc)super_660, (IMP)meth_imp_660 },
-	{ "v48@4:8@12@16{_NSPoint=ff}20{_NSSize=ff}28@32@36@40c47", (superfunc)super_661, (IMP)meth_imp_661 },
-	{ "v48@4:8@12@16{_NSRect={_NSPoint=ff}{_NSSize=ff}}20{_NSRect={_NSPoint=ff}{_NSSize=ff}}32f40", (superfunc)super_662, (IMP)meth_imp_662 },
-	{ "v48@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRange=II}28{_NSRect={_NSPoint=ff}{_NSSize=ff}}32", (superfunc)super_663, (IMP)meth_imp_663 },
-	{ "v48@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}24c43c47", (superfunc)super_664, (IMP)meth_imp_664 },
-	{ "v52@4:8i12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16{_NSRect={_NSPoint=ff}{_NSSize=ff}}28c47i48", (superfunc)super_665, (IMP)meth_imp_665 },
-	{ "v52@4:8{_NSRange=II}12r^{ATSGlyphVector=III^v*I^v^{ATSStyleSetting}SsiiI{FixedRect=iiii}IiiiSS^S^s^s^i^i}20{_NSPoint=ff}24c32{_NSRect={_NSPoint=ff}{_NSSize=ff}}32c51", (superfunc)super_666, (IMP)meth_imp_666 },
-	{ "v@:", (superfunc)super_667, (IMP)meth_imp_667 },
-	{ "v@:@", (superfunc)super_668, (IMP)meth_imp_668 },
-	{ "v@:@@", (superfunc)super_669, (IMP)meth_imp_669 },
-	{ "v@:@@@", (superfunc)super_670, (IMP)meth_imp_670 },
-	{ "v@:@@@@", (superfunc)super_671, (IMP)meth_imp_671 },
-	{ "v@:@@@@@", (superfunc)super_672, (IMP)meth_imp_672 },
-	{ "v@:@@@@@@", (superfunc)super_673, (IMP)meth_imp_673 },
-	{ "v@:@@@@@@@", (superfunc)super_674, (IMP)meth_imp_674 },
-	{ "c@:o^@@o^@", (superfunc)super_675, (IMP)meth_imp_675 },
+	{ "c@:@@", (superfunc)super_0, (IMP)meth_imp_0 },
+	{ "@@:@i@", (superfunc)super_1, (IMP)meth_imp_1 },
+	{ "i@:@@", (superfunc)super_2, (IMP)meth_imp_2 },
+	{ "#0@4:8", (superfunc)super_3, (IMP)meth_imp_3 },
+	{ "#0@4:8@12", (superfunc)super_4, (IMP)meth_imp_4 },
+	{ "#0@4:8@12@16", (superfunc)super_5, (IMP)meth_imp_5 },
+	{ "#0@4:8I12", (superfunc)super_6, (IMP)meth_imp_6 },
+	{ "*0@4:8", (superfunc)super_7, (IMP)meth_imp_7 },
+	{ "8@12o^@16", (superfunc)super_8, (IMP)meth_imp_8 },
+	{ ":0@4:8", (superfunc)super_9, (IMP)meth_imp_9 },
+	{ ":0@4:8@12", (superfunc)super_10, (IMP)meth_imp_10 },
+	{ "@0@4:8", (superfunc)super_11, (IMP)meth_imp_11 },
+	{ "@0@4:8#12", (superfunc)super_12, (IMP)meth_imp_12 },
+	{ "@0@4:8#12@16@20:24", (superfunc)super_13, (IMP)meth_imp_13 },
+	{ "@0@4:8*12", (superfunc)super_14, (IMP)meth_imp_14 },
+	{ "@0@4:8*12*16", (superfunc)super_15, (IMP)meth_imp_15 },
+	{ "@0@4:8*12*16*20*24*28c32", (superfunc)super_16, (IMP)meth_imp_16 },
+	{ "@0@4:8*12@16*20", (superfunc)super_17, (IMP)meth_imp_17 },
+	{ "@0@4:8*12I16", (superfunc)super_18, (IMP)meth_imp_18 },
+	{ "@0@4:8*12I16c20", (superfunc)super_19, (IMP)meth_imp_19 },
+	{ "@0@4:8*12i16", (superfunc)super_20, (IMP)meth_imp_20 },
+	{ "@0@4:8:12", (superfunc)super_21, (IMP)meth_imp_21 },
+	{ "@0@4:8:12@16", (superfunc)super_22, (IMP)meth_imp_22 },
+	{ "@0@4:8:12@16@20", (superfunc)super_23, (IMP)meth_imp_23 },
+	{ "@0@4:8:12c16", (superfunc)super_24, (IMP)meth_imp_24 },
+	{ "@0@4:8:12i16@20@24", (superfunc)super_25, (IMP)meth_imp_25 },
+	{ "@0@4:8:12{_NSRange=II}16@24", (superfunc)super_26, (IMP)meth_imp_26 },
+	{ "@0@4:8@12", (superfunc)super_27, (IMP)meth_imp_27 },
+	{ "@0@4:8@12#16", (superfunc)super_28, (IMP)meth_imp_28 },
+	{ "@0@4:8@12*16", (superfunc)super_29, (IMP)meth_imp_29 },
+	{ "@0@4:8@12:16", (superfunc)super_30, (IMP)meth_imp_30 },
+	{ "@0@4:8@12:16@20", (superfunc)super_31, (IMP)meth_imp_31 },
+	{ "@0@4:8@12:16@20i24", (superfunc)super_32, (IMP)meth_imp_32 },
+	{ "@0@4:8@12:16i20", (superfunc)super_33, (IMP)meth_imp_33 },
+	{ "@0@4:8@12@16", (superfunc)super_34, (IMP)meth_imp_34 },
+	{ "@0@4:8@12@16*20", (superfunc)super_35, (IMP)meth_imp_35 },
+	{ "@0@4:8@12@16:20@24", (superfunc)super_36, (IMP)meth_imp_36 },
+	{ "@0@4:8@12@16@20", (superfunc)super_37, (IMP)meth_imp_37 },
+	{ "@0@4:8@12@16@20@24", (superfunc)super_38, (IMP)meth_imp_38 },
+	{ "@0@4:8@12@16@20@24@28", (superfunc)super_39, (IMP)meth_imp_39 },
+	{ "@0@4:8@12@16@20@24@28@32", (superfunc)super_40, (IMP)meth_imp_40 },
+	{ "@0@4:8@12@16@20@24c28", (superfunc)super_41, (IMP)meth_imp_41 },
+	{ "@0@4:8@12@16@20@24c28i32", (superfunc)super_42, (IMP)meth_imp_42 },
+	{ "@0@4:8@12@16@20@24i28", (superfunc)super_43, (IMP)meth_imp_43 },
+	{ "@0@4:8@12@16@20c24", (superfunc)super_44, (IMP)meth_imp_44 },
+	{ "@0@4:8@12@16@20c24@28", (superfunc)super_45, (IMP)meth_imp_45 },
+	{ "@0@4:8@12@16@20i24", (superfunc)super_46, (IMP)meth_imp_46 },
+	{ "@0@4:8@12@16@20i24@28", (superfunc)super_47, (IMP)meth_imp_47 },
+	{ "@0@4:8@12@16@20{_NSPoint=ff}24", (superfunc)super_48, (IMP)meth_imp_48 },
+	{ "@0@4:8@12@16I20", (superfunc)super_49, (IMP)meth_imp_49 },
+	{ "@0@4:8@12@16I20@24", (superfunc)super_50, (IMP)meth_imp_50 },
+	{ "@0@4:8@12@16I20@24@28", (superfunc)super_51, (IMP)meth_imp_51 },
+	{ "@0@4:8@12@16S20", (superfunc)super_52, (IMP)meth_imp_52 },
+	{ "@0@4:8@12@16c20", (superfunc)super_53, (IMP)meth_imp_53 },
+	{ "@0@4:8@12@16c20@24", (superfunc)super_54, (IMP)meth_imp_54 },
+	{ "@0@4:8@12@16f40", (superfunc)super_55, (IMP)meth_imp_55 },
+	{ "@0@4:8@12@16i20", (superfunc)super_56, (IMP)meth_imp_56 },
+	{ "@0@4:8@12@16i20c24", (superfunc)super_57, (IMP)meth_imp_57 },
+	{ "@0@4:8@12@16i20i24", (superfunc)super_58, (IMP)meth_imp_58 },
+	{ "@0@4:8@12@16o^@20", (superfunc)super_59, (IMP)meth_imp_59 },
+	{ "@0@4:8@12@16{_NSRange=II}20@28", (superfunc)super_60, (IMP)meth_imp_60 },
+	{ "@0@4:8@12I16", (superfunc)super_61, (IMP)meth_imp_61 },
+	{ "@0@4:8@12I16@20", (superfunc)super_62, (IMP)meth_imp_62 },
+	{ "@0@4:8@12I16@20@24", (superfunc)super_63, (IMP)meth_imp_63 },
+	{ "@0@4:8@12I16I20", (superfunc)super_64, (IMP)meth_imp_64 },
+	{ "@0@4:8@12I16i20", (superfunc)super_65, (IMP)meth_imp_65 },
+	{ "@0@4:8@12I16i20f40", (superfunc)super_66, (IMP)meth_imp_66 },
+	{ "@0@4:8@12I16o^{_NSRange=II}20", (superfunc)super_67, (IMP)meth_imp_67 },
+	{ "@0@4:8@12I16o^{_NSRange=II}20{_NSRange=II}24", (superfunc)super_68, (IMP)meth_imp_68 },
+	{ "@0@4:8@12L16", (superfunc)super_69, (IMP)meth_imp_69 },
+	{ "@0@4:8@12c16", (superfunc)super_70, (IMP)meth_imp_70 },
+	{ "@0@4:8@12c16c20", (superfunc)super_71, (IMP)meth_imp_71 },
+	{ "@0@4:8@12f40", (superfunc)super_72, (IMP)meth_imp_72 },
+	{ "@0@4:8@12f40@20{_NSPoint=ff}24", (superfunc)super_73, (IMP)meth_imp_73 },
+	{ "@0@4:8@12f40r^f20", (superfunc)super_74, (IMP)meth_imp_74 },
+	{ "@0@4:8@12f40r^f20I24", (superfunc)super_75, (IMP)meth_imp_75 },
+	{ "@0@4:8@12f40r^f20i24", (superfunc)super_76, (IMP)meth_imp_76 },
+	{ "@0@4:8@12i16", (superfunc)super_77, (IMP)meth_imp_77 },
+	{ "@0@4:8@12i16:20", (superfunc)super_78, (IMP)meth_imp_78 },
+	{ "@0@4:8@12i16@20", (superfunc)super_79, (IMP)meth_imp_79 },
+	{ "@0@4:8@12i16I20", (superfunc)super_80, (IMP)meth_imp_80 },
+	{ "@0@4:8@12i16f40", (superfunc)super_81, (IMP)meth_imp_81 },
+	{ "@0@4:8@12i16i20", (superfunc)super_82, (IMP)meth_imp_82 },
+	{ "@0@4:8@12i16i20@24", (superfunc)super_83, (IMP)meth_imp_83 },
+	{ "@0@4:8@12i16{_NSRect={_NSPoint=ff}{_NSSize=ff}}20", (superfunc)super_84, (IMP)meth_imp_84 },
+	{ "@0@4:8@12o^@16", (superfunc)super_85, (IMP)meth_imp_85 },
+	{ "@0@4:8@12r*16I20", (superfunc)super_86, (IMP)meth_imp_86 },
+	{ "@0@4:8@12r^f16", (superfunc)super_87, (IMP)meth_imp_87 },
+	{ "@0@4:8@12r^{FSRef=[80C]}16", (superfunc)super_88, (IMP)meth_imp_88 },
+	{ "@0@4:8@12{_NSPoint=ff}16", (superfunc)super_89, (IMP)meth_imp_89 },
+	{ "@0@4:8@12{_NSRange=II}16", (superfunc)super_90, (IMP)meth_imp_90 },
+	{ "@0@4:8@12{_NSRange=II}16i24", (superfunc)super_91, (IMP)meth_imp_91 },
+	{ "@0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16", (superfunc)super_92, (IMP)meth_imp_92 },
+	{ "@0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32", (superfunc)super_93, (IMP)meth_imp_93 },
+	{ "@0@4:8C12", (superfunc)super_94, (IMP)meth_imp_94 },
+	{ "@0@4:8I12", (superfunc)super_95, (IMP)meth_imp_95 },
+	{ "@0@4:8I12:16", (superfunc)super_96, (IMP)meth_imp_96 },
+	{ "@0@4:8I12@16", (superfunc)super_97, (IMP)meth_imp_97 },
+	{ "@0@4:8I12@16@20", (superfunc)super_98, (IMP)meth_imp_98 },
+	{ "@0@4:8I12@16@20c24", (superfunc)super_99, (IMP)meth_imp_99 },
+	{ "@0@4:8I12@16@20l24", (superfunc)super_100, (IMP)meth_imp_100 },
+	{ "@0@4:8I12@16I20", (superfunc)super_101, (IMP)meth_imp_101 },
+	{ "@0@4:8I12I16", (superfunc)super_102, (IMP)meth_imp_102 },
+	{ "@0@4:8I12I16@20s24i28", (superfunc)super_103, (IMP)meth_imp_103 },
+	{ "@0@4:8I12c16", (superfunc)super_104, (IMP)meth_imp_104 },
+	{ "@0@4:8I12i16@20", (superfunc)super_105, (IMP)meth_imp_105 },
+	{ "@0@4:8I12o^{_NSRange=II}16", (superfunc)super_106, (IMP)meth_imp_106 },
+	{ "@0@4:8I12o^{_NSRange=II}16{_NSRange=II}20", (superfunc)super_107, (IMP)meth_imp_107 },
+	{ "@0@4:8I12{_NSPoint=ff}16@24", (superfunc)super_108, (IMP)meth_imp_108 },
+	{ "@0@4:8I12{_NSRange=II}16", (superfunc)super_109, (IMP)meth_imp_109 },
+	{ "@0@4:8L12", (superfunc)super_110, (IMP)meth_imp_110 },
+	{ "@0@4:8L12L16", (superfunc)super_111, (IMP)meth_imp_111 },
+	{ "@0@4:8Q12", (superfunc)super_112, (IMP)meth_imp_112 },
+	{ "@0@4:8Q12s20c24", (superfunc)super_113, (IMP)meth_imp_113 },
+	{ "@0@4:8S12", (superfunc)super_114, (IMP)meth_imp_114 },
+	{ "@0@4:8S12@16", (superfunc)super_115, (IMP)meth_imp_115 },
+	{ "@0@4:8S12I16@20", (superfunc)super_116, (IMP)meth_imp_116 },
+	{ "@0@4:8S12S16", (superfunc)super_117, (IMP)meth_imp_117 },
+	{ "@0@4:8S12S16@20", (superfunc)super_118, (IMP)meth_imp_118 },
+	{ "@0@4:8S12i16", (superfunc)super_119, (IMP)meth_imp_119 },
+	{ "@0@4:8c12", (superfunc)super_120, (IMP)meth_imp_120 },
+	{ "@0@4:8c12@16", (superfunc)super_121, (IMP)meth_imp_121 },
+	{ "@0@4:8c12c16", (superfunc)super_122, (IMP)meth_imp_122 },
+	{ "@0@4:8c12i16", (superfunc)super_123, (IMP)meth_imp_123 },
+	{ "@0@4:8c12i16i20c24", (superfunc)super_124, (IMP)meth_imp_124 },
+	{ "@0@4:8d40", (superfunc)super_125, (IMP)meth_imp_125 },
+	{ "@0@4:8d40@20", (superfunc)super_126, (IMP)meth_imp_126 },
+	{ "@0@4:8d40@20:24@28c32", (superfunc)super_127, (IMP)meth_imp_127 },
+	{ "@0@4:8d40@20c24", (superfunc)super_128, (IMP)meth_imp_128 },
+	{ "@0@4:8f40", (superfunc)super_129, (IMP)meth_imp_129 },
+	{ "@0@4:8f40@16", (superfunc)super_130, (IMP)meth_imp_130 },
+	{ "@0@4:8f40f48", (superfunc)super_131, (IMP)meth_imp_131 },
+	{ "@0@4:8f40f48c20", (superfunc)super_132, (IMP)meth_imp_132 },
+	{ "@0@4:8f40f48f56f64", (superfunc)super_133, (IMP)meth_imp_133 },
+	{ "@0@4:8f40f48f56f64f72", (superfunc)super_134, (IMP)meth_imp_134 },
+	{ "@0@4:8i12", (superfunc)super_135, (IMP)meth_imp_135 },
+	{ "@0@4:8i12@16", (superfunc)super_136, (IMP)meth_imp_136 },
+	{ "@0@4:8i12@16@20@24i28", (superfunc)super_137, (IMP)meth_imp_137 },
+	{ "@0@4:8i12@16i20", (superfunc)super_138, (IMP)meth_imp_138 },
+	{ "@0@4:8i12I16", (superfunc)super_139, (IMP)meth_imp_139 },
+	{ "@0@4:8i12c16", (superfunc)super_140, (IMP)meth_imp_140 },
+	{ "@0@4:8i12f40", (superfunc)super_141, (IMP)meth_imp_141 },
+	{ "@0@4:8i12f40r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}20r^{_NSPoint=ff}24", (superfunc)super_142, (IMP)meth_imp_142 },
+	{ "@0@4:8i12i16", (superfunc)super_143, (IMP)meth_imp_143 },
+	{ "@0@4:8i12i16@20", (superfunc)super_144, (IMP)meth_imp_144 },
+	{ "@0@4:8i12i16c20", (superfunc)super_145, (IMP)meth_imp_145 },
+	{ "@0@4:8i12i16i20", (superfunc)super_146, (IMP)meth_imp_146 },
+	{ "@0@4:8i12i16i20@24", (superfunc)super_147, (IMP)meth_imp_147 },
+	{ "@0@4:8i12i16i20i24", (superfunc)super_148, (IMP)meth_imp_148 },
+	{ "@0@4:8i12i16i20i24i28i32", (superfunc)super_149, (IMP)meth_imp_149 },
+	{ "@0@4:8i12r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}16", (superfunc)super_150, (IMP)meth_imp_150 },
+	{ "@0@4:8i12r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}16I20", (superfunc)super_151, (IMP)meth_imp_151 },
+	{ "@0@4:8i12s16c20c24c28c32", (superfunc)super_152, (IMP)meth_imp_152 },
+	{ "@0@4:8i12{_NSRange=II}16", (superfunc)super_153, (IMP)meth_imp_153 },
+	{ "@0@4:8i12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16", (superfunc)super_154, (IMP)meth_imp_154 },
+	{ "@0@4:8l12", (superfunc)super_155, (IMP)meth_imp_155 },
+	{ "@0@4:8q12", (superfunc)super_156, (IMP)meth_imp_156 },
+	{ "@0@4:8r*12", (superfunc)super_157, (IMP)meth_imp_157 },
+	{ "@0@4:8r*12I16", (superfunc)super_158, (IMP)meth_imp_158 },
+	{ "@0@4:8r*12I16I20", (superfunc)super_159, (IMP)meth_imp_159 },
+	{ "@0@4:8r^S12I16", (superfunc)super_160, (IMP)meth_imp_160 },
+	{ "@0@4:8r^{AEDesc=I^^{OpaqueAEDataStorageType}}12", (superfunc)super_161, (IMP)meth_imp_161 },
+	{ "@0@4:8r^{FSRef=[80C]}12", (superfunc)super_162, (IMP)meth_imp_162 },
+	{ "@0@4:8r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}12", (superfunc)super_163, (IMP)meth_imp_163 },
+	{ "@0@4:8r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}12I16i20c24@28", (superfunc)super_164, (IMP)meth_imp_164 },
+	{ "@0@4:8r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}12I16i20c24@28@32", (superfunc)super_165, (IMP)meth_imp_165 },
+	{ "@0@4:8r^{_NSSize=ff}12@16", (superfunc)super_166, (IMP)meth_imp_166 },
+	{ "@0@4:8s12", (superfunc)super_167, (IMP)meth_imp_167 },
+	{ "@0@4:8s12@16", (superfunc)super_168, (IMP)meth_imp_168 },
+	{ "@0@4:8{CGPoint=ff}12", (superfunc)super_169, (IMP)meth_imp_169 },
+	{ "@0@4:8{NSButtonState=iccc}12", (superfunc)super_170, (IMP)meth_imp_170 },
+	{ "@0@4:8{_NSPoint=ff}12", (superfunc)super_171, (IMP)meth_imp_171 },
+	{ "@0@4:8{_NSPoint=ff}12c20", (superfunc)super_172, (IMP)meth_imp_172 },
+	{ "@0@4:8{_NSRange=II}12", (superfunc)super_173, (IMP)meth_imp_173 },
+	{ "@0@4:8{_NSRange=II}12@20", (superfunc)super_174, (IMP)meth_imp_174 },
+	{ "@0@4:8{_NSRange=II}12@20@24", (superfunc)super_175, (IMP)meth_imp_175 },
+	{ "@0@4:8{_NSRange=II}12@20@24{_NSRange=II}28", (superfunc)super_176, (IMP)meth_imp_176 },
+	{ "@0@4:8{_NSRange=II}12c20", (superfunc)super_177, (IMP)meth_imp_177 },
+	{ "@0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12", (superfunc)super_178, (IMP)meth_imp_178 },
+	{ "@0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28", (superfunc)super_179, (IMP)meth_imp_179 },
+	{ "@0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28@32", (superfunc)super_180, (IMP)meth_imp_180 },
+	{ "@0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28i32", (superfunc)super_181, (IMP)meth_imp_181 },
+	{ "@0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12I28@32", (superfunc)super_182, (IMP)meth_imp_182 },
+	{ "@0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12c28", (superfunc)super_183, (IMP)meth_imp_183 },
+	{ "@0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12i28", (superfunc)super_184, (IMP)meth_imp_184 },
+	{ "@0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12s28", (superfunc)super_185, (IMP)meth_imp_185 },
+	{ "@0@4:8{_NSSize=ff}12", (superfunc)super_186, (IMP)meth_imp_186 },
+	{ "@0@4:8{_NSSize=ff}12@20", (superfunc)super_187, (IMP)meth_imp_187 },
+	{ "@0@4:8{_NSSize=ff}12i20", (superfunc)super_188, (IMP)meth_imp_188 },
+	{ "@0@4:8{_NSSize=ff}12i20c24c28", (superfunc)super_189, (IMP)meth_imp_189 },
+	{ "@0@4:8{_NSSize=ff}12i20c24c28c32", (superfunc)super_190, (IMP)meth_imp_190 },
+	{ "@36@4:8@12:16@20@24@28@32I32", (superfunc)super_191, (IMP)meth_imp_191 },
+	{ "@36@4:8@12@16c20@24@28:32I32", (superfunc)super_192, (IMP)meth_imp_192 },
+	{ "@36@4:8@12d40@24:28@32c35", (superfunc)super_193, (IMP)meth_imp_193 },
+	{ "@36@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32@32", (superfunc)super_194, (IMP)meth_imp_194 },
+	{ "@36@4:8@12{_NSSize=ff}16f40f48{_NSPoint=ff}28", (superfunc)super_195, (IMP)meth_imp_195 },
+	{ "@36@4:8i12@16@20@24@28@32*32", (superfunc)super_196, (IMP)meth_imp_196 },
+	{ "@36@4:8i12I16I20I24I28I32@32", (superfunc)super_197, (IMP)meth_imp_197 },
+	{ "@36@4:8r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@16@20@24@28i32i32", (superfunc)super_198, (IMP)meth_imp_198 },
+	{ "@36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28I32@32", (superfunc)super_199, (IMP)meth_imp_199 },
+	{ "@36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12I28i32c35", (superfunc)super_200, (IMP)meth_imp_200 },
+	{ "@40@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12I28i32c35@36", (superfunc)super_201, (IMP)meth_imp_201 },
+	{ "@40@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12i28#32i32i36", (superfunc)super_202, (IMP)meth_imp_202 },
+	{ "@40@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12i28@32i32i36", (superfunc)super_203, (IMP)meth_imp_203 },
+	{ "@48@4:8i12{_NSPoint=ff}16I24d40i32@36i40i44f48", (superfunc)super_204, (IMP)meth_imp_204 },
+	{ "@52@4:8i12{_NSPoint=ff}16I24d40i32@36s42i44i48", (superfunc)super_205, (IMP)meth_imp_205 },
+	{ "@56@4:8i12{_NSPoint=ff}16I24d40i32@36@40@44c51S54", (superfunc)super_206, (IMP)meth_imp_206 },
+	{ "@@:", (superfunc)super_207, (IMP)meth_imp_207 },
+	{ "@@:@", (superfunc)super_208, (IMP)meth_imp_208 },
+	{ "@@:@@", (superfunc)super_209, (IMP)meth_imp_209 },
+	{ "@@:@@@", (superfunc)super_210, (IMP)meth_imp_210 },
+	{ "@@:@@@@", (superfunc)super_211, (IMP)meth_imp_211 },
+	{ "@@:@@@@@", (superfunc)super_212, (IMP)meth_imp_212 },
+	{ "@@:@@@@@@", (superfunc)super_213, (IMP)meth_imp_213 },
+	{ "@@:@@@@@@@", (superfunc)super_214, (IMP)meth_imp_214 },
+	{ "@@:@@i", (superfunc)super_215, (IMP)meth_imp_215 },
+	{ "C0@4:8", (superfunc)super_216, (IMP)meth_imp_216 },
+	{ "I0@4:8", (superfunc)super_217, (IMP)meth_imp_217 },
+	{ "I0@4:8:12", (superfunc)super_218, (IMP)meth_imp_218 },
+	{ "I0@4:8:12@16", (superfunc)super_219, (IMP)meth_imp_219 },
+	{ "I0@4:8@12", (superfunc)super_220, (IMP)meth_imp_220 },
+	{ "I0@4:8@12@16", (superfunc)super_221, (IMP)meth_imp_221 },
+	{ "I0@4:8@12@16@20", (superfunc)super_222, (IMP)meth_imp_222 },
+	{ "I0@4:8@12@16I20{_NSRange=II}24", (superfunc)super_223, (IMP)meth_imp_223 },
+	{ "I0@4:8@12@16c20", (superfunc)super_224, (IMP)meth_imp_224 },
+	{ "I0@4:8@12I16", (superfunc)super_225, (IMP)meth_imp_225 },
+	{ "I0@4:8@12I16{_NSRange=II}20@28", (superfunc)super_226, (IMP)meth_imp_226 },
+	{ "I0@4:8@12i16@20c24", (superfunc)super_227, (IMP)meth_imp_227 },
+	{ "I0@4:8@12{_NSRange=II}16", (superfunc)super_228, (IMP)meth_imp_228 },
+	{ "I0@4:8@12{_NSRange=II}16c24", (superfunc)super_229, (IMP)meth_imp_229 },
+	{ "I0@4:8I12", (superfunc)super_230, (IMP)meth_imp_230 },
+	{ "I0@4:8I12*16", (superfunc)super_231, (IMP)meth_imp_231 },
+	{ "I0@4:8I12c16", (superfunc)super_232, (IMP)meth_imp_232 },
+	{ "I0@4:8I12{_NSRange=II}16", (superfunc)super_233, (IMP)meth_imp_233 },
+	{ "I0@4:8S12", (superfunc)super_234, (IMP)meth_imp_234 },
+	{ "I0@4:8c12", (superfunc)super_235, (IMP)meth_imp_235 },
+	{ "I0@4:8i12", (superfunc)super_236, (IMP)meth_imp_236 },
+	{ "I0@4:8l12", (superfunc)super_237, (IMP)meth_imp_237 },
+	{ "I0@4:8{_NSPoint=ff}12", (superfunc)super_238, (IMP)meth_imp_238 },
+	{ "I0@4:8{_NSPoint=ff}12@20", (superfunc)super_239, (IMP)meth_imp_239 },
+	{ "Io^@co^@@", (superfunc)super_240, (IMP)meth_imp_240 },
+	{ "L0@4:8", (superfunc)super_241, (IMP)meth_imp_241 },
+	{ "L0@4:8@12", (superfunc)super_242, (IMP)meth_imp_242 },
+	{ "O@0@4:8nO@12", (superfunc)super_243, (IMP)meth_imp_243 },
+	{ "O@0@4:8nO@12nO@16", (superfunc)super_244, (IMP)meth_imp_244 },
+	{ "Q0@4:8", (superfunc)super_245, (IMP)meth_imp_245 },
+	{ "S0@4:8", (superfunc)super_246, (IMP)meth_imp_246 },
+	{ "S0@4:8I12", (superfunc)super_247, (IMP)meth_imp_247 },
+	{ "Vv0@4:8", (superfunc)super_248, (IMP)meth_imp_248 },
+	{ "Vv0@4:8@12", (superfunc)super_249, (IMP)meth_imp_249 },
+	{ "Vv0@4:8@12i16", (superfunc)super_250, (IMP)meth_imp_250 },
+	{ "Vv0@4:8i12c16", (superfunc)super_251, (IMP)meth_imp_251 },
+	{ "Vv0@4:8nO@12nO@16", (superfunc)super_252, (IMP)meth_imp_252 },
+	{ "Vv0@4:8nO@12ni16", (superfunc)super_253, (IMP)meth_imp_253 },
+	{ "c0@4:8", (superfunc)super_254, (IMP)meth_imp_254 },
+	{ "c0@4:8#12", (superfunc)super_255, (IMP)meth_imp_255 },
+	{ "c0@4:8#12@16", (superfunc)super_256, (IMP)meth_imp_256 },
+	{ "c0@4:8*12@16*20@24i28", (superfunc)super_257, (IMP)meth_imp_257 },
+	{ "c0@4:8*12I16", (superfunc)super_258, (IMP)meth_imp_258 },
+	{ "c0@4:8*12I16@20", (superfunc)super_259, (IMP)meth_imp_259 },
+	{ "c0@4:8*12I16I20", (superfunc)super_260, (IMP)meth_imp_260 },
+	{ "c0@4:8*12i16c20c24c28", (superfunc)super_261, (IMP)meth_imp_261 },
+	{ "c0@4:8:12", (superfunc)super_262, (IMP)meth_imp_262 },
+	{ "c0@4:8:12@16", (superfunc)super_263, (IMP)meth_imp_263 },
+	{ "c0@4:8:12@16@20", (superfunc)super_264, (IMP)meth_imp_264 },
+	{ "c0@4:8:12@16i20i24", (superfunc)super_265, (IMP)meth_imp_265 },
+	{ "c0@4:8@12", (superfunc)super_266, (IMP)meth_imp_266 },
+	{ "c0@4:8@12:16", (superfunc)super_267, (IMP)meth_imp_267 },
+	{ "c0@4:8@12@16", (superfunc)super_268, (IMP)meth_imp_268 },
+	{ "c0@4:8@12@16:20", (superfunc)super_269, (IMP)meth_imp_269 },
+	{ "c0@4:8@12@16@20", (superfunc)super_270, (IMP)meth_imp_270 },
+	{ "c0@4:8@12@16@20I24", (superfunc)super_271, (IMP)meth_imp_271 },
+	{ "c0@4:8@12@16@20i24", (superfunc)super_272, (IMP)meth_imp_272 },
+	{ "c0@4:8@12@16I20", (superfunc)super_273, (IMP)meth_imp_273 },
+	{ "c0@4:8@12@16S20", (superfunc)super_274, (IMP)meth_imp_274 },
+	{ "c0@4:8@12@16c20", (superfunc)super_275, (IMP)meth_imp_275 },
+	{ "c0@4:8@12@16c20c24", (superfunc)super_276, (IMP)meth_imp_276 },
+	{ "c0@4:8@12@16c20c24c28", (superfunc)super_277, (IMP)meth_imp_277 },
+	{ "c0@4:8@12@16i20", (superfunc)super_278, (IMP)meth_imp_278 },
+	{ "c0@4:8@12@16{_NSPoint=ff}20@28", (superfunc)super_279, (IMP)meth_imp_279 },
+	{ "c0@4:8@12I16", (superfunc)super_280, (IMP)meth_imp_280 },
+	{ "c0@4:8@12I16@20@24I28", (superfunc)super_281, (IMP)meth_imp_281 },
+	{ "c0@4:8@12c16", (superfunc)super_282, (IMP)meth_imp_282 },
+	{ "c0@4:8@12c16c20", (superfunc)super_283, (IMP)meth_imp_283 },
+	{ "c0@4:8@12i16", (superfunc)super_284, (IMP)meth_imp_284 },
+	{ "c0@4:8@12i16@20", (superfunc)super_285, (IMP)meth_imp_285 },
+	{ "c0@4:8@12o^c16", (superfunc)super_286, (IMP)meth_imp_286 },
+	{ "c0@4:8@12r^{FSRef=[80C]}16r^{FSRef=[80C]}20", (superfunc)super_287, (IMP)meth_imp_287 },
+	{ "c0@4:8@12r^{FSRef=[80C]}16r^{FSRef=[80C]}20@24i28", (superfunc)super_288, (IMP)meth_imp_288 },
+	{ "c0@4:8@12r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}16", (superfunc)super_289, (IMP)meth_imp_289 },
+	{ "c0@4:8@12r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}16i20", (superfunc)super_290, (IMP)meth_imp_290 },
+	{ "c0@4:8@12{_NSPoint=ff}16", (superfunc)super_291, (IMP)meth_imp_291 },
+	{ "c0@4:8@12{_NSRange=II}16", (superfunc)super_292, (IMP)meth_imp_292 },
+	{ "c0@4:8@12{_NSRange=II}16@24", (superfunc)super_293, (IMP)meth_imp_293 },
+	{ "c0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16", (superfunc)super_294, (IMP)meth_imp_294 },
+	{ "c0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32", (superfunc)super_295, (IMP)meth_imp_295 },
+	{ "c0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16c32", (superfunc)super_296, (IMP)meth_imp_296 },
+	{ "c0@4:8C12", (superfunc)super_297, (IMP)meth_imp_297 },
+	{ "c0@4:8I12", (superfunc)super_298, (IMP)meth_imp_298 },
+	{ "c0@4:8I12I16", (superfunc)super_299, (IMP)meth_imp_299 },
+	{ "c0@4:8I12I16@20", (superfunc)super_300, (IMP)meth_imp_300 },
+	{ "c0@4:8I12{_NSPoint=ff}16I24@28", (superfunc)super_301, (IMP)meth_imp_301 },
+	{ "c0@4:8L12", (superfunc)super_302, (IMP)meth_imp_302 },
+	{ "c0@4:8S12", (superfunc)super_303, (IMP)meth_imp_303 },
+	{ "c0@4:8c12", (superfunc)super_304, (IMP)meth_imp_304 },
+	{ "c0@4:8d40", (superfunc)super_305, (IMP)meth_imp_305 },
+	{ "c0@4:8f40", (superfunc)super_306, (IMP)meth_imp_306 },
+	{ "c0@4:8f40c16", (superfunc)super_307, (IMP)meth_imp_307 },
+	{ "c0@4:8i12", (superfunc)super_308, (IMP)meth_imp_308 },
+	{ "c0@4:8i12@16", (superfunc)super_309, (IMP)meth_imp_309 },
+	{ "c0@4:8i12@16@20", (superfunc)super_310, (IMP)meth_imp_310 },
+	{ "c0@4:8i12@16@20@24", (superfunc)super_311, (IMP)meth_imp_311 },
+	{ "c0@4:8i12c16", (superfunc)super_312, (IMP)meth_imp_312 },
+	{ "c0@4:8i12f40r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}20r^{_NSPoint=ff}24", (superfunc)super_313, (IMP)meth_imp_313 },
+	{ "c0@4:8i12i16", (superfunc)super_314, (IMP)meth_imp_314 },
+	{ "c0@4:8i12i16i20", (superfunc)super_315, (IMP)meth_imp_315 },
+	{ "c0@4:8l12", (superfunc)super_316, (IMP)meth_imp_316 },
+	{ "c0@4:8nO@12nO@16", (superfunc)super_317, (IMP)meth_imp_317 },
+	{ "c0@4:8r*12", (superfunc)super_318, (IMP)meth_imp_318 },
+	{ "c0@4:8r^{FSRef=[80C]}12", (superfunc)super_319, (IMP)meth_imp_319 },
+	{ "c0@4:8r^{_NSPoint=ff}12", (superfunc)super_320, (IMP)meth_imp_320 },
+	{ "c0@4:8r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@16", (superfunc)super_321, (IMP)meth_imp_321 },
+	{ "c0@4:8r^{_NSRect={_NSPoint=ff}{_NSSize=ff}}12f40", (superfunc)super_322, (IMP)meth_imp_322 },
+	{ "c0@4:8s12", (superfunc)super_323, (IMP)meth_imp_323 },
+	{ "c0@4:8{NSButtonState=iccc}12", (superfunc)super_324, (IMP)meth_imp_324 },
+	{ "c0@4:8{_NSPoint=ff}12", (superfunc)super_325, (IMP)meth_imp_325 },
+	{ "c0@4:8{_NSPoint=ff}12@20", (superfunc)super_326, (IMP)meth_imp_326 },
+	{ "c0@4:8{_NSPoint=ff}12i20", (superfunc)super_327, (IMP)meth_imp_327 },
+	{ "c0@4:8{_NSPoint=ff}12{_NSPoint=ff}20@28", (superfunc)super_328, (IMP)meth_imp_328 },
+	{ "c0@4:8{_NSPoint=ff}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}20", (superfunc)super_329, (IMP)meth_imp_329 },
+	{ "c0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12", (superfunc)super_330, (IMP)meth_imp_330 },
+	{ "c0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28", (superfunc)super_331, (IMP)meth_imp_331 },
+	{ "c0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28@32", (superfunc)super_332, (IMP)meth_imp_332 },
+	{ "c36@4:8@12i16i20c24c28c32c35", (superfunc)super_333, (IMP)meth_imp_333 },
+	{ "c36@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32I32", (superfunc)super_334, (IMP)meth_imp_334 },
+	{ "c36@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32c35", (superfunc)super_335, (IMP)meth_imp_335 },
+	{ "c36@4:8{_NSRange=II}12{_NSRange=II}20{_NSRange=II}28@32", (superfunc)super_336, (IMP)meth_imp_336 },
+	{ "c36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28i32i32", (superfunc)super_337, (IMP)meth_imp_337 },
+	{ "c40@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32I32c39", (superfunc)super_338, (IMP)meth_imp_338 },
+	{ "c40@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32c35@36", (superfunc)super_339, (IMP)meth_imp_339 },
+	{ "c40@4:8d40@20@24@28@32I32I36", (superfunc)super_340, (IMP)meth_imp_340 },
+	{ "c60@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}24i40f40c51c55c59", (superfunc)super_341, (IMP)meth_imp_341 },
+	{ "c@:@o^@", (superfunc)super_342, (IMP)meth_imp_342 },
+	{ "c@:@o^@o^@", (superfunc)super_343, (IMP)meth_imp_343 },
+	{ "c@:o^@@o^@", (superfunc)super_344, (IMP)meth_imp_344 },
+	{ "c@:o^I", (superfunc)super_345, (IMP)meth_imp_345 },
+	{ "c@:o^d", (superfunc)super_346, (IMP)meth_imp_346 },
+	{ "c@:o^f", (superfunc)super_347, (IMP)meth_imp_347 },
+	{ "c@:o^i", (superfunc)super_348, (IMP)meth_imp_348 },
+	{ "c@:o^q", (superfunc)super_349, (IMP)meth_imp_349 },
+	{ "d0@4:8", (superfunc)super_350, (IMP)meth_imp_350 },
+	{ "d0@4:8@12", (superfunc)super_351, (IMP)meth_imp_351 },
+	{ "d0@4:8d40", (superfunc)super_352, (IMP)meth_imp_352 },
+	{ "d0@4:8i12", (superfunc)super_353, (IMP)meth_imp_353 },
+	{ "d0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12", (superfunc)super_354, (IMP)meth_imp_354 },
+	{ "f0@4:8", (superfunc)super_355, (IMP)meth_imp_355 },
+	{ "f0@4:8@12", (superfunc)super_356, (IMP)meth_imp_356 },
+	{ "f0@4:8@12@16", (superfunc)super_357, (IMP)meth_imp_357 },
+	{ "f0@4:8@12@16f40", (superfunc)super_358, (IMP)meth_imp_358 },
+	{ "f0@4:8@12I16", (superfunc)super_359, (IMP)meth_imp_359 },
+	{ "f0@4:8@12f40i20", (superfunc)super_360, (IMP)meth_imp_360 },
+	{ "f0@4:8@12i16", (superfunc)super_361, (IMP)meth_imp_361 },
+	{ "f0@4:8I12", (superfunc)super_362, (IMP)meth_imp_362 },
+	{ "f0@4:8c12", (superfunc)super_363, (IMP)meth_imp_363 },
+	{ "f0@4:8c12f40", (superfunc)super_364, (IMP)meth_imp_364 },
+	{ "f0@4:8d40", (superfunc)super_365, (IMP)meth_imp_365 },
+	{ "f0@4:8f40", (superfunc)super_366, (IMP)meth_imp_366 },
+	{ "f0@4:8i12", (superfunc)super_367, (IMP)meth_imp_367 },
+	{ "f0@4:8r*12I16", (superfunc)super_368, (IMP)meth_imp_368 },
+	{ "f0@4:8{_NSPoint=ff}12@20", (superfunc)super_369, (IMP)meth_imp_369 },
+	{ "f0@4:8{_NSSize=ff}12", (superfunc)super_370, (IMP)meth_imp_370 },
+	{ "i0@4:8", (superfunc)super_371, (IMP)meth_imp_371 },
+	{ "i0@4:8*12", (superfunc)super_372, (IMP)meth_imp_372 },
+	{ "i0@4:8*12@16", (superfunc)super_373, (IMP)meth_imp_373 },
+	{ "i0@4:8@12", (superfunc)super_374, (IMP)meth_imp_374 },
+	{ "i0@4:8@12:16", (superfunc)super_375, (IMP)meth_imp_375 },
+	{ "i0@4:8@12@16", (superfunc)super_376, (IMP)meth_imp_376 },
+	{ "i0@4:8@12@16@20", (superfunc)super_377, (IMP)meth_imp_377 },
+	{ "i0@4:8@12@16@20@24", (superfunc)super_378, (IMP)meth_imp_378 },
+	{ "i0@4:8@12@16@20@24@28@32", (superfunc)super_379, (IMP)meth_imp_379 },
+	{ "i0@4:8@12@16@20c24", (superfunc)super_380, (IMP)meth_imp_380 },
+	{ "i0@4:8@12@16c20", (superfunc)super_381, (IMP)meth_imp_381 },
+	{ "i0@4:8@12@16c20c24", (superfunc)super_382, (IMP)meth_imp_382 },
+	{ "i0@4:8@12@16i20", (superfunc)super_383, (IMP)meth_imp_383 },
+	{ "i0@4:8@12I16", (superfunc)super_384, (IMP)meth_imp_384 },
+	{ "i0@4:8@12I16{_NSRange=II}20", (superfunc)super_385, (IMP)meth_imp_385 },
+	{ "i0@4:8@12I16{_NSRange=II}20@28", (superfunc)super_386, (IMP)meth_imp_386 },
+	{ "i0@4:8@12c16", (superfunc)super_387, (IMP)meth_imp_387 },
+	{ "i0@4:8@12c16@20", (superfunc)super_388, (IMP)meth_imp_388 },
+	{ "i0@4:8@12c16@20@24@28", (superfunc)super_389, (IMP)meth_imp_389 },
+	{ "i0@4:8@12c16c20", (superfunc)super_390, (IMP)meth_imp_390 },
+	{ "i0@4:8@12i16", (superfunc)super_391, (IMP)meth_imp_391 },
+	{ "i0@4:8@12i16c20", (superfunc)super_392, (IMP)meth_imp_392 },
+	{ "i0@4:8@12{_NSRange=II}16", (superfunc)super_393, (IMP)meth_imp_393 },
+	{ "i0@4:8I12", (superfunc)super_394, (IMP)meth_imp_394 },
+	{ "i0@4:8S12", (superfunc)super_395, (IMP)meth_imp_395 },
+	{ "i0@4:8S12i16", (superfunc)super_396, (IMP)meth_imp_396 },
+	{ "i0@4:8c12@16@20@24", (superfunc)super_397, (IMP)meth_imp_397 },
+	{ "i0@4:8d40", (superfunc)super_398, (IMP)meth_imp_398 },
+	{ "i0@4:8f40", (superfunc)super_399, (IMP)meth_imp_399 },
+	{ "i0@4:8i12", (superfunc)super_400, (IMP)meth_imp_400 },
+	{ "i0@4:8i12@16", (superfunc)super_401, (IMP)meth_imp_401 },
+	{ "i0@4:8i12I16", (superfunc)super_402, (IMP)meth_imp_402 },
+	{ "i0@4:8i12c16@20", (superfunc)super_403, (IMP)meth_imp_403 },
+	{ "i0@4:8i12f40", (superfunc)super_404, (IMP)meth_imp_404 },
+	{ "i0@4:8i12i16", (superfunc)super_405, (IMP)meth_imp_405 },
+	{ "i0@4:8i12i16@20", (superfunc)super_406, (IMP)meth_imp_406 },
+	{ "i0@4:8i12{_NSPoint=ff}16", (superfunc)super_407, (IMP)meth_imp_407 },
+	{ "i0@4:8i12{_NSPoint=ff}16@24i28", (superfunc)super_408, (IMP)meth_imp_408 },
+	{ "i0@4:8n@12", (superfunc)super_409, (IMP)meth_imp_409 },
+	{ "i0@4:8r^{_NSPoint=ff}12", (superfunc)super_410, (IMP)meth_imp_410 },
+	{ "i0@4:8{NSButtonState=iccc}12", (superfunc)super_411, (IMP)meth_imp_411 },
+	{ "i0@4:8{_NSPoint=ff}12", (superfunc)super_412, (IMP)meth_imp_412 },
+	{ "i0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12", (superfunc)super_413, (IMP)meth_imp_413 },
+	{ "i36@4:8@12@16i20c24c28c32c35", (superfunc)super_414, (IMP)meth_imp_414 },
+	{ "i36@4:8@12{_NSRange=II}16@24{_NSRange=II}28i32", (superfunc)super_415, (IMP)meth_imp_415 },
+	{ "i40@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12c28@32@32@36", (superfunc)super_416, (IMP)meth_imp_416 },
+	{ "i@:@", (superfunc)super_417, (IMP)meth_imp_417 },
+	{ "l0@4:8", (superfunc)super_418, (IMP)meth_imp_418 },
+	{ "l0@4:8i12r*16i20", (superfunc)super_419, (IMP)meth_imp_419 },
+	{ "q0@4:8", (superfunc)super_420, (IMP)meth_imp_420 },
+	{ "q0@4:8@12", (superfunc)super_421, (IMP)meth_imp_421 },
+	{ "r*0@4:8", (superfunc)super_422, (IMP)meth_imp_422 },
+	{ "r*0@4:8@12", (superfunc)super_423, (IMP)meth_imp_423 },
+	{ "r*0@4:8I12", (superfunc)super_424, (IMP)meth_imp_424 },
+	{ "r*0@4:8c12", (superfunc)super_425, (IMP)meth_imp_425 },
+	{ "r^I0@4:8", (superfunc)super_426, (IMP)meth_imp_426 },
+	{ "r^S0@4:8", (superfunc)super_427, (IMP)meth_imp_427 },
+	{ "r^f0@4:8", (superfunc)super_428, (IMP)meth_imp_428 },
+	{ "r^f0@4:8@12", (superfunc)super_429, (IMP)meth_imp_429 },
+	{ "r^i0@4:8", (superfunc)super_430, (IMP)meth_imp_430 },
+	{ "r^{AEDesc=I^^{OpaqueAEDataStorageType}}0@4:8", (superfunc)super_431, (IMP)meth_imp_431 },
+	{ "r^{FSRef=[80C]}0@4:8", (superfunc)super_432, (IMP)meth_imp_432 },
+	{ "s0@4:8", (superfunc)super_433, (IMP)meth_imp_433 },
+	{ "s0@4:8@12", (superfunc)super_434, (IMP)meth_imp_434 },
+	{ "s0@4:8@12@16", (superfunc)super_435, (IMP)meth_imp_435 },
+	{ "s0@4:8@12@16@20", (superfunc)super_436, (IMP)meth_imp_436 },
+	{ "s0@4:8L12@16", (superfunc)super_437, (IMP)meth_imp_437 },
+	{ "s0@4:8L12@16@20", (superfunc)super_438, (IMP)meth_imp_438 },
+	{ "v0@4:8", (superfunc)super_439, (IMP)meth_imp_439 },
+	{ "v0@4:8#12", (superfunc)super_440, (IMP)meth_imp_440 },
+	{ "v0@4:8#12@16", (superfunc)super_441, (IMP)meth_imp_441 },
+	{ "v0@4:8*12", (superfunc)super_442, (IMP)meth_imp_442 },
+	{ "v0@4:8*12I16", (superfunc)super_443, (IMP)meth_imp_443 },
+	{ "v0@4:8:12", (superfunc)super_444, (IMP)meth_imp_444 },
+	{ "v0@4:8:12@16", (superfunc)super_445, (IMP)meth_imp_445 },
+	{ "v0@4:8:12@16@20", (superfunc)super_446, (IMP)meth_imp_446 },
+	{ "v0@4:8:12@16@20I24@28", (superfunc)super_447, (IMP)meth_imp_447 },
+	{ "v0@4:8:12@16@20i24@28", (superfunc)super_448, (IMP)meth_imp_448 },
+	{ "v0@4:8:12@16c20", (superfunc)super_449, (IMP)meth_imp_449 },
+	{ "v0@4:8:12@16c20@24", (superfunc)super_450, (IMP)meth_imp_450 },
+	{ "v0@4:8:12@16d40", (superfunc)super_451, (IMP)meth_imp_451 },
+	{ "v0@4:8:12@16d40@28", (superfunc)super_452, (IMP)meth_imp_452 },
+	{ "v0@4:8:12i16i20", (superfunc)super_453, (IMP)meth_imp_453 },
+	{ "v0@4:8@12", (superfunc)super_454, (IMP)meth_imp_454 },
+	{ "v0@4:8@12#16", (superfunc)super_455, (IMP)meth_imp_455 },
+	{ "v0@4:8@12:16", (superfunc)super_456, (IMP)meth_imp_456 },
+	{ "v0@4:8@12:16#20", (superfunc)super_457, (IMP)meth_imp_457 },
+	{ "v0@4:8@12:16#20#24", (superfunc)super_458, (IMP)meth_imp_458 },
+	{ "v0@4:8@12:16@20", (superfunc)super_459, (IMP)meth_imp_459 },
+	{ "v0@4:8@12:16@20@24", (superfunc)super_460, (IMP)meth_imp_460 },
+	{ "v0@4:8@12:16@20@24I28", (superfunc)super_461, (IMP)meth_imp_461 },
+	{ "v0@4:8@12:16@20@24i28", (superfunc)super_462, (IMP)meth_imp_462 },
+	{ "v0@4:8@12:16I20", (superfunc)super_463, (IMP)meth_imp_463 },
+	{ "v0@4:8@12:16I20I24", (superfunc)super_464, (IMP)meth_imp_464 },
+	{ "v0@4:8@12@16", (superfunc)super_465, (IMP)meth_imp_465 },
+	{ "v0@4:8@12@16*20", (superfunc)super_466, (IMP)meth_imp_466 },
+	{ "v0@4:8@12@16@20", (superfunc)super_467, (IMP)meth_imp_467 },
+	{ "v0@4:8@12@16@20@24", (superfunc)super_468, (IMP)meth_imp_468 },
+	{ "v0@4:8@12@16@20@24@28@32", (superfunc)super_469, (IMP)meth_imp_469 },
+	{ "v0@4:8@12@16@20@24c28", (superfunc)super_470, (IMP)meth_imp_470 },
+	{ "v0@4:8@12@16@20I24", (superfunc)super_471, (IMP)meth_imp_471 },
+	{ "v0@4:8@12@16@20I24@28", (superfunc)super_472, (IMP)meth_imp_472 },
+	{ "v0@4:8@12@16@20c24", (superfunc)super_473, (IMP)meth_imp_473 },
+	{ "v0@4:8@12@16@20i24", (superfunc)super_474, (IMP)meth_imp_474 },
+	{ "v0@4:8@12@16@20i24c28", (superfunc)super_475, (IMP)meth_imp_475 },
+	{ "v0@4:8@12@16I20", (superfunc)super_476, (IMP)meth_imp_476 },
+	{ "v0@4:8@12@16I20@24", (superfunc)super_477, (IMP)meth_imp_477 },
+	{ "v0@4:8@12@16L20", (superfunc)super_478, (IMP)meth_imp_478 },
+	{ "v0@4:8@12@16c20", (superfunc)super_479, (IMP)meth_imp_479 },
+	{ "v0@4:8@12@16c20c24", (superfunc)super_480, (IMP)meth_imp_480 },
+	{ "v0@4:8@12@16f40@24@28", (superfunc)super_481, (IMP)meth_imp_481 },
+	{ "v0@4:8@12@16i20", (superfunc)super_482, (IMP)meth_imp_482 },
+	{ "v0@4:8@12@16i20@24", (superfunc)super_483, (IMP)meth_imp_483 },
+	{ "v0@4:8@12@16i20i24", (superfunc)super_484, (IMP)meth_imp_484 },
+	{ "v0@4:8@12@16l20@24", (superfunc)super_485, (IMP)meth_imp_485 },
+	{ "v0@4:8@12@16{_NSRange=II}20", (superfunc)super_486, (IMP)meth_imp_486 },
+	{ "v0@4:8@12@16{_NSRect={_NSPoint=ff}{_NSSize=ff}}20", (superfunc)super_487, (IMP)meth_imp_487 },
+	{ "v0@4:8@12I16", (superfunc)super_488, (IMP)meth_imp_488 },
+	{ "v0@4:8@12I16@20", (superfunc)super_489, (IMP)meth_imp_489 },
+	{ "v0@4:8@12I16@20*24", (superfunc)super_490, (IMP)meth_imp_490 },
+	{ "v0@4:8@12L16", (superfunc)super_491, (IMP)meth_imp_491 },
+	{ "v0@4:8@12c16", (superfunc)super_492, (IMP)meth_imp_492 },
+	{ "v0@4:8@12c16c20", (superfunc)super_493, (IMP)meth_imp_493 },
+	{ "v0@4:8@12c16c20c24", (superfunc)super_494, (IMP)meth_imp_494 },
+	{ "v0@4:8@12c16i20i24", (superfunc)super_495, (IMP)meth_imp_495 },
+	{ "v0@4:8@12d40", (superfunc)super_496, (IMP)meth_imp_496 },
+	{ "v0@4:8@12f40", (superfunc)super_497, (IMP)meth_imp_497 },
+	{ "v0@4:8@12f40f48c24", (superfunc)super_498, (IMP)meth_imp_498 },
+	{ "v0@4:8@12i16", (superfunc)super_499, (IMP)meth_imp_499 },
+	{ "v0@4:8@12i16@20", (superfunc)super_500, (IMP)meth_imp_500 },
+	{ "v0@4:8@12i16I20", (superfunc)super_501, (IMP)meth_imp_501 },
+	{ "v0@4:8@12i16I20@24", (superfunc)super_502, (IMP)meth_imp_502 },
+	{ "v0@4:8@12i16c20c24c28", (superfunc)super_503, (IMP)meth_imp_503 },
+	{ "v0@4:8@12i16d40", (superfunc)super_504, (IMP)meth_imp_504 },
+	{ "v0@4:8@12i16f40", (superfunc)super_505, (IMP)meth_imp_505 },
+	{ "v0@4:8@12i16i20", (superfunc)super_506, (IMP)meth_imp_506 },
+	{ "v0@4:8@12i16i20i24c28", (superfunc)super_507, (IMP)meth_imp_507 },
+	{ "v0@4:8@12i16{_NSRange=II}20", (superfunc)super_508, (IMP)meth_imp_508 },
+	{ "v0@4:8@12i16{_NSRect={_NSPoint=ff}{_NSSize=ff}}20", (superfunc)super_509, (IMP)meth_imp_509 },
+	{ "v0@4:8@12l16", (superfunc)super_510, (IMP)meth_imp_510 },
+	{ "v0@4:8@12s16", (superfunc)super_511, (IMP)meth_imp_511 },
+	{ "v0@4:8@12{_NSPoint=ff}16", (superfunc)super_512, (IMP)meth_imp_512 },
+	{ "v0@4:8@12{_NSPoint=ff}16I24", (superfunc)super_513, (IMP)meth_imp_513 },
+	{ "v0@4:8@12{_NSPoint=ff}16{_NSPoint=ff}24", (superfunc)super_514, (IMP)meth_imp_514 },
+	{ "v0@4:8@12{_NSRange=II}16", (superfunc)super_515, (IMP)meth_imp_515 },
+	{ "v0@4:8@12{_NSRange=II}16@24", (superfunc)super_516, (IMP)meth_imp_516 },
+	{ "v0@4:8@12{_NSRange=II}16c24", (superfunc)super_517, (IMP)meth_imp_517 },
+	{ "v0@4:8@12{_NSRange=II}16{_NSRange=II}24", (superfunc)super_518, (IMP)meth_imp_518 },
+	{ "v0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16", (superfunc)super_519, (IMP)meth_imp_519 },
+	{ "v0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32", (superfunc)super_520, (IMP)meth_imp_520 },
+	{ "v0@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16c32", (superfunc)super_521, (IMP)meth_imp_521 },
+	{ "v0@4:8@12{_NSSize=ff}16", (superfunc)super_522, (IMP)meth_imp_522 },
+	{ "v0@4:8C12", (superfunc)super_523, (IMP)meth_imp_523 },
+	{ "v0@4:8I12", (superfunc)super_524, (IMP)meth_imp_524 },
+	{ "v0@4:8I12@16", (superfunc)super_525, (IMP)meth_imp_525 },
+	{ "v0@4:8I12@16@20", (superfunc)super_526, (IMP)meth_imp_526 },
+	{ "v0@4:8I12I16", (superfunc)super_527, (IMP)meth_imp_527 },
+	{ "v0@4:8I12I16I20", (superfunc)super_528, (IMP)meth_imp_528 },
+	{ "v0@4:8I12Q16", (superfunc)super_529, (IMP)meth_imp_529 },
+	{ "v0@4:8I12{_NSPoint=ff}16I24@28", (superfunc)super_530, (IMP)meth_imp_530 },
+	{ "v0@4:8I12{_NSRange=II}16", (superfunc)super_531, (IMP)meth_imp_531 },
+	{ "v0@4:8I12{_NSRange=II}16i24", (superfunc)super_532, (IMP)meth_imp_532 },
+	{ "v0@4:8I12{_NSRange=II}16i24{_NSRange=II}28", (superfunc)super_533, (IMP)meth_imp_533 },
+	{ "v0@4:8L12", (superfunc)super_534, (IMP)meth_imp_534 },
+	{ "v0@4:8L12@16L20", (superfunc)super_535, (IMP)meth_imp_535 },
+	{ "v0@4:8Q12", (superfunc)super_536, (IMP)meth_imp_536 },
+	{ "v0@4:8S12", (superfunc)super_537, (IMP)meth_imp_537 },
+	{ "v0@4:8S12I16", (superfunc)super_538, (IMP)meth_imp_538 },
+	{ "v0@4:8c12", (superfunc)super_539, (IMP)meth_imp_539 },
+	{ "v0@4:8c12@16", (superfunc)super_540, (IMP)meth_imp_540 },
+	{ "v0@4:8c12@16@20@24", (superfunc)super_541, (IMP)meth_imp_541 },
+	{ "v0@4:8c12I16", (superfunc)super_542, (IMP)meth_imp_542 },
+	{ "v0@4:8c12I16I20", (superfunc)super_543, (IMP)meth_imp_543 },
+	{ "v0@4:8c12c16", (superfunc)super_544, (IMP)meth_imp_544 },
+	{ "v0@4:8c12c16c20", (superfunc)super_545, (IMP)meth_imp_545 },
+	{ "v0@4:8c12f40", (superfunc)super_546, (IMP)meth_imp_546 },
+	{ "v0@4:8c12i16i20", (superfunc)super_547, (IMP)meth_imp_547 },
+	{ "v0@4:8c12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16", (superfunc)super_548, (IMP)meth_imp_548 },
+	{ "v0@4:8c12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32", (superfunc)super_549, (IMP)meth_imp_549 },
+	{ "v0@4:8d40", (superfunc)super_550, (IMP)meth_imp_550 },
+	{ "v0@4:8d40@20", (superfunc)super_551, (IMP)meth_imp_551 },
+	{ "v0@4:8d40c20", (superfunc)super_552, (IMP)meth_imp_552 },
+	{ "v0@4:8d40d48", (superfunc)super_553, (IMP)meth_imp_553 },
+	{ "v0@4:8f40", (superfunc)super_554, (IMP)meth_imp_554 },
+	{ "v0@4:8f40@16", (superfunc)super_555, (IMP)meth_imp_555 },
+	{ "v0@4:8f40@16@20@24", (superfunc)super_556, (IMP)meth_imp_556 },
+	{ "v0@4:8f40c16", (superfunc)super_557, (IMP)meth_imp_557 },
+	{ "v0@4:8f40f48", (superfunc)super_558, (IMP)meth_imp_558 },
+	{ "v0@4:8i12", (superfunc)super_559, (IMP)meth_imp_559 },
+	{ "v0@4:8i12@16", (superfunc)super_560, (IMP)meth_imp_560 },
+	{ "v0@4:8i12@16:20i24i28", (superfunc)super_561, (IMP)meth_imp_561 },
+	{ "v0@4:8i12I16", (superfunc)super_562, (IMP)meth_imp_562 },
+	{ "v0@4:8i12c16", (superfunc)super_563, (IMP)meth_imp_563 },
+	{ "v0@4:8i12c16c20", (superfunc)super_564, (IMP)meth_imp_564 },
+	{ "v0@4:8i12c16c20c24", (superfunc)super_565, (IMP)meth_imp_565 },
+	{ "v0@4:8i12f40", (superfunc)super_566, (IMP)meth_imp_566 },
+	{ "v0@4:8i12f40f48f56", (superfunc)super_567, (IMP)meth_imp_567 },
+	{ "v0@4:8i12i16", (superfunc)super_568, (IMP)meth_imp_568 },
+	{ "v0@4:8i12i16@20", (superfunc)super_569, (IMP)meth_imp_569 },
+	{ "v0@4:8i12i16@20c24", (superfunc)super_570, (IMP)meth_imp_570 },
+	{ "v0@4:8i12i16I20", (superfunc)super_571, (IMP)meth_imp_571 },
+	{ "v0@4:8i12i16c20", (superfunc)super_572, (IMP)meth_imp_572 },
+	{ "v0@4:8i12i16c20c24c28", (superfunc)super_573, (IMP)meth_imp_573 },
+	{ "v0@4:8i12i16c20c24c28c32", (superfunc)super_574, (IMP)meth_imp_574 },
+	{ "v0@4:8i12i16f40", (superfunc)super_575, (IMP)meth_imp_575 },
+	{ "v0@4:8i12i16i20", (superfunc)super_576, (IMP)meth_imp_576 },
+	{ "v0@4:8i12i16i20c24", (superfunc)super_577, (IMP)meth_imp_577 },
+	{ "v0@4:8i12r*16i20", (superfunc)super_578, (IMP)meth_imp_578 },
+	{ "v0@4:8i12{_NSRange=II}16", (superfunc)super_579, (IMP)meth_imp_579 },
+	{ "v0@4:8i12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16", (superfunc)super_580, (IMP)meth_imp_580 },
+	{ "v0@4:8l12", (superfunc)super_581, (IMP)meth_imp_581 },
+	{ "v0@4:8q12@20", (superfunc)super_582, (IMP)meth_imp_582 },
+	{ "v0@4:8r*12", (superfunc)super_583, (IMP)meth_imp_583 },
+	{ "v0@4:8r*12I16@20", (superfunc)super_584, (IMP)meth_imp_584 },
+	{ "v0@4:8r*12i16", (superfunc)super_585, (IMP)meth_imp_585 },
+	{ "v0@4:8r*12{_NSPoint=ff}16", (superfunc)super_586, (IMP)meth_imp_586 },
+	{ "v0@4:8r^S12I16", (superfunc)super_587, (IMP)meth_imp_587 },
+	{ "v0@4:8r^f12f40", (superfunc)super_588, (IMP)meth_imp_588 },
+	{ "v0@4:8r^f12i16f40", (superfunc)super_589, (IMP)meth_imp_589 },
+	{ "v0@4:8r^i12i16", (superfunc)super_590, (IMP)meth_imp_590 },
+	{ "v0@4:8r^{_NSPoint=ff}12@16", (superfunc)super_591, (IMP)meth_imp_591 },
+	{ "v0@4:8{?=ii}12", (superfunc)super_592, (IMP)meth_imp_592 },
+	{ "v0@4:8{_NSAffineTransformStruct=ffffff}12", (superfunc)super_593, (IMP)meth_imp_593 },
+	{ "v0@4:8{_NSPoint=ff}12", (superfunc)super_594, (IMP)meth_imp_594 },
+	{ "v0@4:8{_NSPoint=ff}12@20", (superfunc)super_595, (IMP)meth_imp_595 },
+	{ "v0@4:8{_NSPoint=ff}12d40", (superfunc)super_596, (IMP)meth_imp_596 },
+	{ "v0@4:8{_NSPoint=ff}12d40d48d56", (superfunc)super_597, (IMP)meth_imp_597 },
+	{ "v0@4:8{_NSPoint=ff}12f40", (superfunc)super_598, (IMP)meth_imp_598 },
+	{ "v0@4:8{_NSPoint=ff}12f40f48f56", (superfunc)super_599, (IMP)meth_imp_599 },
+	{ "v0@4:8{_NSPoint=ff}12f40f48f56c32", (superfunc)super_600, (IMP)meth_imp_600 },
+	{ "v0@4:8{_NSPoint=ff}12i20", (superfunc)super_601, (IMP)meth_imp_601 },
+	{ "v0@4:8{_NSPoint=ff}12i20f40", (superfunc)super_602, (IMP)meth_imp_602 },
+	{ "v0@4:8{_NSPoint=ff}12{_NSPoint=ff}20", (superfunc)super_603, (IMP)meth_imp_603 },
+	{ "v0@4:8{_NSPoint=ff}12{_NSPoint=ff}20@28", (superfunc)super_604, (IMP)meth_imp_604 },
+	{ "v0@4:8{_NSPoint=ff}12{_NSPoint=ff}20@28c32", (superfunc)super_605, (IMP)meth_imp_605 },
+	{ "v0@4:8{_NSPoint=ff}12{_NSPoint=ff}20f40", (superfunc)super_606, (IMP)meth_imp_606 },
+	{ "v0@4:8{_NSPoint=ff}12{_NSPoint=ff}20{_NSPoint=ff}28", (superfunc)super_607, (IMP)meth_imp_607 },
+	{ "v0@4:8{_NSPoint=ff}12{_NSRange=II}20", (superfunc)super_608, (IMP)meth_imp_608 },
+	{ "v0@4:8{_NSPoint=ff}12{_NSRange=II}20c28", (superfunc)super_609, (IMP)meth_imp_609 },
+	{ "v0@4:8{_NSPoint=ff}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}20f40", (superfunc)super_610, (IMP)meth_imp_610 },
+	{ "v0@4:8{_NSRange=II}12", (superfunc)super_611, (IMP)meth_imp_611 },
+	{ "v0@4:8{_NSRange=II}12@20", (superfunc)super_612, (IMP)meth_imp_612 },
+	{ "v0@4:8{_NSRange=II}12@20I24", (superfunc)super_613, (IMP)meth_imp_613 },
+	{ "v0@4:8{_NSRange=II}12@20{_NSRange=II}24", (superfunc)super_614, (IMP)meth_imp_614 },
+	{ "v0@4:8{_NSRange=II}12c20", (superfunc)super_615, (IMP)meth_imp_615 },
+	{ "v0@4:8{_NSRange=II}12i20c24", (superfunc)super_616, (IMP)meth_imp_616 },
+	{ "v0@4:8{_NSRange=II}12r*20I24", (superfunc)super_617, (IMP)meth_imp_617 },
+	{ "v0@4:8{_NSRange=II}12r^S20I24", (superfunc)super_618, (IMP)meth_imp_618 },
+	{ "v0@4:8{_NSRange=II}12{_NSRange=II}20", (superfunc)super_619, (IMP)meth_imp_619 },
+	{ "v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12", (superfunc)super_620, (IMP)meth_imp_620 },
+	{ "v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28", (superfunc)super_621, (IMP)meth_imp_621 },
+	{ "v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28@32", (superfunc)super_622, (IMP)meth_imp_622 },
+	{ "v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28I32", (superfunc)super_623, (IMP)meth_imp_623 },
+	{ "v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28c32", (superfunc)super_624, (IMP)meth_imp_624 },
+	{ "v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28i32", (superfunc)super_625, (IMP)meth_imp_625 },
+	{ "v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12c28", (superfunc)super_626, (IMP)meth_imp_626 },
+	{ "v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12c28@32", (superfunc)super_627, (IMP)meth_imp_627 },
+	{ "v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12c28c32", (superfunc)super_628, (IMP)meth_imp_628 },
+	{ "v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12f40", (superfunc)super_629, (IMP)meth_imp_629 },
+	{ "v0@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSSize=ff}28", (superfunc)super_630, (IMP)meth_imp_630 },
+	{ "v0@4:8{_NSSize=ff}12", (superfunc)super_631, (IMP)meth_imp_631 },
+	{ "v0@4:8{_NSSize=ff}12c20", (superfunc)super_632, (IMP)meth_imp_632 },
+	{ "v0@4:8{_NSSize=ff}12c20c24", (superfunc)super_633, (IMP)meth_imp_633 },
+	{ "v0@4:8{_NSSize=ff}12c20{_NSSize=ff}24c32", (superfunc)super_634, (IMP)meth_imp_634 },
+	{ "v0@4:8{_NSSize=ff}12{_NSRange=II}20", (superfunc)super_635, (IMP)meth_imp_635 },
+	{ "v104@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}24{_NSRect={_NSPoint=ff}{_NSSize=ff}}40{_NSRect={_NSPoint=ff}{_NSSize=ff}}56{_NSRect={_NSPoint=ff}{_NSSize=ff}}72{_NSRect={_NSPoint=ff}{_NSSize=ff}}88", (superfunc)super_636, (IMP)meth_imp_636 },
+	{ "v36@4:8@12@16@20@24@28@32c35", (superfunc)super_637, (IMP)meth_imp_637 },
+	{ "v36@4:8@12I16{_NSRange=II}20i28{_NSRange=II}28", (superfunc)super_638, (IMP)meth_imp_638 },
+	{ "v36@4:8@12{_NSPoint=ff}16f40@28i32@32", (superfunc)super_639, (IMP)meth_imp_639 },
+	{ "v36@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32c35", (superfunc)super_640, (IMP)meth_imp_640 },
+	{ "v36@4:8c12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32@32", (superfunc)super_641, (IMP)meth_imp_641 },
+	{ "v36@4:8i12i16i20{_NSRect={_NSPoint=ff}{_NSSize=ff}}20", (superfunc)super_642, (IMP)meth_imp_642 },
+	{ "v36@4:8{_NSPoint=ff}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}20i32", (superfunc)super_643, (IMP)meth_imp_643 },
+	{ "v36@4:8{_NSPoint=ff}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}20i32f40", (superfunc)super_644, (IMP)meth_imp_644 },
+	{ "v36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28@32@32", (superfunc)super_645, (IMP)meth_imp_645 },
+	{ "v36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28I32@32", (superfunc)super_646, (IMP)meth_imp_646 },
+	{ "v36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28c32i32", (superfunc)super_647, (IMP)meth_imp_647 },
+	{ "v36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28i32i32", (superfunc)super_648, (IMP)meth_imp_648 },
+	{ "v36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12I28i32c35", (superfunc)super_649, (IMP)meth_imp_649 },
+	{ "v36@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12c28@32c35", (superfunc)super_650, (IMP)meth_imp_650 },
+	{ "v40@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16@32I32@36", (superfunc)super_651, (IMP)meth_imp_651 },
+	{ "v40@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16c32@32c39", (superfunc)super_652, (IMP)meth_imp_652 },
+	{ "v40@4:8{_NSPoint=ff}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}20c35c39", (superfunc)super_653, (IMP)meth_imp_653 },
+	{ "v40@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28@32@32@36", (superfunc)super_654, (IMP)meth_imp_654 },
+	{ "v40@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}24", (superfunc)super_655, (IMP)meth_imp_655 },
+	{ "v44@4:8@12{_NSPoint=ff}16{_NSSize=ff}24@32@32@36c43", (superfunc)super_656, (IMP)meth_imp_656 },
+	{ "v44@4:8@12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16{_NSRect={_NSPoint=ff}{_NSSize=ff}}28", (superfunc)super_657, (IMP)meth_imp_657 },
+	{ "v44@4:8f40{_NSPoint=ff}16{_NSPoint=ff}24{_NSPoint=ff}28{_NSPoint=ff}36", (superfunc)super_658, (IMP)meth_imp_658 },
+	{ "v44@4:8i12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16{_NSRect={_NSPoint=ff}{_NSSize=ff}}28", (superfunc)super_659, (IMP)meth_imp_659 },
+	{ "v44@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12@28@32@32i36i40", (superfunc)super_660, (IMP)meth_imp_660 },
+	{ "v44@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}24@40", (superfunc)super_661, (IMP)meth_imp_661 },
+	{ "v44@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}24c43", (superfunc)super_662, (IMP)meth_imp_662 },
+	{ "v44@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}24i40f40", (superfunc)super_663, (IMP)meth_imp_663 },
+	{ "v48@4:8@12@16{_NSPoint=ff}20{_NSSize=ff}28@32@36@40c47", (superfunc)super_664, (IMP)meth_imp_664 },
+	{ "v48@4:8@12@16{_NSRect={_NSPoint=ff}{_NSSize=ff}}20{_NSRect={_NSPoint=ff}{_NSSize=ff}}32f40", (superfunc)super_665, (IMP)meth_imp_665 },
+	{ "v48@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRange=II}28{_NSRect={_NSPoint=ff}{_NSSize=ff}}32", (superfunc)super_666, (IMP)meth_imp_666 },
+	{ "v48@4:8{_NSRect={_NSPoint=ff}{_NSSize=ff}}12{_NSRect={_NSPoint=ff}{_NSSize=ff}}24c43c47", (superfunc)super_667, (IMP)meth_imp_667 },
+	{ "v52@4:8i12{_NSRect={_NSPoint=ff}{_NSSize=ff}}16{_NSRect={_NSPoint=ff}{_NSSize=ff}}28c47i48", (superfunc)super_668, (IMP)meth_imp_668 },
+	{ "v52@4:8{_NSRange=II}12r^{ATSGlyphVector=III^v*I^v^{ATSStyleSetting}SsiiI{FixedRect=iiii}IiiiSS^S^s^s^i^i}20{_NSPoint=ff}24c32{_NSRect={_NSPoint=ff}{_NSSize=ff}}32c51", (superfunc)super_669, (IMP)meth_imp_669 },
+	{ "v@:", (superfunc)super_670, (IMP)meth_imp_670 },
+	{ "v@:@", (superfunc)super_671, (IMP)meth_imp_671 },
+	{ "v@:@@", (superfunc)super_672, (IMP)meth_imp_672 },
+	{ "v@:@@@", (superfunc)super_673, (IMP)meth_imp_673 },
+	{ "v@:@@@@", (superfunc)super_674, (IMP)meth_imp_674 },
+	{ "v@:@@@@@", (superfunc)super_675, (IMP)meth_imp_675 },
+	{ "v@:@@@@@@", (superfunc)super_676, (IMP)meth_imp_676 },
+	{ "v@:@@@@@@@", (superfunc)super_677, (IMP)meth_imp_677 },
+	{ "c@:o^@@o^@", (superfunc)super_678, (IMP)meth_imp_678 },
 	{0, 0}
 };
 
