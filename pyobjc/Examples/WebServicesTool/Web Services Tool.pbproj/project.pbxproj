@@ -250,12 +250,20 @@
 	<string>English</string>
 	<key>CFBundleExecutable</key>
 	<string>Web Services Tool</string>
+	<key>CFBundleGetInfoString</key>
+	<string>Web Services Tool</string>
 	<key>CFBundleIconFile</key>
-	<string></string>
+	<string>WST.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.codefab.Web Services Tool</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Web Services Tool</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>Web Services Tool</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
