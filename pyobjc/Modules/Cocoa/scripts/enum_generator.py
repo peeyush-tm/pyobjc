@@ -68,7 +68,8 @@ def process_file(outfp, filename):
 				continue
 
 			ident = ln[m.start():m.end()]
-			entry(outfp, ident)
+			if not ident in ['if', 'endif', 'else']:
+				entry(outfp, ident)
 
 
 def generate(dirname, fn = None):
