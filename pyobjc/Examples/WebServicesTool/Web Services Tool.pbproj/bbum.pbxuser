@@ -144,7 +144,7 @@
 						Collapsed = YES;
 						Frame = "{{0, 0}, {920, 342}}";
 						Split0 = {
-							Frame = "{{1e+06, 1e+06}, {735, 0}}";
+							Frame = "{{1e+06, 1e+06}, {920, 0}}";
 						};
 						SplitCount = 1;
 						Tab0 = {
@@ -617,7 +617,7 @@
 				StatusViewVisible = NO;
 				Template = F5CA7ECB015C094F0DCA290F;
 				ToolbarVisible = NO;
-				WindowLocation = "{215, 17}";
+				WindowLocation = "{298, 24}";
 			};
 			PBXWorkspaceContents = (
 				{

@@ -9,6 +9,7 @@ import xmlrpclib
 import sys
 import types
 import string
+import traceback
 
 kWSTReloadContentsToolbarItemIdentifier = "WST: Reload Contents Toolbar Identifier"
 kWSTPreferencesToolbarItemIdentifier = "WST: Preferences Toolbar Identifier"
@@ -170,12 +171,16 @@ class WSTConnectionWindowController(NSWindowController):
                     self._methods = self._server.system.listMethods()
                     self._methodPrefix = "system."
                 except:
-                    self.setStatusTextFieldMessage_("Server failed to respond to listMethods query.")
+                    self.setStatusTextFieldMessage_("Server failed to respond to listMethods query.  See below for more information.")
                     self._progressIndicator.stopAnimation_(sender)
                     self._server = None
                     self._methodPrefix = None
                     
+                    exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
+                    self._methodDescriptionTextView.setString_("Exception information\n\nType: %s\n\nValue: %s\n\nTraceback:\n\n %s\n" % (exceptionType, exceptionValue, string.join(traceback.format_tb( exceptionTraceback ), '\n' )))
+                    
                     return
+                    
             self._methods.sort(lambda x, y: cmp(x, y))
             self._methodsTable.reloadData()
             self._methodsTable.display()
