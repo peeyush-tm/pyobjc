@@ -21,4 +21,7 @@ To create a new PyCocoa project in Project Builder, do the following.  Of course
 
 5. Add the key 'PrincipalPythonFile' to the Info.plist.  The value is the name of the Python file that you want to be loaded first as the application starts up.  Whatever Python file is chosen, it should take care of loading any other Python files necessary to define the various classes necessary for application startup.   If this key is not defined, the main() function will try to load the file 'Main.py'.   If that file is not found, the application will raise an exception and exit.
 
+6. Add '-undefined suppress -force_flat_namespace' to the linker flags for the project.  You can also turn off the prebinding feature as it doesn't work anyway.
+
+NOTE:  See the Web Services Tool example as it implements an application that is intended to actually do something useful (beyond the very useful task of testing the PyObjC module).  Also -- step 5 should likely be skipped.  Instead, add a Main.py file to your project that imports all of the python files that define classes necessary for App startup -- see the Web Services Example...
 
