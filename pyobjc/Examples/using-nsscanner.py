@@ -7,7 +7,7 @@
 
 from Cocoa.Foundation import NSScanner
 
-obj = NSScanner.scannerWithString_("1.2 2.4")
+obj = NSScanner.scannerWithString_(u"1.2 2.4")
 converted, value =  obj.scanDouble_()
 print 'converted: %d, value: %s'%(converted, value)
 converted, value =  obj.scanFloat_()

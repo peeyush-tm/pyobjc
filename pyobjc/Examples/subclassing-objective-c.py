@@ -29,7 +29,6 @@ class Demo (NSEnumerator):
 print Demo.alloc
 obj = Demo.alloc()
 print "->", obj.retainCount();
-print "->", obj.retainCount();
 
 obj = obj.init()
 print "->", obj.retainCount();

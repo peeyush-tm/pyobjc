@@ -1,5 +1,7 @@
-* [ronald] There are some memory leaks left. Examples/TableModel is a good
-  way to observe this. Sadly enough MallocDebug.app causes a crash in pyobjc.
+* [ronald] OC_PythonObject.m contains cruft from the initial experimentations.
+
+* [ronald] MallocDebug.app causes a crash in pyobjc (Try running TableModel in
+   MallocDebug)
 
 * [ronald] Check all compiler warnings on MacOS X
 
@@ -7,9 +9,8 @@
 
 * [ronald] Contents MANIFEST is no longer valid
 
-* [ronald] NSAutoreleasePool raises an exception when you use 'retain'. Sadly 
-  enough, NSInvocation calls 'retain' on the receiver (at least in the way we 
-  use it...)
+* [ronald] NSAutoreleasePool raises an exception when you use 'retain'. NSInvocation 
+  calls 'retain' on the receiver (at least in the way we use it...)
 
   Luckily users normally don't have to create an autorelease pool.
 

@@ -27,7 +27,6 @@ def NSClassFromString(aClass):
 
 # Define usefull utility methods here
 
-# XXX: Should this be in the objc module?
 def load_bundle(path):
 	"""
 	Load the specified bundle/framework and return a list of classes 

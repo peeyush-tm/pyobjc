@@ -3,6 +3,22 @@ new-style pyobjc
 """
 from _objc import *
 
+# This is a hack, should probably patch python:
+# - We want the resources directory to be on the python search-path
+# - It must be at the start of the path
+# - The CWD must not be on the path
+b = lookup_class('NSBundle').mainBundle()
+if b:
+	import sys
+	sys.path.insert(0, '%s/Contents/Resources'%str(b.bundlePath()))
+	try:
+		del sys.path[sys.path.index('')]
+	except ValueError:
+		pass
+	del sys
+del b
+
+
 #
 # Administration of methods that transfer ownership of objects to the
 # caller. This list is used by the runtime to automaticly correct the
@@ -50,6 +66,11 @@ class _runtime:
 
 		return lookup_class(name)
 
+	def __eq__(self, other):
+		if self is other:
+			return True
+		return False
+
 	def __repr__(self):
 		return "objc.runtime"
 runtime = _runtime()
@@ -58,7 +79,9 @@ runtime = _runtime()
 IBOutlet = ivar
 
 # Signature for an action in Interface Builder
-IBAction = "v@:"
+#IBAction = "v@:"
+def IBAction(func):
+	return selector(func, signature="v@:@")
 
 # Aliases for Objective-C lovers...
 YES=True
@@ -110,7 +133,7 @@ def mapping_values(self):
 # __str__ would be nice (as obj.description()),
 CONVENIENCE_METHODS['objectForKey:'] = ('__getitem__', lambda self, arg: self.objectForKey_(arg))
 CONVENIENCE_METHODS['removeObjectForKey:'] = ('__delitem__', lambda self, arg: self.removeObjectForKey_(arg))
-#CONVENIENCE_METHODS['setObject:forKey:'] = ('__setitem__', lambda self, key, value: self.setObject_forKey_(value, key))
+CONVENIENCE_METHODS['setObject:forKey:'] = ('__setitem__', lambda self, key, value: self.setObject_forKey_(value, key))
 CONVENIENCE_METHODS['hash'] = ('__hash__', lambda self: self.hash())
 CONVENIENCE_METHODS['keyEnumerator'] = ('keys', mapping_keys)
 CONVENIENCE_METHODS['objectEnumerator'] = ('values', mapping_values)

@@ -191,6 +191,12 @@ Class ObjCClass_BuildClass(Class super_class,
 	struct class_wrapper*    new_class = NULL;
 	Class                    root_class;
 	char**                   curname;
+	PyObject*		 py_superclass;
+
+
+	/* XXX: May as well directly pass this in... */
+	py_superclass = ObjCClass_New(super_class);
+	if (py_superclass == NULL) return NULL;
 
 
 #ifdef OBJC_PARANOIA_MODE
@@ -334,12 +340,21 @@ Class ObjCClass_BuildClass(Class super_class,
 				/* The function overrides a method in the 
 				 * objective-C class, replace by a selector 
 				 * object.
+				 *
+				 * Get the signature through the python wrapper,
+				 * the user may have specified a more exact
+				 * signature!
 				 */
+				PyObject* super_sel = ObjCClass_FindSelector(
+					py_superclass, selector);
+				if (!super_sel) goto error_cleanup;
+
 				value = ObjCSelector_New(
 					value, 
 					selector, 
-					meth->method_types,
+					ObjCSelector_Signature(super_sel),
 					0);
+				Py_DECREF(super_sel);
 			} else {
 				value = ObjCSelector_New(
 					value, 
@@ -362,7 +377,7 @@ Class ObjCClass_BuildClass(Class super_class,
 		ivar_list = NULL;
 	} else {
 		ivar_list = malloc(sizeof(struct objc_ivar_list) +
-			(ivar_count-1)*sizeof(struct objc_ivar));
+			(ivar_count)*sizeof(struct objc_ivar));
 		if (ivar_list == NULL) {
 			PyErr_NoMemory();
 			goto error_cleanup;
@@ -382,6 +397,7 @@ Class ObjCClass_BuildClass(Class super_class,
 		memset(method_list, 0, sizeof(struct objc_method_list) +
 			(method_count)*sizeof(struct objc_method));
 		method_list->method_count      = 0;
+		method_list->obsolete = NULL; /* DEBUG */
 	}
 
 	if (meta_method_count == 0) {
@@ -396,6 +412,7 @@ Class ObjCClass_BuildClass(Class super_class,
 		memset(meta_method_list, 0, sizeof(struct objc_method_list)+
 			(meta_method_count)*sizeof(struct objc_method));
 		meta_method_list->method_count = 0;
+		meta_method_list->obsolete = NULL; /* DEBUG */
 	}
 
 
@@ -556,10 +573,12 @@ Class ObjCClass_BuildClass(Class super_class,
 	new_class->class.methodLists = 
 		calloc(1, sizeof(struct objc_method_list*));
 	if (new_class->class.methodLists == NULL) abort();
+	new_class->class.methodLists[0] = NULL;
 
 	new_class->meta_class.methodLists = 
 		calloc(1, sizeof(struct objc_method_list*));
 	if (new_class->meta_class.methodLists == NULL) abort();
+	new_class->meta_class.methodLists[0] = NULL;
 
 	new_class->class.super_class = super_class;
 	new_class->meta_class.super_class = super_class->isa;
@@ -567,6 +586,15 @@ Class ObjCClass_BuildClass(Class super_class,
 
 	new_class->class.instance_size = ivar_size;
 	new_class->class.ivars = ivar_list;
+
+	/* Be explicit about clearing data, should not be necessary with
+	 * 'calloc'
+	 */
+	new_class->class.cache = NULL;
+	new_class->meta_class.cache = NULL;
+
+	new_class->class.protocols = NULL;
+	new_class->meta_class.protocols = NULL;
 
 	if (method_list) {
 		class_addMethods(&(new_class->class), method_list);
@@ -721,6 +749,7 @@ static void object_method_release(id self, SEL sel)
 {
 	struct objc_super super;
 	PyObject* obj;
+
 	
 	obj = ObjC_GetPythonImplementation(self);
 
@@ -730,6 +759,7 @@ static void object_method_release(id self, SEL sel)
 	}
 
 	if (obj->ob_refcnt == 0) {
+		printf("Release with dead python\n");
 		super.class = self->isa->super_class;
 		super.receiver = self;
 		self = objc_msgSendSuper(&super, @selector(release)); 
@@ -748,8 +778,10 @@ static void object_method_release(id self, SEL sel)
 	 * Py_DECREF() causes object_dealloc with calls back into us
 	 * with retainCount == 0.
 	 */
+	printf("Before DECREF in normal\n");
 	Py_DECREF(obj);
 #if 0
+	printf("After DECREF in normal\n");
 	super.class = self->isa->super_class;
 	super.receiver = self;
         self = objc_msgSendSuper(&super, @selector(release)); 
@@ -773,6 +805,7 @@ object_method_respondsToSelector(id self, SEL selector, SEL aSelector)
         PyObject*         pyself;
 	PyObject*         pymeth;
 
+
 	/* First check if we respond */
 	pyself = ObjC_GetPythonImplementation(self);
 	if (pyself == NULL) {
@@ -792,7 +825,6 @@ object_method_respondsToSelector(id self, SEL selector, SEL aSelector)
 	if (aSelector == @selector(respondsToSelector:)) return YES;
       
 	/* Check superclass */
-
 	super.receiver = self;
 	super.class = self->isa->super_class;
 
@@ -809,6 +841,7 @@ object_method_methodSignatureForSelector(id self, SEL selector, SEL aSelector)
 	struct objc_super  super;
         PyObject*          pyself;
 	PyObject*          pymeth;
+
 
 	super.receiver = self;
 	super.class    = self->isa->super_class;
@@ -861,6 +894,7 @@ object_method_forwardInvocation(id self, SEL selector, NSInvocation* invocation)
 	const char* err;
 	int   arglen;
 
+
 	signature = [invocation methodSignature];
 	len = [signature numberOfArguments];
 
@@ -877,13 +911,7 @@ object_method_forwardInvocation(id self, SEL selector, NSInvocation* invocation)
 	for (i = 2; i < len; i++) {
 		type = [signature getArgumentTypeAtIndex:i];
 		arglen = objc_sizeof_type(type);
-		if (arglen <= sizeof(argbuf)) {
-			arg = argbuf;
-		} else {
-			arg = malloc(arglen);
-			if (arg == NULL) abort();
-		}
-
+		arg = alloca(arglen);
 		
 		[invocation getArgument:argbuf atIndex:i];
 		v = pythonify_c_value(type, argbuf);
@@ -893,11 +921,6 @@ object_method_forwardInvocation(id self, SEL selector, NSInvocation* invocation)
 		}
 
 		PyTuple_SetItem(args, i-1, v);
-
-		if (arglen > sizeof(argbuf)) {
-			free(arg);
-			arg = NULL;
-		}
 	}
 
 	result = ObjC_call_to_python(self, [invocation selector], args);
@@ -909,19 +932,10 @@ object_method_forwardInvocation(id self, SEL selector, NSInvocation* invocation)
 
 	type = [signature methodReturnType];
 	arglen = objc_sizeof_type(type);
-	if (arglen <= sizeof(argbuf)) {
-		 arg = argbuf;
-	} else {
-		arg = malloc(arglen);
-	}
+	arg = alloca(arglen);
 
 	err = depythonify_c_value(type, result, arg);
 	if (err != NULL) abort();
-	
-	if (arglen > sizeof(argbuf)) {
-		free(arg);
-		arg = NULL;
-	}
 }
 
 /*
@@ -934,6 +948,7 @@ ObjC_call_to_python(id self, SEL selector, PyObject* arglist)
 	PyObject* pyself = NULL;
 	PyObject* pymeth = NULL;
 	PyObject* result;
+
 
 	pyself = ObjC_GetPythonImplementation(self);
 	if (pyself == NULL) {

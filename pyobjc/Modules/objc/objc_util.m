@@ -41,12 +41,32 @@ void ObjCErr_Set(PyObject* exc, char* fmt, ...)
 	PyErr_SetString(exc, buf);
 }
 
+
+static PyObject* 
+ObjCErr_PyExcForName(const char* value)
+{
+	/* TODO: This table should be changeable from python */
+	if (strcmp(value, "NSRangeException") == 0) {
+		return PyExc_IndexError;
+	}  else if (strcmp(value, "NSInvalidArgumentException") == 0) {
+		return PyExc_ValueError;
+	}  else if (strcmp(value, "NSMallocException") == 0) {
+		return PyExc_MemoryError;
+	} 
+
+	return objc_error;
+}
+	
+
 void ObjCErr_FromObjC(NSException* localException)
 {
 	NSDictionary* userInfo;
 	PyObject*     dict;
+	PyObject*     exception;
 
 	NSLog(@"OBJC EXC: %@", localException);
+
+	exception = ObjCErr_PyExcForName([[localException name] cString]);
 
 	userInfo = [localException userInfo];
 	if (userInfo) {
@@ -71,7 +91,7 @@ void ObjCErr_FromObjC(NSException* localException)
 		Py_INCREF(Py_None);
 		PyDict_SetItemString(dict, "userInfo", Py_None);
 	}
-	PyErr_SetObject(objc_error, dict);
+	PyErr_SetObject(exception, dict);
 	Py_DECREF(dict);
 	PyErr_Print();
 }

@@ -8,11 +8,9 @@ Usage:
 		[ 'English.lproj', ...])
 
 TODO: 
-* the build_applet function should be in a seperate file, to allow reuse
 * the same module should contain function for replacing/enhancing the 
   Info.plist in the generated application.
 * Add compiled version of the extra sources, instead of the sources themselves
-* Fix buildtools to recognize nib-files inside '<language>.lproj' directories
 """
 
 import buildtools

@@ -228,6 +228,9 @@ static	char* keywords[] = { "name", "bases", "dict", NULL };
 	 */
 	objc_class = ObjCClass_BuildClass(super_class, name, dict);
 	if (objc_class == NULL) {
+		if (!PyErr_Occurred()) {
+			abort();
+		}
 		return NULL;
 	}
 
@@ -319,6 +322,27 @@ class_getattro(PyObject* self, PyObject* name)
 	return result;
 }
 
+static int
+class_compare(PyObject* self, PyObject* other)
+{
+	if (!ObjCClass_Check(other)) {
+		PyErr_SetString(PyExc_NotImplementedError, "Cmp with other");
+		return -1;
+	}
+
+	/* This is as arbitrary as the default tp_compare, but nicer for
+	 * the user
+	 */
+	return strcmp(
+		ObjCClass_GetClass(self)->name, 
+		ObjCClass_GetClass(other)->name);
+}
+
+static long
+class_hash(PyObject* self)
+{
+	return (long)self;
+}
 
 PyTypeObject ObjCClass_Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
@@ -331,12 +355,12 @@ PyTypeObject ObjCClass_Type = {
 	0,					/* tp_print */
 	0,					/* tp_getattr */
 	0,					/* tp_setattr */
-	0,					/* tp_compare */
+	class_compare,				/* tp_compare */
 	class_repr,				/* tp_repr */
 	0,					/* tp_as_number */
 	0,					/* tp_as_sequence */
 	0,		       			/* tp_as_mapping */
-	0,					/* tp_hash */
+	class_hash,				/* tp_hash */
 	0,					/* tp_call */
 	0,					/* tp_str */
 	class_getattro,				/* tp_getattro */
@@ -649,9 +673,8 @@ PyObject* ObjCClass_FindSelector(PyObject* cls, SEL selector)
 				Py_DECREF(attributes);
 				return v;
 			}
-		} else {
-			Py_DECREF(v);
-		}
+		} 
+		Py_DECREF(v);
 	}
 
 	Py_DECREF(attributes);

@@ -226,6 +226,7 @@ sel_dealloc(PyObject* object)
 	ObjCSelector* self = (ObjCSelector*)object;	
 
 	PyMem_Free(self->sel_signature);
+	self->sel_signature = NULL;
 	if (self->sel_self) { 
 		Py_DECREF(self->sel_self); 
 		self->sel_self = NULL;
@@ -382,7 +383,6 @@ objcsel_call(ObjCNativeSelector* self, PyObject* args)
 		if (self_m != pyself_m) {
 			/* Different implementations, must be super-call */
 			is_super_call = 1;
-			//printf("is_super_call of %s(%s).%s %p %p\n", self->class->name, pyself_class->name, SELNAME(self->sel_selector), self_m, pyself_m);
 		} 
 	}
 
@@ -424,13 +424,6 @@ objcsel_call(ObjCNativeSelector* self, PyObject* args)
 		ObjCClass_MaybeRescan(pyself);
 	}
 
-	if (res && ObjCObject_Check(res)) {
-		printf("Returning object from %s, allocator: %d, refcount: %d\n",
-			SELNAME(self->sel_selector), self->sel_allocator,
-			[ObjCObject_GetObject(res) retainCount]);
-	}
-
-
 	if (res && ObjCObject_Check(res) && self->sel_allocator) {
 		/* Ownership transfered to us, but 'execute' method has
 		 * increased retainCount, the retainCount is now one to high
@@ -445,10 +438,7 @@ objcsel_descr_get(ObjCNativeSelector* meth, PyObject* obj, PyObject* class)
 {
 	ObjCNativeSelector* result;
 	
-	//printf("objcsel_descr_get %s\n", SELNAME(meth->sel_selector));
-	
 	if (meth->sel_self != NULL || obj == Py_None) {
-		//printf("objcsel_descr_get %s: already bound\n", SELNAME(meth->sel_selector));
 		Py_INCREF(meth);
 		return (PyObject*)meth;
 	} 
@@ -476,7 +466,6 @@ objcsel_descr_get(ObjCNativeSelector* meth, PyObject* obj, PyObject* class)
 		Py_INCREF(result->sel_self);
 	}
 
-	//printf("objcsel_descr_get %s: return new %d\n", SELNAME(meth->sel_selector), result->ob_refcnt);
 	return (PyObject*)result;
 }
 
@@ -563,12 +552,10 @@ ObjCSelector_FindNative(PyObject* self, char* name)
 
 		if ([cls instancesRespondToSelector:sel]) {
 			methsig = [cls instanceMethodSignatureForSelector:sel];
-			//printf("New instance method %s (through class)\n", name);
 			return ObjCSelector_NewNative(cls, sel, 
 				typestr_from_NSMethodSignature(methsig, buf, sizeof(buf)), 0);
 		} else if ([cls respondsToSelector:sel]) {
 			methsig = [cls methodSignatureForSelector:sel];
-			//printf("New class method %s\n", name);
 			return ObjCSelector_NewNative(cls, sel, 
 				typestr_from_NSMethodSignature(methsig, buf, sizeof(buf)), 1);
 		} else {
@@ -584,7 +571,6 @@ ObjCSelector_FindNative(PyObject* self, char* name)
 		if ([object respondsToSelector:sel]) {
 			ObjCNativeSelector* res;
 			methsig = [object methodSignatureForSelector:sel];
-			//printf("New instance method %s (direct) for %p - %s\n", name, self, PyString_AS_STRING(PyObject_Repr(self)));
 			res =  (ObjCNativeSelector*)ObjCSelector_NewNative(
 				object->isa, sel, 
 				typestr_from_NSMethodSignature(methsig, 
@@ -710,10 +696,6 @@ pysel_repr(ObjCPythonSelector* sel)
 static PyObject*
 pysel_call(ObjCPythonSelector* self, PyObject* args)
 {
-	/*printf("pysel_call(<%s,%s>, %s)\n",
-		self->sel_signature, self->sel_selector,
-		PyString_AS_STRING(PyObject_Repr(args)));*/
-
 	if (!PyMethod_Check(self->callable)) {
 		if (self->sel_self == NULL) {
 			PyObject* self_arg;
@@ -1014,8 +996,6 @@ pysel_descr_get(ObjCPythonSelector* meth, PyObject* obj, PyObject* class)
 	if (result->callable) {
 		Py_INCREF(result->callable);
 	}
-	//printf("py_descr_get: %s\n", result->sel_selector);
-	//Py_INCREF(result); /* DEBUG: cleanup is not enterily correct!? */
 	return (PyObject*)result;
 }
 
@@ -1070,3 +1050,13 @@ PyTypeObject ObjCPythonSelector_Type = {
 	0,					/* tp_new */
 	0,		        		/* tp_free */
 };
+
+char* ObjCSelector_Signature(PyObject* obj)
+{
+	return ((ObjCSelector*)obj)->sel_signature;
+}
+
+SEL   ObjCSelector_Selector(PyObject* obj)
+{
+	return ((ObjCSelector*)obj)->sel_selector;
+}

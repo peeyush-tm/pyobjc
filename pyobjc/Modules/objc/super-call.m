@@ -89,7 +89,8 @@ int ObjC_RegisterMethodMapping(Class class, SEL sel,
  *
  * Ronald: I'd like to replace this by a function that doesn't use 
  * NSMethodSignature. I think objc_support contains enough intelligence to
- * do this.
+ * do this. objc_support doesn't work correctly with (structs containing) 
+ * bitfields, but neither does NSMethodSignature.
  */
 static void
 simplify_signature(char* signature, char* buf, size_t buflen)
@@ -265,7 +266,22 @@ IMP ObjC_FindIMP(Class class, SEL sel)
 	struct registry* generic;
 	struct registry* special;
 	Method           m;
+	PyObject*        objc_class;
+	PyObject*        objc_sel;
 
+
+	/* Search using the python wrapper of the class: That one may have
+	 * a more specific method signature.
+	 */
+
+	objc_class = ObjCClass_New(class);
+	if (objc_class == NULL) return NULL;
+	
+	objc_sel = ObjCClass_FindSelector(objc_class, sel);
+	if (objc_sel == NULL) return NULL;
+
+	
+#if 0
 	m = class_getInstanceMethod(class, sel);
 	if (!m) {
 		ObjCErr_Set(objc_error,
@@ -273,6 +289,7 @@ IMP ObjC_FindIMP(Class class, SEL sel)
 			class->name, SELNAME(sel));
 		return NULL;
 	}
+#endif
 
 	special = search_special(class, sel);
 	if (special) {
@@ -281,7 +298,10 @@ IMP ObjC_FindIMP(Class class, SEL sel)
 		PyErr_Clear();
 	}
 
+	generic = find_signature(ObjCSelector_Signature(objc_sel));
+#if 0
 	generic = find_signature(m->method_types);
+#endif
 	if (generic) {
 		if (PyErr_Occurred()) {
 			PyErr_Print();

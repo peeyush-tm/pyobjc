@@ -25,7 +25,7 @@ static id python_to_id(PyObject* object)
 
 	errstr = depythonify_c_value("@", object, &result);
 	if (errstr) {
-		PyErr_SetString(PyExc_TypeError, "Expecting object");
+		ObjCErr_Set(PyExc_TypeError, "Building <id>: %s", errstr);
 		return nil;
 	}
 

@@ -417,6 +417,89 @@ PyDoc_STRVAR(appkit_doc,
 #include "_App_Str.inc"
 
 
+/*
+ * Manually added, will be automatic in next version of generator script
+ */
+struct uchar_table {
+	char*       name;
+	Py_UNICODE  value;
+} g_unicode_characters[] = {
+    { "NSUpArrowFunctionKey", NSUpArrowFunctionKey },
+    { "NSDownArrowFunctionKey", NSDownArrowFunctionKey },
+    { "NSLeftArrowFunctionKey", NSLeftArrowFunctionKey },
+    { "NSRightArrowFunctionKey", NSRightArrowFunctionKey },
+    { "NSF1FunctionKey", NSF1FunctionKey },
+    { "NSF2FunctionKey", NSF2FunctionKey },
+    { "NSF3FunctionKey", NSF3FunctionKey },
+    { "NSF4FunctionKey", NSF4FunctionKey },
+    { "NSF5FunctionKey", NSF5FunctionKey },
+    { "NSF6FunctionKey", NSF6FunctionKey },
+    { "NSF7FunctionKey", NSF7FunctionKey },
+    { "NSF8FunctionKey", NSF8FunctionKey },
+    { "NSF9FunctionKey", NSF9FunctionKey },
+    { "NSF10FunctionKey", NSF10FunctionKey },
+    { "NSF11FunctionKey", NSF11FunctionKey },
+    { "NSF12FunctionKey", NSF12FunctionKey },
+    { "NSF13FunctionKey", NSF13FunctionKey },
+    { "NSF14FunctionKey", NSF14FunctionKey },
+    { "NSF15FunctionKey", NSF15FunctionKey },
+    { "NSF16FunctionKey", NSF16FunctionKey },
+    { "NSF17FunctionKey", NSF17FunctionKey },
+    { "NSF18FunctionKey", NSF18FunctionKey },
+    { "NSF19FunctionKey", NSF19FunctionKey },
+    { "NSF20FunctionKey", NSF20FunctionKey },
+    { "NSF21FunctionKey", NSF21FunctionKey },
+    { "NSF22FunctionKey", NSF22FunctionKey },
+    { "NSF23FunctionKey", NSF23FunctionKey },
+    { "NSF24FunctionKey", NSF24FunctionKey },
+    { "NSF25FunctionKey", NSF25FunctionKey },
+    { "NSF26FunctionKey", NSF26FunctionKey },
+    { "NSF27FunctionKey", NSF27FunctionKey },
+    { "NSF28FunctionKey", NSF28FunctionKey },
+    { "NSF29FunctionKey", NSF29FunctionKey },
+    { "NSF30FunctionKey", NSF30FunctionKey },
+    { "NSF31FunctionKey", NSF31FunctionKey },
+    { "NSF32FunctionKey", NSF32FunctionKey },
+    { "NSF33FunctionKey", NSF33FunctionKey },
+    { "NSF34FunctionKey", NSF34FunctionKey },
+    { "NSF35FunctionKey", NSF35FunctionKey },
+    { "NSInsertFunctionKey", NSInsertFunctionKey },
+    { "NSDeleteFunctionKey", NSDeleteFunctionKey },
+    { "NSHomeFunctionKey", NSHomeFunctionKey },
+    { "NSBeginFunctionKey", NSBeginFunctionKey },
+    { "NSEndFunctionKey", NSEndFunctionKey },
+    { "NSPageUpFunctionKey", NSPageUpFunctionKey },
+    { "NSPageDownFunctionKey", NSPageDownFunctionKey },
+    { "NSPrintScreenFunctionKey", NSPrintScreenFunctionKey },
+    { "NSScrollLockFunctionKey", NSScrollLockFunctionKey },
+    { "NSPauseFunctionKey", NSPauseFunctionKey },
+    { "NSSysReqFunctionKey", NSSysReqFunctionKey },
+    { "NSBreakFunctionKey", NSBreakFunctionKey },
+    { "NSResetFunctionKey", NSResetFunctionKey },
+    { "NSStopFunctionKey", NSStopFunctionKey },
+    { "NSMenuFunctionKey", NSMenuFunctionKey },
+    { "NSUserFunctionKey", NSUserFunctionKey },
+    { "NSSystemFunctionKey", NSSystemFunctionKey },
+    { "NSPrintFunctionKey", NSPrintFunctionKey },
+    { "NSClearLineFunctionKey", NSClearLineFunctionKey },
+    { "NSClearDisplayFunctionKey", NSClearDisplayFunctionKey },
+    { "NSInsertLineFunctionKey", NSInsertLineFunctionKey },
+    { "NSDeleteLineFunctionKey", NSDeleteLineFunctionKey },
+    { "NSInsertCharFunctionKey", NSInsertCharFunctionKey },
+    { "NSDeleteCharFunctionKey", NSDeleteCharFunctionKey },
+    { "NSPrevFunctionKey", NSPrevFunctionKey },
+    { "NSNextFunctionKey", NSNextFunctionKey },
+    { "NSSelectFunctionKey", NSSelectFunctionKey },
+    { "NSExecuteFunctionKey", NSExecuteFunctionKey },
+    { "NSUndoFunctionKey", NSUndoFunctionKey },
+    { "NSRedoFunctionKey", NSRedoFunctionKey },
+    { "NSFindFunctionKey", NSFindFunctionKey },
+    { "NSHelpFunctionKey", NSHelpFunctionKey },
+    { "NSModeSwitchFunctionKey", NSModeSwitchFunctionKey },
+    { NULL, 0 }
+};
+
+
 
 void init_AppKit(void)
 {
@@ -530,4 +613,18 @@ void init_AppKit(void)
 	INT_VAR(NSMiniaturizableWindowMask);
 	INT_VAR(NSResizableWindowMask);
 	INT_VAR(NSTexturedBackgroundWindowMask);
+
+	{
+	  struct uchar_table*  cur = g_unicode_characters;
+	  PyObject* v;
+	  int       res;
+
+	  for (; cur->name != NULL; cur++) {
+		  v = PyUnicode_FromUnicode(&cur->value, 1);
+		  if (v == NULL) return;
+
+	          res = PyDict_SetItemString(d, cur->name, v);
+	          if (res < 0) return;
+	  }
+	}
 }

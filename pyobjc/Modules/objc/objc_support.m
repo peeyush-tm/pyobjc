@@ -21,6 +21,7 @@
 
 #import <Foundation/NSInvocation.h>      /* sdm7g - changed #include to #import */
 #import <Foundation/NSMethodSignature.h> /* sdm7g */
+#import <Foundation/NSData.h> 
 
 #ifndef GNU_RUNTIME
 
@@ -567,10 +568,26 @@ pythonify_c_value (const char *type, void *datum)
                 retobject = [(OC_PythonObject *) obj pyObject];
                 Py_INCREF(retobject);
               }
-            else if ([obj isKindOfClass:[NSString class]]) // XXX FIXME_1: Should work on NSInlineCString (and maybe others) too.
+
+            else if ([obj isKindOfClass:[NSString class]]) 
 	      {
-	      retobject = PyString_FromStringAndSize ([obj cString], [(NSString *)obj length]);
+	        /* All string classes seem to be subclasses of NSString.
+		 * We convert to a python string where possible, and a python
+		 * unicode object otherwise.
+		 * XXX: are we too smart here?
+		 */
+		NSData* data = [(NSString*)obj 
+				dataUsingEncoding:NSASCIIStringEncoding];
+		if (data == NULL) {
+			const char* utf8 = [(NSString*)obj UTF8String];
+
+			retobject = PyUnicode_DecodeUTF8(utf8, strlen(utf8), "strict");
+		} else {
+			retobject = PyString_FromStringAndSize(
+				[data bytes], [data length]);
+		}
 	      }
+
 	    else if (ObjC_HasPythonImplementation(obj)) 
 		{
 	     	  retobject =  ObjC_GetPythonImplementation(obj);
@@ -768,6 +785,11 @@ depythonify_c_value (const char *type, PyObject *argument, void *datum)
 {
   const char *error = NULL;
 
+  /* Pass by reference output arguments are sometimes passed a NULL pointer,
+   * this surpresses a core dump.
+   */
+  if (!datum) return error;
+
   type = objc_skip_type_qualifiers (type);
   
   switch (*type)
@@ -869,9 +891,25 @@ depythonify_c_value (const char *type, PyObject *argument, void *datum)
         *(id *) datum = ObjCObject_GetObject(argument);
       } else if (PyString_Check (argument))
         {
+	/* We should probably translate to unicode using the default python
+	 * encoding (which is ASCII and may be different from the NSString
+	 * default encoding)
+	 */
 	*(id *) datum = [NSString 
 			stringWithCString:PyString_AS_STRING(argument)
 				  length:PyString_GET_SIZE(argument)];
+	}
+      else if (PyUnicode_Check(argument)) 
+	{
+		PyObject* utf8 = PyUnicode_AsUTF8String(argument);
+
+		if (utf8) {
+			*(id *) datum = [NSString 
+				stringWithUTF8String:PyString_AS_STRING(utf8)];
+			Py_DECREF(utf8);
+		} else {
+			error = "Cannot convert Unicode string";
+		}
 	}
       else if (PyInt_Check (argument))
 	*(id *) datum = [NSNumber numberWithLong:PyInt_AS_LONG (argument)];
@@ -894,7 +932,7 @@ depythonify_c_value (const char *type, PyObject *argument, void *datum)
         error = "a ObjC method or a string";
       else
         if (ObjCSelector_Check (argument))
-          *(SEL *) datum = ((ObjCSelector *) argument)->sel_selector;
+          *(SEL *) datum = ObjCSelector_Selector(argument); 
         else
           {
             char *selname = PyString_AsString (argument);
@@ -1055,6 +1093,8 @@ depythonify_c_value (const char *type, PyObject *argument, void *datum)
  *    technology (or rely on platform specific tricks like DllCall uses).
  *    If we'd directly call objc_sendMessageSuper we can use the same function
  *    for normal and 'super-method' calls.
+ *
+ * FIXME: Alignment is not dealt with.
  */
 PyObject *
 execute_and_pythonify_objc_method (PyObject *aMeth, PyObject* self, PyObject *args)
@@ -1156,7 +1196,7 @@ execute_and_pythonify_objc_method (PyObject *aMeth, PyObject* self, PyObject *ar
 
 	/* Allocate the invocation. We 'retain' the invocation to avoid 
 	 * loosing it prematurely when this happens to be a call to the 
-	 * dealloc function of a NSAutoreleasePool
+	 * dealloc function of an NSAutoreleasePool
 	 */
 	inv = [NSInvocation invocationWithMethodSignature:methinfo];
 	[inv retain]; 
