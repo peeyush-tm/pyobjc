@@ -171,6 +171,7 @@
 				F6CD0DC5033C279E0126A167,
 				F6ED47D803453061016073B7,
 				F6ED47D903453061016073B7,
+				F6783B7E0349DCCB01A73C9E,
 			);
 			isa = PBXGroup;
 			name = Resources;
@@ -267,7 +268,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>0.1</string>
+	<string>1.0</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
@@ -295,6 +296,7 @@
 				F6646A5D0344985501F2B36F,
 				F6ED47DA03453061016073B7,
 				F6ED47DB03453061016073B7,
+				F6783B7F0349DCCB01A73C9E,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -404,6 +406,17 @@
 		};
 		F6646A5D0344985501F2B36F = {
 			fileRef = F6646A5C0344985501F2B36F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F6783B7E0349DCCB01A73C9E = {
+			isa = PBXFileReference;
+			path = WST.icns;
+			refType = 4;
+		};
+		F6783B7F0349DCCB01A73C9E = {
+			fileRef = F6783B7E0349DCCB01A73C9E;
 			isa = PBXBuildFile;
 			settings = {
 			};

@@ -1,5 +1,6 @@
 #import <Python.h>
 #import <Foundation/Foundation.h>
+#import <Cocoa/Cocoa.h>
 #import <sys/param.h>
 
 int pyobjc_main(int argc, const char *argv[])
@@ -18,10 +19,8 @@ int pyobjc_main(int argc, const char *argv[])
     if (mainPyFile)
         mainPyPath = [[NSBundle mainBundle] pathForResource: mainPyFile ofType: nil];
 
-    if ( !mainPyPath ) {
-        NSLog(@"*** WARNING *** PrincipalPythonFile key either did not exist in Info.plist or the file it referred to did not exist.  Trying 'Main.py'.");
+    if ( !mainPyPath )
         mainPyPath = [[NSBundle mainBundle] pathForResource: @"Main.py" ofType: nil];
-    }
 
     if ( !mainPyPath )
         [NSException raise: NSInternalInconsistencyException
@@ -33,7 +32,7 @@ int pyobjc_main(int argc, const char *argv[])
 
     if ( result != 0 )
         [NSException raise: NSInternalInconsistencyException
-                    format: @"%s:%d pyobjc_main() Failed to run the python file at '%@'.", __FILE__, __LINE__, mainPyPath];
+                    format: @"%s:%d pyobjc_main() PyRun_SimpleFile failed with file '%@'.  See console for errors.", __FILE__, __LINE__, mainPyPath];
 
     [pool release];
 
