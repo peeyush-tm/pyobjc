@@ -1,4 +1,10 @@
-2002-08-15 Ronald Oussoren <ronald@cistron.nl>
+2002-08-16 Ronald Oussoren <ronald@cistron.nl>
+	* Examples/HelloWorld.py: Don't use NSAutoreleasePool, this class 
+	  doesn't play nice with NSInvocation...
+	* Merged (generated) functions that are used to call the superclass
+	  implementation of a method, and to overrule a method in a subclass.
+
+2002-08-14 Ronald Oussoren <ronald@cistron.nl>
   	* ObjCPointer: simplified
 	* OC_PythonObject: fixed several instances where NSProxy methods 
 	  would be called where the documentation mentions you must not
