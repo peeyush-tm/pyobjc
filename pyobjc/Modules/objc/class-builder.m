@@ -120,7 +120,7 @@ int ObjCClass_SetClass(Class objc_class, PyObject* py_class)
 	((struct class_wrapper*)objc_class)->python_class = py_class;
 	Py_INCREF(py_class);
 
-	objc_addClass((Class)objc_class);
+	objc_addClass(objc_class);
 	return 0;
 }
 
@@ -151,18 +151,18 @@ void ObjCClass_UnbuildClass(Class objc_class)
 
 	if (wrapper->class.methodLists) {
 		if (wrapper->class.methodLists[0]) {
-			PyMem_Free(wrapper->class.methodLists[0]);
+			free(wrapper->class.methodLists[0]);
 		}
-		PyMem_Free(wrapper->class.methodLists);
+		free(wrapper->class.methodLists);
 	}
 	if (wrapper->meta_class.methodLists) {
 		if (wrapper->meta_class.methodLists[0]) {
-			PyMem_Free(wrapper->meta_class.methodLists[0]);
+			free(wrapper->meta_class.methodLists[0]);
 		}
-		PyMem_Free(wrapper->meta_class.methodLists);
+		free(wrapper->meta_class.methodLists);
 	}
-	PyMem_Free((char*)(wrapper->class.name));
-	PyMem_Free(objc_class);
+	free((char*)(wrapper->class.name));
+	free(objc_class);
 }
 
 
@@ -361,7 +361,7 @@ Class ObjCClass_BuildClass(Class super_class,
 	if (ivar_count == 0)  {
 		ivar_list = NULL;
 	} else {
-		ivar_list = PyMem_Malloc(sizeof(struct objc_ivar_list) +
+		ivar_list = malloc(sizeof(struct objc_ivar_list) +
 			(ivar_count-1)*sizeof(struct objc_ivar));
 		if (ivar_list == NULL) {
 			PyErr_NoMemory();
@@ -373,24 +373,28 @@ Class ObjCClass_BuildClass(Class super_class,
 	if (method_count == 0) {
 		method_list = NULL;
 	} else {
-		method_list = PyMem_Malloc(sizeof(struct objc_method_list) +
+		method_list = malloc(sizeof(struct objc_method_list) +
 			(method_count)*sizeof(struct objc_method));
 		if (method_list == NULL) {
 			PyErr_NoMemory();
 			goto error_cleanup;
 		}
+		memset(method_list, 0, sizeof(struct objc_method_list) +
+			(method_count)*sizeof(struct objc_method));
 		method_list->method_count      = 0;
 	}
 
 	if (meta_method_count == 0) {
 		meta_method_list = NULL;
 	} else {
-		meta_method_list = PyMem_Malloc(sizeof(struct objc_method_list)+
+		meta_method_list = malloc(sizeof(struct objc_method_list)+
 			(meta_method_count)*sizeof(struct objc_method));
 		if (meta_method_list == NULL) {
 			PyErr_NoMemory();
 			goto error_cleanup;
 		}
+		memset(meta_method_list, 0, sizeof(struct objc_method_list)+
+			(meta_method_count)*sizeof(struct objc_method));
 		meta_method_list->method_count = 0;
 	}
 
@@ -585,26 +589,26 @@ error_cleanup:
 	}
 
 	if (ivar_list) {
-		PyMem_Free(ivar_list);
+		free(ivar_list);
 	}
 	if (method_list) {
-		PyMem_Free(method_list);
+		free(method_list);
 	}
 	if (meta_method_list) {
-		PyMem_Free(meta_method_list);
+		free(meta_method_list);
 	}
 
 	if (new_class != NULL) {
 		if (new_class->class.methodLists) {
-			PyMem_Free(new_class->class.methodLists);
+			free(new_class->class.methodLists);
 		}
 		if (new_class->meta_class.methodLists) {
-			PyMem_Free(new_class->meta_class.methodLists);
+			free(new_class->meta_class.methodLists);
 		}
 		if (new_class->class.name) {
-			PyMem_Free((char*)(new_class->class.name));
+			free((char*)(new_class->class.name));
 		}
-		PyMem_Free(new_class);
+		free(new_class);
 	}
 
 	return NULL;
@@ -740,11 +744,16 @@ static void object_method_release(id self, SEL sel)
 	 * then ourselves. We call [super release] instead of just 
 	 * [self dealloc] just in case the normal release does something
 	 * sneeky.
+	 *
+	 * Py_DECREF() causes object_dealloc with calls back into us
+	 * with retainCount == 0.
 	 */
 	Py_DECREF(obj);
+#if 0
 	super.class = self->isa->super_class;
 	super.receiver = self;
         self = objc_msgSendSuper(&super, @selector(release)); 
+#endif
 
 	return;
 }
@@ -767,7 +776,8 @@ object_method_respondsToSelector(id self, SEL selector, SEL aSelector)
 	/* First check if we respond */
 	pyself = ObjC_GetPythonImplementation(self);
 	if (pyself == NULL) {
-		abort(); /* FIXME */
+		NSLog(@"WARNING: Incomplete PyObjC object\n");
+		return NO;
 	}
 	pymeth = ObjCObject_FindSelector(pyself, aSelector);
 	if (pymeth) {
@@ -829,6 +839,7 @@ object_method_methodSignatureForSelector(id self, SEL selector, SEL aSelector)
 
 	result =  [NSMethodSignature signatureWithObjCTypes:(
 		  	(ObjCSelector*)pymeth)->sel_signature];
+	[result autorelease];
 	Py_DECREF(pymeth);
 	return result;
 }
@@ -869,7 +880,7 @@ object_method_forwardInvocation(id self, SEL selector, NSInvocation* invocation)
 		if (arglen <= sizeof(argbuf)) {
 			arg = argbuf;
 		} else {
-			arg = PyMem_Malloc(arglen);
+			arg = malloc(arglen);
 			if (arg == NULL) abort();
 		}
 
@@ -884,12 +895,13 @@ object_method_forwardInvocation(id self, SEL selector, NSInvocation* invocation)
 		PyTuple_SetItem(args, i-1, v);
 
 		if (arglen > sizeof(argbuf)) {
-			PyMem_Free(arg);
+			free(arg);
 			arg = NULL;
 		}
 	}
 
 	result = ObjC_call_to_python(self, [invocation selector], args);
+	Py_DECREF(args);
 	if (result == NULL) {
 		ObjCErr_ToObjC();
 		return;
@@ -900,14 +912,14 @@ object_method_forwardInvocation(id self, SEL selector, NSInvocation* invocation)
 	if (arglen <= sizeof(argbuf)) {
 		 arg = argbuf;
 	} else {
-		arg = PyMem_Malloc(arglen);
+		arg = malloc(arglen);
 	}
 
 	err = depythonify_c_value(type, result, arg);
 	if (err != NULL) abort();
 	
 	if (arglen > sizeof(argbuf)) {
-		PyMem_Free(arg);
+		free(arg);
 		arg = NULL;
 	}
 }

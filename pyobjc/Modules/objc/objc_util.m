@@ -123,14 +123,19 @@ int ObjC_AddConvenienceMethods(Class cls, PyObject* type_dict)
 			return -1;
 		}
 
-		if (!ObjCSelector_Check(value)) continue;
+		if (!ObjCSelector_Check(value)) {
+			Py_DECREF(value);
+			continue;
+		}
 
 		mapping = PyDict_GetItemString(convenience_dict, 
 			(char*)SELNAME(((ObjCSelector*)value)->sel_selector));
 		if (mapping == NULL) {
 			PyErr_Clear();
+			Py_DECREF(value);
 			continue;
 		}
+		Py_DECREF(value);
 
 		if (PyString_Check(mapping)) {
 			/* Default mapping */
@@ -159,16 +164,21 @@ int ObjC_AddConvenienceMethods(Class cls, PyObject* type_dict)
 				r = PyDict_SetItem(type_dict, name, value);
 
 				if (r < 0) return -1;
-
+#if 0
 				Py_INCREF(name);
 				Py_INCREF(value);
+#endif
+				Py_INCREF(value);
+				Py_DECREF(imp);
 			} else {
 				r = PyDict_SetItem(type_dict, name, imp);
 
 				if (r < 0) return -1;
 
+#if 0
 				Py_INCREF(name);
 				Py_INCREF(imp);
+#endif
 			}
 		}
 	}

@@ -161,7 +161,6 @@ void init_objc(void)
 
 	/* Allocate an auto-release pool for our own use, this avoids numerous
 	 * warnings during startup of a python script.
-	 * XXX: Maybe not needed?
 	 */
 	[[NSAutoreleasePool alloc] init];
 

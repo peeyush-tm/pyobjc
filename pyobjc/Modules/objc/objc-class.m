@@ -43,7 +43,6 @@ get_class_info(PyObject* class)
 	if (class_to_objc == NULL) {
 		class_to_objc = PyDict_New();
 		if (class_to_objc == NULL) return NULL;
-		//Py_INCREF(class_to_objc); /* XXX Not needed? */
 	}
 
 	item = PyDict_GetItem(class_to_objc, class);
@@ -98,13 +97,18 @@ objc_class_register(Class objc_class, PyObject* py_class)
 		if (class_registry == NULL) {
 			return -1;
 		}
-		//Py_INCREF(class_registry); /* XXX Not needed? */
+	}
+
+	if (PyDict_GetItemString(class_registry, (char*)objc_class->name)) {
+		abort();
 	}
 
 	res = PyDict_SetItemString(class_registry, 
 		(char*)objc_class->name, py_class);
 	if (res == 0) {
 		Py_INCREF(py_class);
+	} else {
+		abort();
 	}
 	return res;
 }
@@ -112,10 +116,13 @@ objc_class_register(Class objc_class, PyObject* py_class)
 static PyObject*
 objc_class_locate(Class objc_class)
 {
+	PyObject* result;
+
 	if (class_registry == NULL) return NULL;
 
-	return PyDict_GetItemString(class_registry, 
+	result = PyDict_GetItemString(class_registry, 
 		(char*)objc_class->name);
+	return result;
 }
 
 
@@ -262,8 +269,14 @@ class_repr(PyObject* obj)
 
 	cls = ObjCClass_GetClass(obj);
 
-	snprintf(buffer, sizeof(buffer), "<objective-c class %s at %p>", 
-		cls->name, obj);
+	if (cls) {
+		snprintf(buffer, sizeof(buffer), 
+			"<objective-c class %s at %p>", 
+			cls->name, obj);
+	} else {
+		snprintf(buffer, sizeof(buffer),
+			"%s", "<objective-c class NIL>");
+	}
 
 	return PyString_FromString(buffer);
 }
@@ -534,9 +547,11 @@ PyObject* ObjCClass_New(Class objc_class)
 
 	dict = PyDict_New();
 	if (add_class_fields(objc_class, dict) < 0)  {
+		Py_DECREF(dict);
 		return NULL;
 	}
 	if (ObjC_AddConvenienceMethods(objc_class, dict) < 0) {
+		Py_DECREF(dict);
 		return NULL;
 	}
 
@@ -556,8 +571,10 @@ PyObject* ObjCClass_New(Class objc_class)
 
 	result = PyType_Type.tp_new(&ObjCClass_Type, args, NULL);
 	if (result == NULL) {
+		Py_DECREF(args);
 		return NULL;
 	}
+	Py_DECREF(args); /* XXX: Seems to be needed */
 
 	info = get_class_info(result);
 	if (info == NULL) abort();
@@ -620,6 +637,7 @@ PyObject* ObjCClass_FindSelector(PyObject* cls, SEL selector)
 		if (key == NULL) abort();
 
 		v = PyObject_GetAttr(cls, key);
+		Py_DECREF(key);
 		if (v == NULL) {
 			PyErr_Clear();
 			continue;
@@ -627,11 +645,16 @@ PyObject* ObjCClass_FindSelector(PyObject* cls, SEL selector)
 
 		if (ObjCSelector_Check(v)) {
 			if (((ObjCSelector*)v)->sel_selector == selector) {
-				Py_INCREF(v);
+				/*Py_INCREF(v);*/
+				Py_DECREF(attributes);
 				return v;
 			}
+		} else {
+			Py_DECREF(v);
 		}
 	}
+
+	Py_DECREF(attributes);
 
 	PyErr_SetString(PyExc_AttributeError, SELNAME(selector));
 	return NULL;

@@ -1,3 +1,6 @@
+* [ronald] There are some memory leaks left. Examples/TableModel is a good
+  way to observe this. Sadly enough MallocDebug.app causes a crash in pyobjc.
+
 * [ronald] Check all compiler warnings on MacOS X
 
 * [ronald] Restructure header files in Modules/objc

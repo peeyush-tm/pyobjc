@@ -33,17 +33,30 @@
 
 static PyObject* proxy_dict = NULL;
 
+struct unregister_data {
+	PyObject* function;
+	PyObject* key;
+};
+
 static PyObject* unregister_proxy_func(PyObject* self, PyObject* args)
 {
 	PyObject* weakref = NULL;
+	struct unregister_data* data;
+
 
 	if (!PyArg_ParseTuple(args, "O:unregister_proxy", &weakref)) {
 		printf("Bad call to unregister proxy\n");
 		return NULL;
 	}
 
-	PyDict_DelItem(proxy_dict, self);
+	data = PyCObject_AsVoidPtr(self);
+
+	PyDict_DelItem(proxy_dict, data->key);
 	if (PyErr_Occurred()) PyErr_Clear();
+	Py_DECREF(data->function);
+	Py_DECREF(data->key);
+	Py_DECREF(self);
+	free(data);
 
 	Py_INCREF(Py_None);
 	return Py_None;
@@ -60,10 +73,14 @@ static PyObject*
 find_existing_proxy(id objc_obj)
 {
 	PyObject* v;
+	PyObject* key;
 
 	if (proxy_dict == NULL) return NULL;
 
-	v = PyDict_GetItem(proxy_dict, PyInt_FromLong((long)objc_obj));
+
+	key = PyInt_FromLong((long)objc_obj);
+	v = PyDict_GetItem(proxy_dict, key);
+	Py_DECREF(key); key = NULL;
 	if (v == NULL) return NULL;
 
 	v = PyWeakref_GetObject(v);
@@ -79,6 +96,7 @@ register_proxy(PyObject* proxy_obj)
 	id objc_obj = ObjCObject_GetObject(proxy_obj);
 	PyObject* v;
 	PyObject* unregister_proxy;
+	struct unregister_data* data;
 
 	if (proxy_dict == NULL)  {
 		proxy_dict = PyDict_New();
@@ -86,18 +104,26 @@ register_proxy(PyObject* proxy_obj)
 
 	}
 
+	data = malloc(sizeof(*data));
+	data->key = PyInt_FromLong((long)objc_obj);
+	data->function = NULL;
+
+
 	unregister_proxy = PyCFunction_New(
-		&unregister_proxy_method_def, PyInt_FromLong((long)objc_obj));
+		&unregister_proxy_method_def, PyCObject_FromVoidPtr(data, NULL));
 	if (unregister_proxy == NULL) {
 		Py_DECREF(proxy_dict);
 		return -1;
 	}
+	data->function  = unregister_proxy;
 
 	v = PyWeakref_NewProxy(proxy_obj, unregister_proxy);
 	if (v == NULL) {
 		return -1;
 	}
-	PyDict_SetItem(proxy_dict, PyInt_FromLong((long)objc_obj), v);
+
+	Py_INCREF(data->key);
+	PyDict_SetItem(proxy_dict, data->key, v);
 	if (PyErr_Occurred()) return -1;
 
 	return 0;
@@ -130,9 +156,12 @@ object_dealloc(PyObject* obj)
 	if (((ObjCObject*)obj)->weak_refs != NULL) {
 		 PyObject_ClearWeakRefs(obj);
  	}
+	[((ObjCObject*)obj)->objc_object release];
+#if 0
 	if (!((ObjCObject*)obj)->is_paired) {
 		[((ObjCObject*)obj)->objc_object release];
 	}
+#endif
 	obj->ob_type->tp_free(obj);
 }
 

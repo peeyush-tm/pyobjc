@@ -50,4 +50,39 @@ illusion of a single object. Check class-builder.m for details.
 Directory structure
 -------------------
 
-Todo. Currently different from the official sources, but that will change.
+Doc/
+  Documentation
+
+Examples/
+  Example scripts and applets.
+
+Lib/
+  Python modules that will be installed in the library. Currently contains
+  the packages 'objc', 'Cocoa' and 'AddressBook'
+
+Modules/
+  Extension modules related to the packages in 'Lib'. This directory contains
+  both the core module 'objc._objc' and a number of extension modules that
+  help in wrapping all of Cocoa.
+
+Scripts/
+  Scripts used during building and/or development of PyObjC.
+
+Tools/
+  Scripts that are usefull for users of PyObjC
+
+Reference counts
+----------------
+
+The Objective-C rules for reference counts are pretty easy: A small number
+of class methods (alloc, allocWithZone:, copy, ...) transfer object ownership
+to the caller. For all other objects you have to call 'retain' if you want
+to keep a reference. This includes all factory methods (e.g. 
+[String stringWithCString:"bla"])!
+
+The objc module tries to make the management of reference counts completely
+transparent for the user of the module. This is mostly solved in 
+[de]pythonify_c_value. Additonal code is needed when calling methods that
+transfer ownership of their return value (as described above) and when updating
+a instance variable in an Objective-C object (retain new and release old, 
+in that order). Both are implemented.

@@ -568,14 +568,18 @@ pythonify_c_value (const char *type, void *datum)
                 Py_INCREF(retobject);
               }
             else if ([obj isKindOfClass:[NSString class]]) // XXX FIXME_1: Should work on NSInlineCString (and maybe others) too.
+	      {
 	      retobject = PyString_FromStringAndSize ([obj cString], [(NSString *)obj length]);
+	      }
 	    else if (ObjC_HasPythonImplementation(obj)) 
 		{
 	     	  retobject =  ObjC_GetPythonImplementation(obj);
 		  Py_INCREF(retobject);
 		}
 	    else 
-              retobject = (PyObject *) ObjCObject_New (obj);
+		{
+                  retobject = (PyObject *) ObjCObject_New (obj);
+	        }
           }
         break;
       }
@@ -615,14 +619,7 @@ pythonify_c_value (const char *type, void *datum)
     case _C_UNION_B:
       {
         unsigned int size = objc_sizeof_type (type);
-#if 0
-        char *buffer = alloca (size);
-
-        memcpy (buffer, (void *) datum, size);
-        retobject = PyString_FromStringAndSize (buffer, size);
-#else
         retobject = PyString_FromStringAndSize ((void*)datum, size);
-#endif
         break;
       }
     
@@ -641,6 +638,7 @@ pythonify_c_value (const char *type, void *datum)
 
     default:
       {
+      /* XXX: Ronald: Why are GNU and Apple runtimes treated differently? */
 #ifdef GNU_RUNTIME
         [NSException raise:NSInternalInconsistencyException 
                      format:@"unhandled value type (%c|%d|%s)", *type, *type, type];
@@ -657,6 +655,16 @@ pythonify_c_value (const char *type, void *datum)
 
   return retobject;
 }
+
+#if 0 /* def OBJC_WITH_ARGUMENTS_ARENA */
+ /* Ronald: The arguments arena is not the right way (tm) to deal with
+  * pointer arguments. You'll have to have additional knowlegde about a pointer
+  * to know how to deal with it.
+  *
+  * For now we try to do without support for _C_PTR in this file, except for
+  * special support in 'execute_and_pythonify_objc_method'. Datastructures
+  * containing pointers require custom C code for now.
+  */
 
 #ifdef WITH_THREAD
 #warning Does not support multiple threads yet.
@@ -752,6 +760,8 @@ get_space_on_arena_for_type (const char *type)
     }
   return arguments_arena[arguments_arena_current_count++] = xmalloc (needed);
 }
+
+#endif /* OBJC_WITH_ARGUMENTS_ARENA */
 
 const char *
 depythonify_c_value (const char *type, PyObject *argument, void *datum)
@@ -857,11 +867,12 @@ depythonify_c_value (const char *type, PyObject *argument, void *datum)
         *(id *) datum = (id)ObjCClass_GetClass(argument);
       else if (ObjCObject_Check (argument)) {
         *(id *) datum = ObjCObject_GetObject(argument);
-	[*(id*) datum retain];	/* XXX: Consistency with other cases */
       } else if (PyString_Check (argument))
+        {
 	*(id *) datum = [NSString 
 			stringWithCString:PyString_AS_STRING(argument)
 				  length:PyString_GET_SIZE(argument)];
+	}
       else if (PyInt_Check (argument))
 	*(id *) datum = [NSNumber numberWithLong:PyInt_AS_LONG (argument)];
       else
@@ -889,17 +900,6 @@ depythonify_c_value (const char *type, PyObject *argument, void *datum)
             char *selname = PyString_AsString (argument);
             SEL sel = SELUID (selname);
 
-            /* XXX this is questionable */
-	    /* Ronald thinks this a plain wrong (selector-names are interned
-	       by the runtime)
-            ======
-            if (sel)
-              *(SEL *) datum = sel;
-            else
-              *(char **) datum = selname;
-	    ======
-	    */
-
 	    if (sel) 
 	      *(SEL*) datum = sel;
 	    else
@@ -907,7 +907,15 @@ depythonify_c_value (const char *type, PyObject *argument, void *datum)
           }
       break;
 
+ 
     case _C_PTR:
+	/* Pointers are hard and the code below
+	 * (1) Uses PyString in an unsafe way
+	 * (2) Is not threadsafe
+	 * (3) Is not needed for *most* Cocoa code
+	 *     [We should only get here for pointers inside data structures]
+	 */
+#if 0 /* def OBJC_WITH_ARGUMENTS_ARENA */
       if (PyString_Check (argument))
         {
 	  /* XXX: The use of PyString here is outdated! Python strings cache
@@ -939,6 +947,17 @@ depythonify_c_value (const char *type, PyObject *argument, void *datum)
           *(void **) datum = get_space_on_arena_for_type (++type);
           error = depythonify_c_value (type, argument, *(void **) datum);
         }
+
+#else /* !OBJC_WITH_ARGUMENTS_ARENA */
+
+      if (ObjCPointer_Check (argument))
+        *(void **) datum = ((ObjCPointer *) argument)->ptr;
+      else
+	error = "nested pointers unimplemented";
+
+#endif /* !OBJC_WITH_ARGUMENTS_ARENA */
+
+
       break;
 
     case _C_FLT:
@@ -1344,13 +1363,17 @@ execute_and_pythonify_objc_method (PyObject *aMeth, PyObject* self, PyObject *ar
 		}
 	}
 
+#if 1
 	self_obj = nil;
 	if (*[methinfo methodReturnType] == _C_ID) {
 		[inv setReturnValue:&self_obj];
 	}
 	[inv setTarget:self_obj];
 	[inv setArgument:&self_obj atIndex:0];
+#endif
+
 	[inv release];
+	[methinfo release];
 	inv = nil;
 
 	PyMem_Free(argbuf);

@@ -1,3 +1,10 @@
+2002-09-15 Ronald Oussoren <ronald@cistron.nl>
+	* Fix a number of memory leaks. There are still some leaks left.
+
+	* Some minor cleanups
+
+	* Documentation about reference counts.
+
 2002-09-08 Ronald Oussoren <ronald@cistron.nl>
 	* Redid the merge, the directory structure has been reorganised to
 	  better reflect the importance of the modules for Cocoa programming.

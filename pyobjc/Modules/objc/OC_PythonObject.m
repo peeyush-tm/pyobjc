@@ -54,7 +54,7 @@
     // wrapped object to maintain the correct refcount
     id objc_obj = ObjCObject_GetObject(obj);
     
-    [objc_obj retain];
+    //[objc_obj retain];
     return objc_obj;
     }
   else
@@ -64,7 +64,7 @@
       // XXXX Jack thinks this shouldn't be done. And because these wrapper
       // objects used to be released as soon as we get back into the mainloop
       // he's strengthened in that belief:-)
-      //[instance autorelease];
+      [instance autorelease];
 
       return instance;
     }
@@ -82,7 +82,6 @@
 #if 1
 - (void)dealloc
 {
-  printf("dealloc %p(%p) %s\n", self, pyObject, PyString_AS_STRING(PyObject_Repr(pyObject)));
   Py_XDECREF(pyObject);
   [super dealloc];
 }
@@ -97,7 +96,6 @@
 
 - (oneway void) release
 {
-  //printf("- release %x (pyObject %x), count=%d\n", self, pyObject, [self retainCount]); fflush(stdout);
   [super release];
   Py_XDECREF (pyObject);
 }
@@ -191,8 +189,6 @@ get_method_for_selector (PyObject *obj, SEL aSelector)
       PyObject *pymethod;
       register const char *p;
       
-      //printf("Finding selector for '%s'\n", meth_name);
-      
       for (argcount=0, p=meth_name; *p; p++)
         if (*p == ':')
           argcount++;
@@ -201,7 +197,6 @@ get_method_for_selector (PyObject *obj, SEL aSelector)
 #if PYTHONIFICATION_METHOD != WITH_BOTH
       pythonify_objc_message (meth_name, pymeth_name);
 
-      //printf("Trying1 '%s'\n", pymeth_name);
       pymethod = PyObject_GetAttrString (obj, pymeth_name);
       return check_argcount (pymethod, argcount);
 #else
@@ -209,11 +204,8 @@ get_method_for_selector (PyObject *obj, SEL aSelector)
         PyObject *meth;
 
         pythonify_objc_message (meth_name, pymeth_name, PYTHONIFICATION_FIRST_TRY);
-        //printf("TryingA '%s'\n", pymeth_name);
         pymethod = PyObject_GetAttrString (obj, pymeth_name);
-	//printf("Result: %p\n",  pymethod);
         meth = check_argcount (pymethod, argcount);
-	//printf("ResultCnt: %p\n",  meth);
         if (meth)
           return meth;
 
@@ -222,11 +214,8 @@ get_method_for_selector (PyObject *obj, SEL aSelector)
 #else
         pythonify_objc_message (meth_name, pymeth_name, WITH_DOUBLE_UNDERSCORE);
 #endif
-        //printf("TryingB '%s'\n", pymeth_name);
         pymethod = PyObject_GetAttrString (obj, pymeth_name);
-	//printf("Result: %p\n",  pymethod);
         meth = check_argcount (pymethod, argcount);
-	//printf("ResultCnt: %p\n",  meth);
         if (meth)
           {
             if (Py_VerboseFlag)
@@ -252,10 +241,8 @@ get_method_for_selector (PyObject *obj, SEL aSelector)
 - (BOOL) respondsToSelector:(SEL) aSelector
 {
   
-  printf("-respondsToSelector called: %s\n", SELNAME(aSelector));
   if ([super respondsToSelector:aSelector])
     {
-    printf("YES, super supplies it\n");
     return YES;
     }
   else
@@ -265,11 +252,9 @@ get_method_for_selector (PyObject *obj, SEL aSelector)
       m = get_method_for_selector ([self pyObject], aSelector);
 
       if (m) {
-        printf("YES, Python object supplies it\n");
         return YES;
       } else
         {
-	  printf("NO\n");
           PyErr_Clear();
           return NO;
         }
@@ -281,7 +266,6 @@ get_method_for_selector (PyObject *obj, SEL aSelector)
 
   NSMethodSignature *result = nil;
 
-  //printf("methodSignatureForSelector: %p %s\n", sel, SELNAME(sel));
   fflush(stdout);
 
   NS_DURING
@@ -295,8 +279,6 @@ get_method_for_selector (PyObject *obj, SEL aSelector)
   if (!result)
     {
       const char *encoding = get_selector_encoding (self, sel);
-
-      //printf("Encoding: %s\n", encoding);
 
       if (!encoding) {
 	  PyObject *pymethod;
@@ -366,8 +348,6 @@ get_method_for_selector (PyObject *obj, SEL aSelector)
   PyObject *pymethod;
   
   pymethod = get_method_for_selector ([self pyObject], aSelector);
-
-  //printf("forwardInvocation: %p %s\n", aSelector, SELNAME(aSelector));
 
   if (pymethod)
     {

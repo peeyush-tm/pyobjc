@@ -31,45 +31,13 @@ init_registry(void)
 	return 0;
 }
 
-#if 0
-PyObject* call_to_super(ObjCNativeSelector* meth, 
-				PyObject* self, PyObject* args)
-{
-	if (meth->sel_call_super) {
-		return meth->sel_call_super(self, meth, args);
-	}
-
-	meth->sel_call_super = ObjC_FindSupercaller(
-			ObjCClass_GetClass(self->ob_type), sel);
-	if (meth->sel_call_super == NULL) {
-		return NULL;
-	}
-	return meth->sel_call_super(self, meth, args);
-}
-
-PyObject* call_to_self(ObjCSelector* meth, 
-				PyObject* self, PyObject* args)
-{
-	if (meth->sel_call_self) {
-		return meth->sel_call_self(self, meth, args);
-	}
-
-	meth->sel_call_self = ObjC_FindSelfcaller(
-			ObjCClass_GetClass(self->ob_type), sel);
-	if (meth->sel_call_self == NULL) {
-		return NULL;
-	}
-	return meth->sel_call_self(self, meth, args);
-}
-#endif
-
 int ObjC_RegisterMethodMapping(Class class, SEL sel, 
 	ObjC_CallFunc_t call_to_self,  
 	ObjC_CallFunc_t call_to_super,
 	IMP		    call_to_python)
 {
 	struct registry* v;
-	const char*            selname = SELNAME(sel);
+	const char*      selname = SELNAME(sel);
 	PyObject*        pyclass;
 	PyObject* 	 entry;
 
@@ -115,8 +83,13 @@ int ObjC_RegisterMethodMapping(Class class, SEL sel,
 	return 0;
 }
 
-/* Duplicate code, but version in class-builder should no longer be 
- * necessary
+/*
+ * This function removes junk numbers from 'signature' and copies it into
+ * 'buf'.
+ *
+ * Ronald: I'd like to replace this by a function that doesn't use 
+ * NSMethodSignature. I think objc_support contains enough intelligence to
+ * do this.
  */
 static void
 simplify_signature(char* signature, char* buf, size_t buflen)
@@ -136,6 +109,12 @@ simplify_signature(char* signature, char* buf, size_t buflen)
 		buflen -= strlen(buf);
 		buf += strlen(buf);
 	}
+
+	/* Ronald: In theory the release below is not necessary, but 
+	 * (1) it doesn't cause runtime errors later on and (2) seems to
+	 * solve a memory leak
+	 */
+	[sig release]; 
 }
 	
 int ObjC_RegisterSignatureMapping(
@@ -176,7 +155,7 @@ int ObjC_RegisterSignatureMapping(
 		return -1;
 	}
 
-	if (PyDict_SetItemString(signature_registry, signature_buf, entry) < 0) {
+	if (PyDict_SetItemString(signature_registry, signature_buf, entry) < 0){
 		Py_DECREF(entry);
 		return -1;
 	}

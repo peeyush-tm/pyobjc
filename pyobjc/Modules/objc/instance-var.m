@@ -37,7 +37,6 @@ ivar_descr_get(ObjCIvar* self, PyObject* obj, PyObject* type)
 	Ivar var;
 	id   objc;
 	int  size;
-	char  stack_buf[1024];
 	void* buf;
 	PyObject* res;
 
@@ -63,18 +62,13 @@ ivar_descr_get(ObjCIvar* self, PyObject* obj, PyObject* type)
 	}	
 	
 	size = objc_sizeof_type(var->ivar_type);
-	if (size <= 1024) {
-		buf = stack_buf;
-	} else {
-		buf = PyMem_Malloc(size);
-		if (buf == NULL) {
-			return PyErr_NoMemory();
-		}
+	buf = alloca(size);
+	if (buf == NULL) {
+		return PyErr_NoMemory();
 	}
 	object_getInstanceVariable(objc, self->name, buf);
 
 	res = pythonify_c_value(var->ivar_type, buf);
-	if (size > 1024) PyMem_Free(buf);
 	return res;
 }
 
@@ -84,7 +78,6 @@ ivar_descr_set(ObjCIvar* self, PyObject* obj, PyObject* value)
 	Ivar var;
 	id   objc;
 	int  size;
-	char  stack_buf[1024];
 	void* buf;
 	const char* res;
 
@@ -110,14 +103,11 @@ ivar_descr_set(ObjCIvar* self, PyObject* obj, PyObject* value)
 	}	
 	
 	size = objc_sizeof_type(var->ivar_type);
-	if (size <= 1024) {
-		buf = stack_buf;
-	} else {
-		buf = PyMem_Malloc(size);
-		if (buf == NULL) {
-			PyErr_NoMemory();
-			return -1;
-		}
+	buf = alloca(size);
+	buf = PyMem_Malloc(size);
+	if (buf == NULL) {
+		PyErr_NoMemory();
+		return -1;
 	}
 
 	res = depythonify_c_value(var->ivar_type, value, buf);

@@ -34,7 +34,6 @@ static int is_allocator_method(SEL sel)
 
 	v = PyDict_GetItemString(allocator_dict, (char*)SELNAME(sel));
 	if (v == NULL) {
-		PyErr_Clear();
 		return 0;
 	}
 
@@ -231,13 +230,6 @@ sel_dealloc(PyObject* object)
 		Py_DECREF(self->sel_self); 
 		self->sel_self = NULL;
 	}
-#if 0
-	if (self->sel_class) { 
-		Py_DECREF(self->sel_class); 
-		self->sel_self = NULL;
-	}
-#endif
-	
 	object->ob_type->tp_free(object);
 }
 
@@ -432,6 +424,13 @@ objcsel_call(ObjCNativeSelector* self, PyObject* args)
 		ObjCClass_MaybeRescan(pyself);
 	}
 
+	if (res && ObjCObject_Check(res)) {
+		printf("Returning object from %s, allocator: %d, refcount: %d\n",
+			SELNAME(self->sel_selector), self->sel_allocator,
+			[ObjCObject_GetObject(res) retainCount]);
+	}
+
+
 	if (res && ObjCObject_Check(res) && self->sel_allocator) {
 		/* Ownership transfered to us, but 'execute' method has
 		 * increased retainCount, the retainCount is now one to high
@@ -445,8 +444,11 @@ static PyObject*
 objcsel_descr_get(ObjCNativeSelector* meth, PyObject* obj, PyObject* class)
 {
 	ObjCNativeSelector* result;
-
+	
+	//printf("objcsel_descr_get %s\n", SELNAME(meth->sel_selector));
+	
 	if (meth->sel_self != NULL || obj == Py_None) {
+		//printf("objcsel_descr_get %s: already bound\n", SELNAME(meth->sel_selector));
 		Py_INCREF(meth);
 		return (PyObject*)meth;
 	} 
@@ -474,6 +476,7 @@ objcsel_descr_get(ObjCNativeSelector* meth, PyObject* obj, PyObject* class)
 		Py_INCREF(result->sel_self);
 	}
 
+	//printf("objcsel_descr_get %s: return new %d\n", SELNAME(meth->sel_selector), result->ob_refcnt);
 	return (PyObject*)result;
 }
 
