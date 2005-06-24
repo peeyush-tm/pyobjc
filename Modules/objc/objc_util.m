@@ -850,6 +850,7 @@ PyObjCSelector_Convert(PyObject* object, void* pvar)
     }
     if (PyObjCSelector_Check(object)) {
         *(SEL*)pvar = PyObjCSelector_GetSelector(object);
+	if (*(SEL*)pvar == NULL) return 0;
         return 1;
     }
     if (!PyString_Check(object)) {

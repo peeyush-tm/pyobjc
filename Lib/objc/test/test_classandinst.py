@@ -7,7 +7,6 @@ class PyObjC_TestClassAndInstanceSubclass(PyObjC_TestClassAndInstance):
     pass
 
 
-# XXX: Huh? The next two classes have the same definition?
 class PyObjC_TestClassAndInstanceClassOverride(PyObjC_TestClassAndInstance):
     """return YES for both"""
     def isInstance(klass):
@@ -35,31 +34,36 @@ class TestClassAndInstance(unittest.TestCase):
     def testClassAndInstanceClassOverrideWorkaround(self):
         self.assertEquals(PyObjC_TestClassAndInstanceClassOverride.pyobjc_classMethods.isInstance(), objc.YES)
 
-        # XXX: Class methods are no longer accessible through instances.
-        #self.assertEquals(PyObjC_TestClassAndInstanceClassOverride.alloc().init().pyobjc_instanceMethods.isInstance(), objc.YES)
+        # We'd like to see this:
+        self.assertEquals(PyObjC_TestClassAndInstanceOverride.isInstance(), objc.YES)
 
     def testClassAndInstanceSubclassWorkaround(self):
-        self.assertEquals(PyObjC_TestClassAndInstanceSubclass.pyobjc_classMethods.isInstance(), objc.NO)
         self.assertEquals(PyObjC_TestClassAndInstanceSubclass.alloc().init().pyobjc_instanceMethods.isInstance(), objc.YES)
+        self.assertEquals(PyObjC_TestClassAndInstanceSubclass.pyobjc_classMethods.isInstance(), objc.NO)
+
+        # We'd like to see this:
+        self.assertEquals(PyObjC_TestClassAndInstanceSubclass.isInstance(), objc.NO)
 
     def testClassAndInstanceWorkaround(self):
-        self.assertEquals(PyObjC_TestClassAndInstance.pyobjc_classMethods.isInstance(), objc.NO)
         self.assertEquals(PyObjC_TestClassAndInstance.alloc().init().pyobjc_instanceMethods.isInstance(), objc.YES)
+
+        self.assertEquals(PyObjC_TestClassAndInstance.pyobjc_classMethods.isInstance(), objc.NO)
+        # We'd like to see this:
+        self.assertEquals(PyObjC_TestClassAndInstance.isInstance(), objc.NO)
 
     def testClassAndInstanceClassOverride(self):
         self.assertEquals(PyObjC_TestClassAndInstanceClassOverride.isInstance(), objc.YES)
-        #self.assertEquals(PyObjC_TestClassAndInstanceClassOverride.alloc().init().isInstance(), objc.YES)
 
     def testClassAndInstanceInstanceOverride(self):
         # Having the next line true would be nice:
-        #self.assertEquals(PyObjC_TestClassAndInstanceInstanceOverride.isInstance(), objc.NO)
+        self.assertEquals(PyObjC_TestClassAndInstanceInstanceOverride.isInstance(), objc.NO)
         # But we'll have to settle for this one instead:
         self.assertEquals(PyObjC_TestClassAndInstanceInstanceOverride.pyobjc_classMethods.isInstance(), objc.NO)
         self.assertEquals(PyObjC_TestClassAndInstanceInstanceOverride.alloc().init().isInstance(), objc.NO)
 
     def testClassAndInstanceSubclass(self):
         # Having the next line true would be nice:
-        #self.assertEquals(PyObjC_TestClassAndInstanceSubclass.isInstance(), objc.NO)
+        self.assertEquals(PyObjC_TestClassAndInstanceSubclass.isInstance(), objc.NO)
         # But we'll have to settle for this one instead:
         self.assertEquals(PyObjC_TestClassAndInstanceSubclass.pyobjc_classMethods.isInstance(), objc.NO)
         self.assertEquals(PyObjC_TestClassAndInstanceSubclass.alloc().init().isInstance(), objc.YES)
@@ -67,7 +71,7 @@ class TestClassAndInstance(unittest.TestCase):
     def testClassAndInstance(self):
 
         # Having the next line true would be nice:
-        #self.assertEquals(PyObjC_TestClassAndInstance.isInstance(), objc.NO)
+        self.assertEquals(PyObjC_TestClassAndInstance.isInstance(), objc.NO)
         # But we'll have to settle for this one instead:
         self.assertEquals(PyObjC_TestClassAndInstance.pyobjc_classMethods.isInstance(), objc.NO)
         self.assertEquals(PyObjC_TestClassAndInstance.alloc().init().isInstance(), objc.YES)

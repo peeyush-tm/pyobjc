@@ -43,6 +43,8 @@ _UseKVO(NSObject *self, NSString *key, int isSet)
 			0);
 	}
 	// Hacks for Panther so that you don't get nested observations
+	// XXX: why is this code always used, even on platforms that don't
+	// have this issue (e.g. Tiger)?
 	NSMutableDictionary *kvoDict = (NSMutableDictionary *)NSMapGet(kvo_stack, (const void *)self);
 	if (!kvoDict) {
 		kvoDict = [[NSMutableDictionary alloc] initWithCapacity:0];
@@ -118,18 +120,6 @@ static void object_method_copyWithZone_(
 		void** args,
 		void* userdata);
 
-/*
- * When we create a 'Class' we actually create the struct below. This allows
- * us to add some extra information to the class definition.
- *
- * XXX: The struct is not really necessary, it just makes error-recovery 
- * slightly easier. 
- */
-struct class_wrapper {
-	struct objc_class class;
-	struct objc_class meta_class;
-};
-
 #define IDENT_CHARS "ABCDEFGHIJKLMNOPQSRTUVWXYZabcdefghijklmnopqrstuvwxyz_0123456789"
 
 /*
@@ -157,13 +147,13 @@ PyObjCClass_FinishClass(Class objc_class)
 int 
 PyObjCClass_UnbuildClass(Class objc_class)
 {
-	struct class_wrapper* wrapper = (struct class_wrapper*)objc_class; 
-
 	PyObjC_Assert(objc_class != nil, -1);
 	PyObjC_Assert(objc_lookUpClass(objc_class->name) == nil, -1);
 
-	PyObjCRT_ClearClass(&(wrapper->class));
-	PyObjCRT_ClearClass(&(wrapper->meta_class));
+	PyObjCRT_ClearClass(objc_class->isa);
+	free(objc_class->isa);
+
+	PyObjCRT_ClearClass(objc_class);
 	free(objc_class);
 	return 0;
 }
@@ -411,7 +401,8 @@ PyObjCClass_BuildClass(Class super_class,  PyObject* protocols,
 	struct objc_method_list* method_list = NULL;
 	struct objc_method_list* meta_method_list = NULL;
 	struct objc_protocol_list* protocol_list = NULL;
-	struct class_wrapper*    new_class = NULL;
+	Class			 new_class;
+	Class 			 new_meta;
 	Class                    root_class;
 	Class                    cur_class;
 	PyObject*                py_superclass = NULL;
@@ -598,11 +589,18 @@ PyObjCClass_BuildClass(Class super_class,  PyObject* protocols,
 	}
 
 	/* Allocate the class as soon as possible, for new selector objects */
-	new_class = malloc(sizeof(struct class_wrapper));
+	new_class = malloc(sizeof(*new_class));
 	if (new_class == NULL) {
 		goto error_cleanup;
 	}
 	memset(new_class, 0, sizeof(*new_class));
+
+	new_meta = malloc(sizeof(*new_meta));
+	if (new_meta == NULL) {
+		goto error_cleanup;
+	}
+	memset(new_meta, 0, sizeof(*new_meta));
+
 
 	/* First round, count new instance-vars and check for overridden 
 	 * methods.
@@ -662,8 +660,7 @@ PyObjCClass_BuildClass(Class super_class,  PyObject* protocols,
 			}
 
 			/* TODO: If it already has a sel_class, create a copy */
-			((PyObjCSelector*)value)->sel_class =
-				&new_class->class;
+			((PyObjCSelector*)value)->sel_class = new_class;
 
 		} else if (
 				PyMethod_Check(value) 
@@ -693,7 +690,7 @@ PyObjCClass_BuildClass(Class super_class,  PyObject* protocols,
 				continue;
 			}
 
-			((PyObjCSelector*)value)->sel_class = &new_class->class;
+			((PyObjCSelector*)value)->sel_class = new_class;
 
 			if (PyDict_SetItem(class_dict, key, value) < 0) {
 				Py_DECREF(value); value = NULL;
@@ -769,7 +766,7 @@ PyObjCClass_BuildClass(Class super_class,  PyObject* protocols,
 			meth = method_list->method_list + 		\
 				method_list->method_count++;		\
 			PyObjCRT_InitMethod(meth, selector, types, (IMP)closure); \
-			sel = PyObjCSelector_NewNative(&new_class->class, \
+			sel = PyObjCSelector_NewNative(new_class, \
 				selector,  types, 0);			\
 			if (sel == NULL) goto error_cleanup;		\
 			PyDict_SetItemString(class_dict, pyname, sel);	\
@@ -939,7 +936,7 @@ PyObjCClass_BuildClass(Class super_class,  PyObject* protocols,
 			}
 
 			if (sel->sel_class == NULL) {
-				sel->sel_class = &new_class->class;
+				sel->sel_class = new_class;
 			}
 
 			if (meth->method_imp == NULL) {
@@ -959,8 +956,8 @@ PyObjCClass_BuildClass(Class super_class,  PyObject* protocols,
 	}
 
 	i = PyObjCRT_SetupClass(
-		&new_class->class, 
-		&new_class->meta_class, 
+		new_class,
+		new_meta,
 		name,
 		super_class,
 		root_class,
@@ -973,13 +970,13 @@ PyObjCClass_BuildClass(Class super_class,  PyObject* protocols,
 
 	if (method_list) {
 		PyObjCRT_ClassAddMethodList(
-			&(new_class->class), 
+			new_class,
 			method_list);
 		method_list = NULL;
 	}
 	if (meta_method_list) {
 		PyObjCRT_ClassAddMethodList(
-			&(new_class->meta_class), 
+			new_meta, 
 			meta_method_list);
 		meta_method_list = NULL;
 	}
@@ -995,7 +992,7 @@ PyObjCClass_BuildClass(Class super_class,  PyObject* protocols,
 	 * because it is impossible to remove the registration from the
 	 * objective-C runtime (at least on MacOS X).
 	 */
-	return &new_class->class;
+	return new_class;
 
 error_cleanup:
 	Py_XDECREF(py_superclass);
@@ -1018,9 +1015,13 @@ error_cleanup:
 		free(protocol_list);
 	}
 
+	if (new_meta != NULL) {
+		PyObjCRT_ClearClass(new_meta);
+		free(new_meta);
+	}
+
 	if (new_class != NULL) {
-		PyObjCRT_ClearClass(&(new_class->class));
-		PyObjCRT_ClearClass(&(new_class->meta_class));
+		PyObjCRT_ClearClass(new_class);
 		free(new_class);
 	}
 
@@ -1396,6 +1397,7 @@ object_method_forwardInvocation(
 	PyObject* pyself;
 	volatile int have_output = 0;
 	PyGILState_STATE state = PyGILState_Ensure();
+	char* sigstr;
 
 	pyself = PyObjCObject_New(self, PyObjCObject_kDEFAULT, YES);
 	if (pyself == NULL) {
@@ -1435,8 +1437,13 @@ object_method_forwardInvocation(
 	}
 
 
-	signature = PyObjCMethodSignature_FromSignature(
-		PyObjCSelector_Signature(pymeth));
+	sigstr = PyObjCSelector_Signature(pymeth);
+	if (sigstr == NULL) {
+		PyObjCErr_ToObjCWithGILState(&state);
+		return;
+	}
+
+	signature = PyObjCMethodSignature_FromSignature(sigstr);
 	len = signature->nargs;
 
 	Py_XDECREF(pymeth); pymeth = NULL;

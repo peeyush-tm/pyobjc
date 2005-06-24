@@ -150,8 +150,8 @@ object_dealloc(PyObject* obj)
 }
 
 
-static inline PyObject*
-_type_lookup(PyTypeObject* tp, PyObject* name)
+PyObject*
+PyObjC_TypeLookup(PyTypeObject* tp, PyObject* name)
 {
 	int i, n;
 	PyObject *mro, *base, *dict;
@@ -238,7 +238,7 @@ object_getattro(PyObject *obj, PyObject * volatile name)
 	 * ISA is changed by the runtime. We change the python type as well.
 	 */
 	obj_inst = PyObjCObject_GetObject(obj);
-	if (!obj_inst) {
+	if (obj_inst == nil) {
 		PyErr_Format(PyExc_AttributeError,
 		     "cannot access attribute '%.400s' of NIL '%.50s' object",
 		     PyString_AS_STRING(name),
@@ -275,7 +275,7 @@ object_getattro(PyObject *obj, PyObject * volatile name)
 
 	/* replace _PyType_Lookup */
 	if (descr == NULL) {
-		descr = _type_lookup(tp, name);
+		descr = PyObjC_TypeLookup(tp, name);
 	}
 
 	f = NULL;
@@ -415,7 +415,7 @@ object_setattro(PyObject *obj, PyObject *name, PyObject *value)
             _UseKVO((NSObject *)obj_inst, obj_name, 1);
 		}
 	}
-	descr = _type_lookup(tp, name);
+	descr = PyObjC_TypeLookup(tp, name);
 	f = NULL;
 	if (descr != NULL &&
 	    PyType_HasFeature(descr->ob_type, Py_TPFLAGS_HAVE_CLASS)) {

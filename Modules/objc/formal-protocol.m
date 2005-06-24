@@ -120,7 +120,7 @@ static	char*	keywords[] = { "name", "supers", "selectors", NULL };
 			Py_DECREF(selectors);
 			return NULL;
 		}
-		if (PyObjCSelector_GetFlags(sel)&PyObjCSelector_kCLASS_METHOD) {
+		if (PyObjCSelector_IsClassMethod(sel)) {
 			numClass++;
 		} else {
 			numInstance++;
@@ -189,7 +189,10 @@ static	char*	keywords[] = { "name", "supers", "selectors", NULL };
 		SEL theSel = PyObjCSelector_GetSelector(sel);
 		char* theSignature = PyObjCSelector_Signature(sel);
 
-		if (PyObjCSelector_GetFlags(sel)&PyObjCSelector_kCLASS_METHOD) {
+		if (theSignature == NULL) goto error;
+		if (theSel == NULL) goto error;
+
+		if (PyObjCSelector_IsClassMethod(sel)) {
 			c = &(theProtocol->class_methods->list[
 				theProtocol->class_methods->count++]);
 			c->name = theSel;
@@ -313,6 +316,7 @@ descriptionForInstanceMethod_(PyObject* object, PyObject* sel)
 
 	if (PyObjCSelector_Check(sel)) {
 		aSelector = PyObjCSelector_GetSelector(sel);
+		if (aSelector == NULL) return NULL;
 	} else if (PyString_Check(sel)) {
 		char* s = PyString_AsString(sel);
 		if (*s == '\0') {
@@ -348,6 +352,7 @@ descriptionForClassMethod_(PyObject* object, PyObject* sel)
 
 	if (PyObjCSelector_Check(sel)) {
 		aSelector = PyObjCSelector_GetSelector(sel);
+		if (aSelector == NULL) return NULL;
 	} else if (PyString_Check(sel)) {
 		char* s = PyString_AsString(sel);
 		if (*s == '\0') {
@@ -501,6 +506,7 @@ do_verify(
 	PyObject* clsdict)
 {
 	PyObject* meth;
+	char* signature;
 
 	/* TODO: take classmethodness into account */
 
@@ -519,8 +525,12 @@ do_verify(
 		}
 	}
 
-	if (signaturesEqual(descr->types, 
-				PyObjCSelector_Signature(meth))) {
+	signature = PyObjCSelector_Signature(meth);
+	if (signature == NULL) {
+		return 0;
+	}
+
+	if (signaturesEqual(descr->types, signature)) {
 		return 1;
 	} 
 
@@ -531,7 +541,7 @@ do_verify(
 		name,
 		protocol_name,
 		PyObjCRT_SELName(descr->name),
-		PyObjCSelector_Signature(meth),
+		signature,
 		descr->types);
 	return 0;
 }

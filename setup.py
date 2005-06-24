@@ -26,19 +26,13 @@ featured Cocoa applications to be written in pure Python.  It is also
 easy to use other frameworks containing Objective-C class libraries
 from Python and to mix in Objective-C, C and C++ source.
 
-Python is a highly dynamic programming language with a shallow learning
-curve.  It combines remarkable power with very clear syntax.
-
 The installer package installs a number of Xcode templates for
 easily creating new Cocoa-Python projects.
 
 PyObjC also supports full introspection of Objective-C classes and
 direct invocation of Objective-C APIs from the interactive interpreter.
 
-PyObjC requires MacOS X 10.2 or later.  PyObjC works both with the Apple
-provided Python installation in MacOS X 10.2 (and later) and with
-MacPython 2.3.  Users of MacPython 2.3 can install PyObjC though the
-PackageManager application.
+PyObjC requires MacOS X 10.2 or later and Python 2.3 or later.  
 """
 
 from distutils.core import setup, Extension
@@ -602,6 +596,7 @@ dist = setup(
     author_email = "pyobjc-dev@lists.sourceforge.net",
     url = "http://pyobjc.sourceforge.net/",
     platforms = [ 'MacOS X' ],
+    keywords = [ "Objective-C", "Cocoa", ],
     ext_modules = (
          CoreExtensions
        + AppKitExtensions

@@ -216,6 +216,7 @@ classAddMethods(PyObject* self __attribute__((__unused__)),
 	struct objc_method_list *methodsToAdd;
 	struct objc_method_list *classMethodsToAdd;
 	PyObject* extraDict = NULL;
+	char* signature;
 
 	if (!PyArg_ParseTupleAndKeywords(args, keywds, 
 			"OO:classAddMethods", kwlist,
@@ -291,8 +292,14 @@ classAddMethods(PyObject* self __attribute__((__unused__)),
 		}
 		
 		objcMethod->method_name = PyObjCSelector_GetSelector(aMethod);
-		objcMethod->method_types = strdup(
-				PyObjCSelector_Signature(aMethod));
+		if (objcMethod->method_name == NULL) {
+			goto cleanup_and_return_error;
+		}
+		signature = PyObjCSelector_Signature(aMethod);
+		if (signature == NULL) {
+			goto cleanup_and_return_error;
+		}
+		objcMethod->method_types = strdup(signature);
 		if (objcMethod->method_types == NULL) {
 			goto cleanup_and_return_error;
 		}
@@ -471,7 +478,7 @@ static 	char* keywords[] = { "class_name", "selector", "signature", NULL };
 
 	sel = PyObjCRT_SELUID(selector);
 	
-	if (ObjC_SignatureForSelector(class_name, sel, signature) < 0) {
+	if (PyObjC_SetSignatureForSelector(class_name, sel, signature) < 0) {
 		return NULL;
 	}
 

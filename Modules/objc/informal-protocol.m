@@ -241,15 +241,20 @@ PyObjCInformalProtocol_FindSelector(PyObject* obj, SEL selector, int isClassMeth
 		}
 
 		if (PyObjCSelector_Check(cur)) {
-			int class_sel = (
-				PyObjCSelector_GetFlags(cur) 
-				& PyObjCSelector_kCLASS_METHOD) != 0;
+			int class_sel = PyObjCSelector_IsClassMethod(cur);
+			SEL cur_selector;
+
 			if ((isClassMethod && !class_sel) 
 					|| (!isClassMethod && class_sel)) {
 				continue;
 			}
 
-			if (PyObjCRT_SameSEL(PyObjCSelector_GetSelector(cur), selector)) {
+			cur_selector = PyObjCSelector_GetSelector(cur);
+			if (cur_selector == NULL) {
+				PyErr_Clear(); /* XXX */
+				continue;
+			}
+			if (PyObjCRT_SameSEL(cur_selector, selector)) {
 				Py_DECREF(seq);
 				return cur;
 			}
@@ -279,8 +284,13 @@ findSelInDict(PyObject* clsdict, SEL selector)
 	len = PySequence_Fast_GET_SIZE(seq);
 	for (i = 0; i < len; i++) {
 		PyObject* v = PySequence_Fast_GET_ITEM(seq, i);
+		SEL v_sel;
 		if (!PyObjCSelector_Check(v)) continue;
-		if (PyObjCSelector_GetSelector(v) == selector) {
+		v_sel = PyObjCSelector_GetSelector(v);
+		if (v_sel == nil) {
+			continue;
+		}
+		if (v_sel == selector) {
 			Py_DECREF(seq);
 			Py_DECREF(values);
 			Py_INCREF(v);
@@ -370,6 +380,9 @@ PyObjCInformalProtocol_CheckClass(
 		}
 
 		sel = PyObjCSelector_GetSelector(cur);
+		if (sel == nil) {
+			return 0;
+		}
 
 		m = findSelInDict(clsdict, sel);
 		if (m == NULL) {
@@ -391,9 +404,16 @@ PyObjCInformalProtocol_CheckClass(
 				PyErr_Clear();
 			}
 		} else {
-			if (!signaturesEqual(PyObjCSelector_Signature(m),
-				PyObjCSelector_Signature(cur)) != 0) {
+			char* sign_m = PyObjCSelector_Signature(m);
+			char* sign_cur = PyObjCSelector_Signature(cur);
 
+			if (sign_m == NULL || sign_cur == NULL) {
+				Py_DECREF(seq);
+				Py_DECREF(m);
+				return 0;
+			}
+
+			if (!signaturesEqual(sign_m, sign_cur)) {
 				PyErr_Format(PyExc_TypeError,
 					"class %s does not correctly implement "
 					"protocol %s: "
@@ -402,8 +422,8 @@ PyObjCInformalProtocol_CheckClass(
 					name,
 					PyString_AsString(self->name),
 					PyObjCRT_SELName(sel),
-					PyObjCSelector_Signature(m),
-					PyObjCSelector_Signature(cur)
+					sign_m,
+					sign_cur
 				);
 				Py_DECREF(seq);
 				Py_DECREF(m);

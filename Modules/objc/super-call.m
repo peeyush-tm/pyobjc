@@ -291,6 +291,10 @@ PyObjC_MakeIMP(Class class, PyObject* sel, PyObject* imp)
 	IMP retval;
 	PyObjCMethodSignature* methinfo;
 
+	if (aSelector == NULL) {
+		return NULL;
+	}
+
 	if (class != nil) {
 		special = search_special(class, aSelector);
 		if (special) {
@@ -301,31 +305,39 @@ PyObjC_MakeIMP(Class class, PyObject* sel, PyObject* imp)
 	}
 
 	if (func == NULL) {
-		generic = find_signature(PyObjCSelector_Signature(sel));
+		char* signature = PyObjCSelector_Signature(sel);
+		if (signature == NULL) {
+			return NULL;
+		}
+		generic = find_signature(signature);
 		if (generic != NULL) {
 			func = generic->call_to_python;
 		} 
-	}
 
+	} 
+	
 	if (func == PyObjCUnsupportedMethod_IMP) {
 		PyErr_Format(PyExc_TypeError,
 			"Implementing %s in Python is not supported",
 			PyObjCRT_SELName(aSelector));
 		return NULL;
-	}
 
-	if (func != NULL) {
-		methinfo = PyObjCMethodSignature_FromSignature(
-				PyObjCSelector_Signature(sel));
+	} else if (func != NULL) {
+		char* signature = PyObjCSelector_Signature(sel);
+
+		if (signature == NULL) {
+			return NULL;
+		}
+
+		methinfo = PyObjCMethodSignature_FromSignature(signature);
 		retval = PyObjCFFI_MakeClosure(methinfo, func, imp);
 		if (retval != NULL) {
 			Py_INCREF(imp);
 		}
 		PyObjCMethodSignature_Free(methinfo);
 		return retval;
+
 	} else {
-		/* XXX: To be replaced */
-		/* 20040713: But why??? */
 		PyErr_Clear();
 		retval = PyObjCFFI_MakeIMPForSignature(
 				PyObjCSelector_Signature(sel), imp);
@@ -352,20 +364,26 @@ PyObjCUnsupportedMethod_Caller(
 	PyObject* args __attribute__((__unused__)))
 {
 	PyObject* repr;
+	SEL meth_sel = PyObjCSelector_GetSelector(meth);
+	if (meth_sel == NULL) {
+		return NULL;
+	}
 
 	repr = PyObject_Repr(self);
 	if (repr == NULL || !PyString_Check(repr)) {
 		Py_XDECREF(repr);
+
+
 		PyErr_Format(PyExc_TypeError,
 			"Cannot call '%s' on instances of '%s' from Python",
-			PyObjCRT_SELName(PyObjCSelector_GetSelector(meth)),
+			PyObjCRT_SELName(meth_sel),
 			self->ob_type->tp_name);
 		return NULL;
 	}
 
 	PyErr_Format(PyExc_TypeError,
 		"Cannot call '%s' on '%s' from Python",
-		PyObjCRT_SELName(PyObjCSelector_GetSelector(meth)),
+		PyObjCRT_SELName(meth_sel),
 		PyString_AS_STRING(repr));
 	Py_DECREF(repr);
 	return NULL;

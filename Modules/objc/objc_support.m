@@ -1493,6 +1493,9 @@ depythonify_c_value (const char *type, PyObject *argument, void *datum)
 			*(SEL*)datum = NULL;
 		} else if (PyObjCSelector_Check (argument)) {
 			*(SEL *) datum = PyObjCSelector_GetSelector(argument); 
+			if (*(SEL*)datum == NULL) {
+				return -1;
+			}
 		} else if (PyString_Check(argument)) {
 			char *selname = PyString_AsString (argument);
 			SEL sel;

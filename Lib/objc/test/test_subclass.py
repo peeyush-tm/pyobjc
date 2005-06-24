@@ -334,6 +334,22 @@ class TestOverridingSpecials(unittest.TestCase):
         self.assert_('dealloc' in aList)
         self.assert_('__del__' in aList)
 
+class OC_TestMutability(NSObject):
+    def someMethod(self):
+        pass
+
+    def someOtherMethod(self):
+        pass
+
+class ClassMutability (unittest.TestCase):
+    def testRemovingMethods(self):
+        self.assert_(hasattr(OC_TestMutability, 'someMethod'))
+        self.assertRaises(AttributeError, delattr, OC_TestMutability, 'someMethod')
+
+    def testReplacingMethods(self):
+        self.assert_(hasattr(OC_TestMutability, 'someOtherMethod'))
+        self.assertRaises(AttributeError, setattr, OC_TestMutability, 'someOtherMethod', 42)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -4,6 +4,56 @@ PyObjC NEWS
 
 An overview of the relevant changes in new, and older, releases.
 
+Selector-cleanup branch
+-----------------------
+
+- It is now forbidden to replace a method with something else in
+  a Objective-C class. This limitation is needed because PyObjC 
+  cannot remove a method from the class in the ObjC runtime. 
+
+  This fragment will now raise ``AttributeError``::
+
+      class Foo (NSObject):
+          def someMethod(self):
+	      pass
+
+      Foo.someMethod = 42 # raises AttributeError
+
+  Note that it was already forbidden to remove methods using ``del``.
+  That is, ``del Foo.someMethod`` already raised ``AttributeError``.
+
+- In Objective-C an interface definition really defines two classes: the
+  normal class and its meta class. The latter contains the class methods. 
+
+  PyObjC now models Objective-C classes in the same way, the type of an
+  Objective-C class is now a subclass of objc.objc_class. This means that
+  it now possible to do this::
+
+      >>> o = Foundation.NSObject.new()
+      >>> o.description()
+      u'<NSObject: 0x4aa120>'
+      >>> Foundation.NSObject.description()
+      u'NSObject'
+      >>> 
+
+  This does mean that ``getattr(cls, methodname)`` is no longer the right
+  way to fetch an unbound instance method (XXX: but what is?). 
+
+  This change is not backward compatible, but this should only affect code
+  that performs introspection. 
+
+  The current implementation of this is very rough and doesn't pass the 
+  unittests (they hang somewhere). Furthermore the new metaclasses are only
+  created for pure Objective-C classes, not for Python subclasses.
+
+  TODO:
+
+  * Need unittests that test the modified behaviour
+
+  * Fix the implementation for pure Objective-Class
+
+  * Add an implementation for Python subclasses
+
 Version 1.3.7 (????-??-??)
 --------------------------
 

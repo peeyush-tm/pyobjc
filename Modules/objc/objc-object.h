@@ -28,4 +28,8 @@ PyObject* _PyObjCObject_NewDeallocHelper(id objc_object);
 PyObject* PyObjCObject_NewTransient(id objc_object, int* cookie);
 void PyObjCObject_ReleaseTransient(PyObject* proxy, int cookie);
 
+/* TODO: move to another file: */
+PyObject* PyObjC_TypeLookup(PyTypeObject* tp, PyObject* name);
+
+
 #endif /* PyObjC_OBJC_OBJECT_H */

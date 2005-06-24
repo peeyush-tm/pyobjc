@@ -574,6 +574,9 @@ static PyObject*
 class_getattro(PyObject* self, PyObject* name)
 {
 	PyObject* result = NULL;
+	PyObject* descr;
+	descrgetfunc f = NULL;
+
 
 	/* Python will look for a number of "private" attributes during 
 	 * normal operations, such as when building subclasses. Avoid a
@@ -600,10 +603,32 @@ class_getattro(PyObject* self, PyObject* name)
 	}
 
 	PyObjCClass_CheckMethodList(self, 1);
-	
-	result = PyType_Type.tp_getattro(self, name);
+
+	descr = PyObjC_TypeLookup(self->ob_type, name);
+	if (descr != NULL && 
+		PyType_HasFeature(descr->ob_type, Py_TPFLAGS_HAVE_CLASS)) {
+
+		  f = descr->ob_type->tp_descr_get;
+		  if (f != NULL && PyDescr_IsData(descr)) {
+			  result = f(descr, self, (PyObject*)self->ob_type);
+			  return result;
+		  }
+	}
+
+	result = PyDict_GetItem(((PyTypeObject*)self)->tp_dict, name);
 	if (result != NULL) {
+		Py_INCREF(result); /* huh? */
 		return result;
+	}
+
+	if (f != NULL) {
+		result = f(descr, self, (PyObject*)self->ob_type);
+		return result;
+	}
+
+	if (descr != NULL) {
+		Py_INCREF(descr);
+		return descr;
 	}
 
 	/* Try to find the method anyway */
@@ -634,12 +659,15 @@ class_getattro(PyObject* self, PyObject* name)
 static int
 class_setattro(PyObject* self, PyObject* name, PyObject* value)
 {
+	char* signature;
 	int res;
+	PyObject* old_value;
+
 	if (value == NULL) {
 		/* delattr(), deny the operation when the name is bound
 		 * to a selector.
 		 */
-		PyObject* old_value = class_getattro(self, name);
+		old_value = class_getattro(self, name);
 		if (old_value == NULL) {
 			PyErr_Clear();
 			return PyType_Type.tp_setattro(self, name, value);
@@ -658,6 +686,7 @@ class_setattro(PyObject* self, PyObject* name, PyObject* value)
 			}
 			return -1;
 		}
+
 	} else if (PyObjCNativeSelector_Check(value)) {
 		PyErr_SetString(PyExc_TypeError,
 			"Assigning native selectors is not supported");
@@ -699,8 +728,19 @@ class_setattro(PyObject* self, PyObject* name, PyObject* value)
 		methodsToAdd->method_count = 1;
 		objcMethod = methodsToAdd->method_list;
 		objcMethod->method_name = PyObjCSelector_GetSelector(newVal);
-		objcMethod->method_types = strdup(
-				PyObjCSelector_Signature(newVal));
+		if (objcMethod->method_name == NULL) {
+			free(methodsToAdd);
+			Py_DECREF(newVal);
+			return -1;
+		}
+
+		signature = PyObjCSelector_Signature(newVal);
+		if (signature == NULL) {
+			free(methodsToAdd);
+			Py_DECREF(newVal);
+			return -1;
+		}
+		objcMethod->method_types = strdup(signature);
 
 		if (objcMethod->method_types == NULL) {
 			free(methodsToAdd);
@@ -737,6 +777,34 @@ class_setattro(PyObject* self, PyObject* name, PyObject* value)
 					methodsToAdd);
 		}
 		return 0;
+	}
+
+	/* 
+	 * it should not be possible to replace a selector by some other
+	 * object because we cannot remove selectors from the objc class.
+	 */
+	old_value = class_getattro(self, name);
+	if (old_value == NULL) {
+		PyErr_Clear();
+		return PyType_Type.tp_setattro(self, name, value);
+
+	} else if (PyObjCSelector_Check(old_value)) {
+		Py_DECREF(old_value);
+		if (!PyString_Check(name)) {
+			PyErr_Format(PyExc_AttributeError, 
+					"cannot replace a selector by "
+					"a value of type %s", 
+					value->ob_type->tp_name);
+		} else {
+			PyErr_Format(PyExc_AttributeError,
+				"Cannot replace selector '%s' in '%s' by "
+				"a value of type %s",
+				PyString_AS_STRING(name),
+				self->ob_type->tp_name,
+				value->ob_type->tp_name
+			);
+		}
+		return -1;
 	}
 
 	res = PyType_Type.tp_setattro(self, name, value);
@@ -945,7 +1013,7 @@ PyObjC_SELToPythonName(SEL sel, char* buf, size_t buflen)
 static int
 add_class_fields(Class objc_class, PyObject* dict)
 {
-	Class     cls;
+	//Class     cls; 
 	struct objc_method_list* mlist;
 	void*     iterator;
 	PyObject* descr;
@@ -1001,7 +1069,7 @@ add_class_fields(Class objc_class, PyObject* dict)
 	}
 
 
-
+#if 0 /* don't add class methods, those are in our meta class */
 	/* 
 	 * Then add class methods
 	 */
@@ -1047,6 +1115,7 @@ add_class_fields(Class objc_class, PyObject* dict)
 		}
 		mlist = PyObjCRT_NextMethodList(cls, &iterator);
 	}
+#endif
 
 #if PyOBJC_ACCESS_INSTANCE_VARIABLES
 	/*
@@ -1100,10 +1169,30 @@ PyObjCClass_New(Class objc_class)
 	PyObject* bases;
 	PyObjCClassObject* info;
 	PyObjCRT_Ivar_t var;
+	PyObject* metaClass;
+	PyObject* baseClass;
+
+
 
 	result = objc_class_locate(objc_class);
 	if (result != NULL) {
 		return result;
+	}
+
+	if (GETISA(objc_class) == objc_class) {
+		/* avoid infinite recursion, NSObject->isa is one of these */
+		metaClass = (PyObject*)&PyObjCClass_Type;
+		Py_INCREF(metaClass);
+		baseClass = (PyObject*)&PyObjCClass_Type;
+		Py_INCREF(baseClass);
+	} else {
+		metaClass = PyObjCClass_New(GETISA(objc_class));
+		if (objc_class->super_class == NULL) {
+			baseClass = (PyObject*)&PyObjCObject_Type;
+			Py_INCREF(baseClass);
+		} else {
+			baseClass = PyObjCClass_New(objc_class->super_class);
+		}
 	}
 
 #ifdef GNU_RUNTIME
@@ -1123,8 +1212,11 @@ PyObjCClass_New(Class objc_class)
 	dict = PyDict_New();
 	PyDict_SetItemString(dict, "__slots__", PyTuple_New(0));
 
+	PyDict_SetItemString(dict, "__metaclass__", metaClass);
+
 	bases = PyTuple_New(1);
 
+#if 0
 	if (objc_class->super_class == NULL) {
 		PyTuple_SET_ITEM(bases, 0, (PyObject*)&PyObjCObject_Type);
 		Py_INCREF(((PyObject*)&PyObjCObject_Type));
@@ -1132,14 +1224,19 @@ PyObjCClass_New(Class objc_class)
 		PyTuple_SET_ITEM(bases, 0, 
 			PyObjCClass_New(objc_class->super_class));
 	} 
+#else
+	PyTuple_SET_ITEM(bases, 0, baseClass);
+	Py_INCREF(baseClass);
+#endif
 	args = PyTuple_New(3);
 	PyTuple_SetItem(args, 0, PyString_FromString(objc_class->name));
 	PyTuple_SetItem(args, 1, bases);
 	PyTuple_SetItem(args, 2, dict);
 
-	result = PyType_Type.tp_new(&PyObjCClass_Type, args, NULL);
+	result = PyType_Type.tp_new((PyTypeObject*)metaClass, args, NULL);
 	Py_DECREF(args);
 	if (result == NULL) return NULL;
+
 
 	info = (PyObjCClassObject*)result;
 	info->class = objc_class;
