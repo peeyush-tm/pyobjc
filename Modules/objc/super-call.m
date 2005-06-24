@@ -212,6 +212,16 @@ search_special(Class class, SEL sel)
 				special_class = pyclass;
 				Py_INCREF(special_class);
 				result = PyTuple_GET_ITEM(entry, 2);
+			} else if (PyType_IsSubtype(
+					(PyTypeObject*)special_class,
+					pyclass->ob_type)) {
+				/* FIXME: should register the right class
+				 * instead of this hack.
+				 */
+				Py_DECREF(special_class);
+				special_class = pyclass;
+				Py_INCREF(special_class);
+				result = PyTuple_GET_ITEM(entry, 2);
 			}
 		}
 	}

@@ -172,6 +172,44 @@ objc_class_locate(Class objc_class)
  * Note: This function creates new _classes_
  */
 
+static PyTypeObject*
+_make_meta(Class class, PyObject* dict)
+{
+	PyTypeObject* type = (PyTypeObject*)PyObjCClass_New(GETISA(class));
+	PyObject *k, *v, *keys;
+	int sz, i, r;
+
+	if (type == NULL) return NULL;
+
+	/* Now move all class methods from the dict to the tp_dict of the
+	 * metaclass.
+	 *
+	 * XXX: We should restructure the code to do away with the need for
+	 * this shuffling.
+	 */
+
+	keys = PyDict_Keys(dict);
+	if (keys == NULL) return NULL;
+	
+	sz = PyList_GET_SIZE(keys);
+	for (i = 0; i < sz; i++) {
+		k = PyList_GET_ITEM(keys, i);
+		v = PyDict_GetItem(dict, k);
+
+		if (PyObjCSelector_Check(v) && PyObjCSelector_IsClassMethod(v)){
+			r = PyDict_SetItem(type->tp_dict, k, v);
+			if (r == -1) return NULL;
+
+			r = PyDict_DelItem(dict, k);
+			if (r == -1) return NULL;
+
+			/* A class method is a plain method of the meta class */
+			((PyObjCSelector*)v)->sel_flags &= ~PyObjCSelector_kCLASS_METHOD;
+		}
+	}	
+
+	return type;
+}
 
 static PyObject*
 class_new(PyTypeObject* type, PyObject* args, PyObject* kwds)
@@ -418,7 +456,16 @@ static	char* keywords[] = { "name", "bases", "dict", NULL };
 		return NULL;
 	}
 
-
+	/* Get the real meta-class */
+	type = _make_meta(objc_class, dict);
+	if (type == NULL) {
+		Py_DECREF(args);
+		Py_DECREF(real_bases);
+		Py_DECREF(protocols);
+		Py_DECREF(old_dict);
+		(void)PyObjCClass_UnbuildClass(objc_class);
+		return NULL;
+	}
 
 	/* call super-class implementation */
 	args = Py_BuildValue("(sOO)", name, real_bases, dict);
@@ -500,9 +547,14 @@ class_repr(PyObject* obj)
 	Class cls = PyObjCClass_GetClass(obj);
 
 	if (cls) {
+		const char* prefix = "";
+		if (CLS_GETINFO(cls, CLS_META)) {
+			prefix="meta ";
+		}
+
 		return PyString_FromFormat(
-			"<objective-c class %s at %p>", 
-			cls->name, (void*)cls);
+			"<objective-c %sclass %s at %p>", 
+			prefix, cls->name, (void*)cls);
 	} else {
 		return PyString_FromFormat(
 			"%s", "<objective-c class NIL>");
@@ -526,6 +578,10 @@ PyObjCClass_CheckMethodList(PyObject* cls, int recursive)
 {
 	PyObjCClassObject* info;
 	int		   magic;
+
+	if (!PyObjCClass_Check(cls)) {
+		return; /* FIXME */
+	}
 
 	info = (PyObjCClassObject*)cls;
 
@@ -602,7 +658,9 @@ class_getattro(PyObject* self, PyObject* name)
 		PyErr_Clear();
 	}
 
-	PyObjCClass_CheckMethodList(self, 1);
+	if (self != (PyObject*)&PyObjCClass_Type) {
+		PyObjCClass_CheckMethodList(self, 1);
+	}
 
 	descr = PyObjC_TypeLookup(self->ob_type, name);
 	if (descr != NULL && 
@@ -878,6 +936,11 @@ cls_get__name__(PyObject* self, void* closure __attribute__((__unused__)))
 	if (cls == NULL) {
 		return PyString_FromString("objc.objc_class");
 	} else {
+		if (CLS_GETINFO(cls, CLS_META)) {
+			char buf[256];
+			snprintf(buf, 256, "%s", cls->name);
+			return PyString_FromString(buf);
+		}
 		return PyString_FromString(cls->name);
 	}
 }
@@ -1013,7 +1076,6 @@ PyObjC_SELToPythonName(SEL sel, char* buf, size_t buflen)
 static int
 add_class_fields(Class objc_class, PyObject* dict)
 {
-	//Class     cls; 
 	struct objc_method_list* mlist;
 	void*     iterator;
 	PyObject* descr;
@@ -1067,55 +1129,6 @@ add_class_fields(Class objc_class, PyObject* dict)
 		}
 		mlist = PyObjCRT_NextMethodList(objc_class, &iterator);
 	}
-
-
-#if 0 /* don't add class methods, those are in our meta class */
-	/* 
-	 * Then add class methods
-	 */
-
-	cls = GETISA(objc_class);
-	iterator = 0;
-	mlist = PyObjCRT_NextMethodList(cls, &iterator);
-	while (mlist != NULL) {
-		int i;
-		PyObjCRT_Method_t meth;
-
-		for (i = 0; i < mlist->method_count; i++) {
-			meth = mlist->method_list + i;
-
-			PyObjC_SELToPythonName(
-				meth->method_name, 
-				selbuf, 
-				sizeof(selbuf));
-
-			if ((descr = PyDict_GetItemString(dict, selbuf))) {
-				if (!PyObjCSelector_Check(descr)) {
-					continue;
-				} else if (!(((PyObjCSelector*)descr)->sel_flags & PyObjCSelector_kCLASS_METHOD)) {
-					continue;
-				} else if (PyObjCPythonSelector_Check(descr)) {
-					continue;
-				}
-			}
-
-			descr = PyObjCSelector_NewNative(
-				objc_class,
-				meth->method_name,
-				meth->method_types,
-				1);
-
-			if (PyDict_SetItemString(dict, 
-					selbuf,
-					descr) != 0) {
-				Py_DECREF(descr);
-				return -1;
-			}
-			Py_DECREF(descr);
-		}
-		mlist = PyObjCRT_NextMethodList(cls, &iterator);
-	}
-#endif
 
 #if PyOBJC_ACCESS_INSTANCE_VARIABLES
 	/*

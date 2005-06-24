@@ -50,9 +50,11 @@ Selector-cleanup branch
 
   * Need unittests that test the modified behaviour
 
-  * Fix the implementation for pure Objective-Class
+  * Cleanup
 
-  * Add an implementation for Python subclasses
+  * Update all class method replacement methods and their registration
+
+
 
 Version 1.3.7 (????-??-??)
 --------------------------

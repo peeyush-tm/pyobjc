@@ -103,6 +103,7 @@ PyObjC_FindReplacementSignature(Class cls, SEL selector)
 	len = PyList_Size(sublist);
 	for (i = 0; i < len; i++) {
 		Class cur_class;
+		Class cur_meta_class;
 
 		cur = PyCObject_AsVoidPtr(
 			PyList_GetItem(sublist, i));
@@ -116,12 +117,14 @@ PyObjC_FindReplacementSignature(Class cls, SEL selector)
 			continue;
 		}
 
-		if (!PyObjCClass_IsSubClass(cls, cur_class)) {
+		cur_meta_class = GETISA(cur_class);
+
+		if (!PyObjCClass_IsSubClass(cls, cur_class) && !PyObjCClass_IsSubClass(cls, cur_meta_class)) {
 			continue;
 		}
 
 		if (found_class != NULL) {
-			if (PyObjCClass_IsSubClass(found_class, cur_class)) {
+			if (PyObjCClass_IsSubClass(found_class, cur_class) || PyObjCClass_IsSubClass(found_class, cur_meta_class)) {
 				continue;
 			}
 		}
