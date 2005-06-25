@@ -172,14 +172,14 @@ objc_class_locate(Class objc_class)
  * Note: This function creates new _classes_
  */
 
-static PyTypeObject*
-_make_meta(Class class, PyObject* dict)
+static int
+_update_meta(Class class, PyObject* dict)
 {
 	PyTypeObject* type = (PyTypeObject*)PyObjCClass_New(GETISA(class));
 	PyObject *k, *v, *keys;
 	int sz, i, r;
 
-	if (type == NULL) return NULL;
+	if (type == NULL) return -1;
 
 	/* Now move all class methods from the dict to the tp_dict of the
 	 * metaclass.
@@ -189,26 +189,44 @@ _make_meta(Class class, PyObject* dict)
 	 */
 
 	keys = PyDict_Keys(dict);
-	if (keys == NULL) return NULL;
+	if (keys == NULL) return -1;
 	
 	sz = PyList_GET_SIZE(keys);
 	for (i = 0; i < sz; i++) {
 		k = PyList_GET_ITEM(keys, i);
 		v = PyDict_GetItem(dict, k);
 
-		if (PyObjCSelector_Check(v) && PyObjCSelector_IsClassMethod(v)){
+		if (PyObjCSelector_Check(v)) {
+			PyObjCSelector* s = (PyObjCSelector*)v;
+
+			if (s->sel_class == NULL) {
+				s->sel_class = class;
+			}
+
+			if (PyObjCSelector_IsClassMethod(v)){
+				r = PyDict_SetItem(type->tp_dict, k, v);
+				if (r == -1) return -1;
+
+				r = PyDict_DelItem(dict, k);
+				if (r == -1) return -1;
+
+				/* A class method is a plain method of the 
+				 * meta class 
+				 * */
+				s->sel_flags &= ~PyObjCSelector_kCLASS_METHOD;
+				s->sel_class = GETISA(s->sel_class);
+			}
+		} else if (PyObject_TypeCheck(v, &PyStaticMethod_Type)) {
+			/* copy staticmethod instances */
 			r = PyDict_SetItem(type->tp_dict, k, v);
-			if (r == -1) return NULL;
+			if (r == -1) return -1;
 
 			r = PyDict_DelItem(dict, k);
-			if (r == -1) return NULL;
-
-			/* A class method is a plain method of the meta class */
-			((PyObjCSelector*)v)->sel_flags &= ~PyObjCSelector_kCLASS_METHOD;
+			if (r == -1) return -1;
 		}
 	}	
 
-	return type;
+	return 0;
 }
 
 static PyObject*
@@ -457,7 +475,7 @@ static	char* keywords[] = { "name", "bases", "dict", NULL };
 	}
 
 	/* Get the real meta-class */
-	type = _make_meta(objc_class, dict);
+	type = (PyTypeObject*)PyObjCClass_New(GETISA(objc_class));
 	if (type == NULL) {
 		Py_DECREF(args);
 		Py_DECREF(real_bases);
@@ -485,6 +503,13 @@ static	char* keywords[] = { "name", "bases", "dict", NULL };
 	
 	Py_DECREF(protocols);
 	protocols = NULL;
+
+	if (_update_meta(objc_class, ((PyTypeObject*)res)->tp_dict) == -1) {
+		Py_DECREF(res);
+		Py_DECREF(old_dict);
+		(void)PyObjCClass_UnbuildClass(objc_class);
+		return NULL;
+	}
 
 	if (objc_class_register(objc_class, res) < 0) {
 		Py_DECREF(res);

@@ -42,9 +42,28 @@ Selector-cleanup branch
   This change is not backward compatible, but this should only affect code
   that performs introspection. 
 
-  The current implementation of this is very rough and doesn't pass the 
-  unittests (they hang somewhere). Furthermore the new metaclasses are only
-  created for pure Objective-C classes, not for Python subclasses.
+  There is one incompatibility that could affect normal code: if you implement
+  a class method and use ``super`` to call a method in a superclass you should
+  update your code. The first argument of a call to super in a class method
+  should be the type of the current class, instead of the current class itself.
+  
+  The current pattern::
+
+  	class MyClass (NSObject):
+		def myFoo(cls):
+			return super(MyClass, cls).myFoo()
+		myFoo = classmethod(myFoo) # if needed at all!
+
+  The new pattern is::
+
+  	class MyClass (NSObject):
+		def myFoo(cls):
+			return super(type(MyClass), cls).myFoo()
+		myFoo = classmethod(myFoo) # if needed at all!
+
+
+  XXX: The current implementation of this is very rough and doesn't pass the 
+  unittests.
 
   TODO:
 

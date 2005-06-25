@@ -128,11 +128,17 @@ class TestCopying (unittest.TestCase):
 
         # Make sure the runtime correctly marked our copyWithZone_
         # implementation.
-        self.assert_ (not (MyCopyClass.copyWithZone_.isClassMethod))
-        self.assert_(MyCopyClass.copyWithZone_.doesDonateReference)
+
+        # XXX: Cannot look at the class definition, must access through an
+        # instance
+        #self.assert_ (not (MyCopyClass.copyWithZone_.isClassMethod))
+        #self.assert_(MyCopyClass.copyWithZone_.doesDonateReference)
 
         o = MyCopyClass.alloc().init()
         o.foobar = 1
+
+        self.assert_(not o.copyWithZone_.isClassMethod)
+        self.assert_(o.copyWithZone_.doesDonateReference)
 
         self.assertEquals(o.foobar, 1)
 
@@ -153,7 +159,7 @@ class TestCopying (unittest.TestCase):
             def init(self):
                 return NSObject.init(self)
 
-        self.assert_(hasattr(MITestClass1, 'mixinMethod'))
+        #self.assert_(hasattr(MITestClass1, 'mixinMethod'))
 
         o = MITestClass1.alloc().init()
         self.assertEquals(o.mixinMethod(), "foo")
@@ -168,7 +174,7 @@ class TestCopying (unittest.TestCase):
             def init(self):
                 return NSObject.init(self)
 
-        self.assert_(hasattr(MITestClass2, 'mixinMethod'))
+        #self.assert_(hasattr(MITestClass2, 'mixinMethod'))
 
         o = MITestClass2.alloc().init()
         self.assertEquals(o.mixinMethod(), "foo")
@@ -187,14 +193,15 @@ class TestClassMethods (unittest.TestCase):
         self.assert_(ClassMethodTest.clsMeth.isClassMethod)
 
     def testStaticMethod(self):
-        """ check that staticmethod()-s are not converted to selectors """
+        # check that staticmethod()-s are not converted to selectors
 
         class StaticMethodTest (NSObject):
             def stMeth(self):
                 return "hello"
             stMeth = staticmethod(stMeth)
 
-        self.assert_(isinstance(StaticMethodTest.stMeth, types.FunctionType))
+        self.assert_(isinstance(StaticMethodTest.stMeth, types.FunctionType),
+                'stMeth not a function but %r'%(type(StaticMethodTest.stMeth),))
 
 
 class TestOverridingSpecials(unittest.TestCase):
@@ -204,7 +211,7 @@ class TestOverridingSpecials(unittest.TestCase):
         class ClassWithAlloc(NSObject):
             def alloc(cls):
                 aList[0] += 1
-                return super(ClassWithAlloc, cls).alloc()
+                return super(type(ClassWithAlloc), cls).alloc()
 
             
         self.assertEquals(aList[0], 0)
