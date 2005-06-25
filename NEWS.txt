@@ -52,8 +52,7 @@ Selector-cleanup branch
 
   * Cleanup
 
-  * Update all class method replacement methods and their registration
-
+  * Modifying classes (addMethods and friends)
 
 
 Version 1.3.7 (????-??-??)

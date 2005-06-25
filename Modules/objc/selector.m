@@ -147,7 +147,7 @@ static char* pysel_default_signature(PyObject* callable);
  * Base type for objective-C selectors
  */
 
-static PyObject*
+static int
 generic_descr_set(PyObjCSelector* meth, PyObject* obj __attribute__((__unused__)), PyObject* value)
 {
 	if (value == NULL) {
@@ -246,7 +246,9 @@ PyDoc_STRVAR(base_class_method_doc,
 static PyObject*
 base_class_method(PyObjCNativeSelector* self, void* closure __attribute__((__unused__)))
 {
-	return PyBool_FromLong(0 != (self->sel_flags & PyObjCSelector_kCLASS_METHOD));
+	return PyBool_FromLong(
+			(0 != (self->sel_flags & PyObjCSelector_kCLASS_METHOD))
+		||	(self->sel_class != nil && CLS_GETINFO(self->sel_class, CLS_META)));
 }
 
 PyDoc_STRVAR(base_required_doc, 

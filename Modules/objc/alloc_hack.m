@@ -39,7 +39,7 @@ call_NSObject_alloc(PyObject* method,
 	} else {
 		RECEIVER(super) = (id)PyObjCClass_GetClass(self);
 		super.class = PyObjCSelector_GetClass(method); 
-		super.class = GETISA(super.class);
+		//super.class = GETISA(super.class);
 		aSel = PyObjCSelector_GetSelector(method);
 		if (aSel == nil) {
 			return NULL;

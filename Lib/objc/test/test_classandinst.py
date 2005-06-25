@@ -35,7 +35,7 @@ class TestClassAndInstance(unittest.TestCase):
         self.assertEquals(PyObjC_TestClassAndInstanceClassOverride.pyobjc_classMethods.isInstance(), objc.YES)
 
         # We'd like to see this:
-        self.assertEquals(PyObjC_TestClassAndInstanceOverride.isInstance(), objc.YES)
+        self.assertEquals(PyObjC_TestClassAndInstanceClassOverride.isInstance(), objc.YES)
 
     def testClassAndInstanceSubclassWorkaround(self):
         self.assertEquals(PyObjC_TestClassAndInstanceSubclass.alloc().init().pyobjc_instanceMethods.isInstance(), objc.YES)

@@ -70,7 +70,8 @@ static void 	fill_super(struct objc_super* super, Class cls, id receiver)
 static void 	fill_super_cls(struct objc_super* super, Class cls, Class self)
 {
 	RECEIVER(*super) = self;
-	super->class = GETISA(cls);
+//super->class = GETISA(cls);
+	super->class = cls;
 }
 
 

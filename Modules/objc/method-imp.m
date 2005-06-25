@@ -173,7 +173,9 @@ imp_repr(PyObjCIMPObject* self)
 static void
 imp_dealloc(PyObjCIMPObject* self)
 {
-	PyObjCMethodSignature_Free(self->signature);
+	if (self->signature) {
+		PyObjCMethodSignature_Free(self->signature);
+	}
 	PyObject_Free(self);
 }
 
