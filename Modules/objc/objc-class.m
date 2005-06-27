@@ -281,9 +281,11 @@ static	char* keywords[] = { "name", "bases", "dict", NULL };
 		return NULL;
 	}
 	super_class = PyObjCClass_GetClass(py_super_class);
+#if 0
 	if (super_class) {
 		PyObjCClass_CheckMethodList(py_super_class, 1);
 	}
+#endif
 
 	/*
 	 * __pyobjc_protocols__ contains the list of protocols supported
@@ -372,7 +374,9 @@ static	char* keywords[] = { "name", "bases", "dict", NULL };
 		Py_DECREF(real_bases);
 		return NULL;
 	} else {
+#if 0
 		PyObjCClass_CheckMethodList(py_super_class, 1);
+#endif
 	}
 
 	Py_INCREF(py_super_class);
@@ -656,9 +660,18 @@ class_getattro(PyObject* self, PyObject* name)
 {
 	PyObject* result = NULL;
 	PyObject* descr;
-	descrgetfunc f = NULL;
+	PyObject* meta_descr;
+	descrgetfunc meta_get = NULL;
+	PyTypeObject* type = (PyTypeObject*)self;
+	PyTypeObject* metatype = type->ob_type;
 
+	if (type->tp_dict == NULL) {
+		if (PyType_Ready(type) < 0) {
+			return NULL;
+		}
+	}
 
+#if 0
 	/* Python will look for a number of "private" attributes during 
 	 * normal operations, such as when building subclasses. Avoid a
 	 * method rescan when that happens.
@@ -666,11 +679,6 @@ class_getattro(PyObject* self, PyObject* name)
 	 * NOTE: This method should be rewritten, copy the version of type()
 	 *       and modify as needed, that would avoid unnecessary rescans
 	 * 	 of superclasses. The same strategy is used in object_getattro.
-	 *
-	 * NOTE2: That rewrite should also cause this method to prefer class
-	 *       methods over instance methods (and documentation should be 
-	 *       added that you shouldn't look up instance methods through the
-	 *       class).
 	 *       
 	 */
 	if (PyString_Check(name) 
@@ -682,36 +690,51 @@ class_getattro(PyObject* self, PyObject* name)
 		}
 		PyErr_Clear();
 	}
+#endif
 
-	if (self != (PyObject*)&PyObjCClass_Type) {
-		PyObjCClass_CheckMethodList(self, 1);
-	}
+	/* Look for the attribute in the meta type */
+	meta_descr = PyObjC_TypeLookup(metatype, name);
 
-	descr = PyObjC_TypeLookup(self->ob_type, name);
-	if (descr != NULL && 
-		PyType_HasFeature(descr->ob_type, Py_TPFLAGS_HAVE_CLASS)) {
+	if (meta_descr != NULL) {
+		  meta_get = meta_descr->ob_type->tp_descr_get;
 
-		  f = descr->ob_type->tp_descr_get;
-		  if (f != NULL && PyDescr_IsData(descr)) {
-			  result = f(descr, self, (PyObject*)self->ob_type);
-			  return result;
+		  if (meta_get != NULL && PyDescr_IsData(meta_descr)) {
+			  return meta_get(meta_descr, 
+					  self, (PyObject*)metatype);
 		  }
+		  Py_INCREF(meta_descr);
 	}
 
-	result = PyDict_GetItem(((PyTypeObject*)self)->tp_dict, name);
-	if (result != NULL) {
-		Py_INCREF(result); /* huh? */
-		return result;
-	}
-
-	if (f != NULL) {
-		result = f(descr, self, (PyObject*)self->ob_type);
-		return result;
-	}
-
+	/* No data descriptor found on the meta type. Look in tp_dict of this
+	 * type and its bases.
+	 */
+	descr = PyObjC_TypeLookup(type, name);
 	if (descr != NULL) {
+		descrgetfunc local_get = descr->ob_type->tp_descr_get;
+
+		Py_XDECREF(meta_descr);
+
+		if (local_get != NULL) {
+			/* NULL 2nd argument -> descriptor found on the
+			 * target object (or a base).
+			 */
+			return local_get(descr, NULL, (PyObject*)type);
+		}
 		Py_INCREF(descr);
 		return descr;
+	}
+
+	/* Not in our __dict__ as well, use the descriptor from the metatype
+	 * (if any).
+	 */
+	if (meta_get != NULL) {
+		result = meta_get(meta_descr, self, (PyObject*)metatype);
+		Py_DECREF(meta_descr);
+		return result;
+	}
+
+	if (meta_descr != NULL) {
+		return meta_descr;
 	}
 
 	/* Try to find the method anyway */
@@ -719,12 +742,17 @@ class_getattro(PyObject* self, PyObject* name)
 	result = PyObjCSelector_FindNative(self, PyString_AsString(name));
 
 	if (result != NULL) {
-		int res = PyDict_SetItem(((PyTypeObject*)self)->tp_dict, name, result);
+		int res;
 		PyObjCNativeSelector* x = (PyObjCNativeSelector*)result;
 
 		if (x->sel_flags & PyObjCSelector_kCLASS_METHOD) {
 			x->sel_self = self;
 			Py_INCREF(x->sel_self);
+			res = PyDict_SetItem(metatype->tp_dict, name, result);
+			x->sel_flags &= ~PyObjCSelector_kCLASS_METHOD;
+			x->sel_class = GETISA(x->sel_class);
+		} else {
+			res = PyDict_SetItem(type->tp_dict, name, result);
 		}
 		if (res < 0) {
 			if (PyObjC_VerboseLevel) {
@@ -742,6 +770,7 @@ class_getattro(PyObject* self, PyObject* name)
 static int
 class_setattro(PyObject* self, PyObject* name, PyObject* value)
 {
+	/* XXX: rewrite to be simular to class_getattro */
 	char* signature;
 	int res;
 	PyObject* old_value;
@@ -1210,8 +1239,6 @@ PyObjCClass_New(Class objc_class)
 	PyObject* metaClass;
 	PyObject* baseClass;
 
-
-
 	result = objc_class_locate(objc_class);
 	if (result != NULL) {
 		return result;
@@ -1297,11 +1324,16 @@ PyObjCClass_New(Class objc_class)
 		info->dictoffset = var->ivar_offset;
 	}
 
-	if (PyObject_SetAttrString(result, 
+	/*
+	 * XXX: This used to be PyObject_SetAttrString but that causes 
+	 * infinite recursion with the new tp_setattro of class objects.
+	 * This needs further investigation, my gut feeling is that this
+	 * should not cause infinite recursion.
+	 */
+	if (PyDict_SetItemString(((PyTypeObject*)result)->tp_dict, 
 			"__module__", PyObjCClass_DefaultModule) < 0) {
 		PyErr_Clear();
 	}
-
 
 	objc_class_register(objc_class, result);
 
