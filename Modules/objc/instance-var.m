@@ -39,9 +39,10 @@ ivar_descr_get(PyObjCInstanceVariable* self, PyObject* obj, PyObject* type __att
 	PyObject* res;
 
 	if (!obj || PyObjCClass_Check(obj)) {
-		PyErr_SetString(PyExc_TypeError,
-			"Cannot access Objective-C instance-variables "
-			"through class");
+		PyErr_Format(PyExc_TypeError,
+			"Cannot access Objective-C instance-variable '%s' "
+			"through class %s", self->name, 
+			PyObjCClass_GetClass(type)->name);
 		return NULL;
 	}
 

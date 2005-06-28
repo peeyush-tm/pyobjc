@@ -196,6 +196,13 @@ _update_meta(Class class, PyObject* dict)
 		k = PyList_GET_ITEM(keys, i);
 		v = PyDict_GetItem(dict, k);
 
+		if (PyString_Check(k) 
+			&& strcmp(PyString_AS_STRING(k), "__new__") == 0) {
+			/* FIXME: see also class_getattro */
+			
+			continue;
+		}
+
 		if (PyObjCSelector_Check(v)) {
 			PyObjCSelector* s = (PyObjCSelector*)v;
 
@@ -224,7 +231,7 @@ _update_meta(Class class, PyObject* dict)
 			r = PyDict_DelItem(dict, k);
 			if (r == -1) return -1;
 		}
-	}	
+	}
 
 	return 0;
 }
@@ -671,29 +678,19 @@ class_getattro(PyObject* self, PyObject* name)
 		}
 	}
 
-#if 0
-	/* Python will look for a number of "private" attributes during 
-	 * normal operations, such as when building subclasses. Avoid a
-	 * method rescan when that happens.
-	 *
-	 * NOTE: This method should be rewritten, copy the version of type()
-	 *       and modify as needed, that would avoid unnecessary rescans
-	 * 	 of superclasses. The same strategy is used in object_getattro.
-	 *       
-	 */
-	if (PyString_Check(name) 
-			&& strncmp(PyString_AS_STRING(name), "__", 2) == 0 
-			&& strcmp(PyString_AS_STRING(name), "__dict__") != 0) {
-		result = PyType_Type.tp_getattro(self, name);
-		if (result != NULL) {
-			return result;
-		}
-		PyErr_Clear();
-	}
-#endif
-
 	/* Look for the attribute in the meta type */
-	meta_descr = PyObjC_TypeLookup(metatype, name);
+	if (PyString_Check(name) 
+			&& 0 == strcmp(PyString_AS_STRING(name), "__new__")) {
+		/* Don't look for __new__ in the meta class
+		 *
+		 * XXX: this is needed to avoid picking up the __new__ in 
+		 * our meta class. This is however the wrong solution that
+		 * needs to be fixed!
+		 */
+		meta_descr = NULL;
+	} else {
+		meta_descr = PyObjC_TypeLookup(metatype, name);
+	}
 
 	if (meta_descr != NULL) {
 		  meta_get = meta_descr->ob_type->tp_descr_get;

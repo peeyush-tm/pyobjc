@@ -44,7 +44,7 @@ class SplitSignatureTest (unittest.TestCase):
             for selName in cls.__dict__.keys():
                 try:
                     sel = getattr(cls, selName)
-                except AttributeError:
+                except (AttributeError, TypeError):
                     continue
 
                 if not isinstance(sel, objc.selector): continue
@@ -82,7 +82,7 @@ class SplitSignatureTest (unittest.TestCase):
 
                 try:
                     sel = getattr(cls, selName)
-                except AttributeError:
+                except (AttributeError, TypeError):
                     continue
 
                 if not isinstance(sel, objc.selector): continue

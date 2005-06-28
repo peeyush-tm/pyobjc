@@ -15,7 +15,7 @@ class TestBasicIMP (unittest.TestCase):
 
     def testAlloc(self):
         cls = NSObject
-        m = cls.pyobjc_classMethods.methodForSelector_("alloc")
+        m = cls.methodForSelector_("alloc")
         self.assert_(isinstance(m, objc.IMP))
         self.assert_(m.isClassMethod)
         self.assertEquals(m.isAlloc, cls.alloc.isAlloc)

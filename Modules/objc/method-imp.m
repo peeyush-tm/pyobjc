@@ -402,6 +402,8 @@ call_methodForSelector_(PyObject* method, PyObject* self, PyObject* args)
 	IMP retval;
 	PyObject* attr;
 	PyObject* res;
+	char buf[256];
+	int flags;
 
 	if (!PyArg_ParseTuple(args, "O", &sel)) {
 		return NULL;
@@ -416,7 +418,7 @@ call_methodForSelector_(PyObject* method, PyObject* self, PyObject* args)
 	} else {
 		RECEIVER(super) = PyObjCObject_GetObject(self);
 	}
-	super.class = GETISA(RECEIVER(super));
+	super.class = PyObjCSelector_GetClass(method);
 
 	PyObjC_DURING
 		retval = (IMP)objc_msgSendSuper(&super,
@@ -440,11 +442,8 @@ call_methodForSelector_(PyObject* method, PyObject* self, PyObject* args)
 	 * same interface. I guess that will be true most of the time because
 	 * the meta class is a subclass of NSObject.
 	 */
-	if (PyObjCClass_Check(self)) {
-		attr = PyObjCClass_FindSelector(self, selector);
-	} else {
-		attr = PyObjCObject_FindSelector(self, selector);
-	}
+	attr = PyObject_GetAttrString(self, PyObjC_SELToPythonName(selector,
+				buf, sizeof(buf)));
 	if (attr == NULL) {
 		return NULL;
 	}
@@ -454,12 +453,16 @@ call_methodForSelector_(PyObject* method, PyObject* self, PyObject* args)
 		return NULL;
 	}
 
+	flags = PyObjCSelector_GetFlags(attr);
+	if (CLS_GETINFO(PyObjCSelector_GetClass(attr), CLS_META)) {
+		flags |= PyObjCSelector_kCLASS_METHOD;
+	}
 	res = PyObjCIMP_New(
 			retval,
 			selector,
 			((PyObjCNativeSelector*)attr)->sel_call_func,
 			((PyObjCNativeSelector*)attr)->sel_oc_signature,
-			PyObjCSelector_GetFlags(attr)
+			flags
 		);
 	Py_DECREF(attr);
 	return res;

@@ -478,7 +478,7 @@ def arrayWithObjects_(self, *args):
     return self.arrayWithArray_(args[:-1])
 
 CONVENIENCE_METHODS['arrayWithObjects:'] = (
-    ('arrayWithObjects_', selector(arrayWithObjects_, signature='@@:@', isClassMethod=1)),
+    ('arrayWithObjects_', arrayWithObjects_),
 )
 
 
@@ -488,14 +488,14 @@ def setWithObjects_(self, *args):
     return self.setWithArray_(args[:-1])
 
 CONVENIENCE_METHODS['setWithObjects:'] = (
-    ('setWithObjects_', selector(setWithObjects_, signature='@@:@', isClassMethod=1)),
+    ('setWithObjects_', selector(setWithObjects_, signature='@@:@', isClassMethod=0)),
 )
 
 def setWithObjects_count_(self, args, count):
     return self.setWithArray_(args[:count])
 
 CONVENIENCE_METHODS['setWithObjects:count:'] = (
-    ('setWithObjects_count_', selector(setWithObjects_count_, signature='@@:^@i', isClassMethod=1)),
+    ('setWithObjects_count_', selector(setWithObjects_count_, signature='@@:^@i', isClassMethod=0)),
 )
 
 def splitObjectsAndKeys(values):
@@ -517,7 +517,7 @@ def dictionaryWithObjectsAndKeys_(self, *values):
 
 CONVENIENCE_METHODS['dictionaryWithObjectsAndKeys:'] = (
     ('dictionaryWithObjectsAndKeys_',
-      selector(dictionaryWithObjectsAndKeys_, signature='@@:@',isClassMethod=1)),
+      selector(dictionaryWithObjectsAndKeys_, signature='@@:@',isClassMethod=0)),
 )
 
 def fromkeys_dictionaryWithObjects_forKeys_(cls, keys, values=None):
