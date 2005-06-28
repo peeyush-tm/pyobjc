@@ -81,10 +81,15 @@ class OC_TestCopy4 (OC_CopyBase):
 
 class TestNSCopying (unittest.TestCase):
     def testCopyingWithoutSuperFromObjC(self):
-        self.assert_(not OC_TestCopy1.copyWithZone_.isClassMethod)
+
+        # Look directly in the right dict, getattr() will fetch a method from
+        # the meta class!
+        self.assert_(not OC_TestCopy1.__dict__["copyWithZone_"].isClassMethod)
 
         p = NSAutoreleasePool.alloc().init()
         o = OC_CopyHelper.doCopySetup_(OC_TestCopy1)
+
+        self.assert_(not o.copyWithZone_.isClassMethod)
         del p
 
         self.assertEquals(o.x, 42)
@@ -92,10 +97,10 @@ class TestNSCopying (unittest.TestCase):
         self.assertRaises(AttributeError, getattr, o, 'z')
 
     def testCopyingWithSuperFromObjC(self):
-        self.assert_(not OC_CopyBase.copyWithZone_.isClassMethod)
-        self.assert_(not OC_TestCopy2.copyWithZone_.isClassMethod)
-        self.assert_(not OC_TestCopy3.copyWithZone_.isClassMethod)
-        self.assert_(not OC_TestCopy4.copyWithZone_.isClassMethod)
+        self.assert_(not OC_CopyBase.__dict__["copyWithZone_"].isClassMethod)
+        self.assert_(not OC_TestCopy2.__dict__["copyWithZone_"].isClassMethod)
+        self.assert_(not OC_TestCopy3.__dict__["copyWithZone_"].isClassMethod)
+        self.assert_(not OC_TestCopy4.__dict__["copyWithZone_"].isClassMethod)
 
         p = NSAutoreleasePool.alloc().init()
         o = OC_CopyHelper.doCopySetup_(OC_TestCopy2)
@@ -123,7 +128,7 @@ class TestNSCopying (unittest.TestCase):
         self.assertEquals(o.intVal(), 40)
 
     def testCopyingWithoutSuper(self):
-        self.assert_(not OC_TestCopy1.copyWithZone_.isClassMethod)
+        self.assert_(not OC_TestCopy1.__dict__["copyWithZone_"].isClassMethod)
 
         v = OC_TestCopy1.alloc().init()
         v.modify()
@@ -140,10 +145,10 @@ class TestNSCopying (unittest.TestCase):
 
     def testCopyingWithSuper(self):
 
-        self.assert_(not OC_CopyBase.copyWithZone_.isClassMethod)
-        self.assert_(not OC_TestCopy2.copyWithZone_.isClassMethod)
-        self.assert_(not OC_TestCopy3.copyWithZone_.isClassMethod)
-        self.assert_(not OC_TestCopy4.copyWithZone_.isClassMethod)
+        self.assert_(not OC_CopyBase.__dict__["copyWithZone_"].isClassMethod)
+        self.assert_(not OC_TestCopy2.__dict__["copyWithZone_"].isClassMethod)
+        self.assert_(not OC_TestCopy3.__dict__["copyWithZone_"].isClassMethod)
+        self.assert_(not OC_TestCopy4.__dict__["copyWithZone_"].isClassMethod)
 
         p = NSAutoreleasePool.alloc().init()
         v = OC_TestCopy2.alloc().init()
