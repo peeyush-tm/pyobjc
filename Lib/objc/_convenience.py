@@ -60,7 +60,7 @@ def _add_convenience_methods(super_class, name, type_dict):
             cb = currentBundle()
             def bundleForClass(cls):
                 return cb
-            type_dict['bundleForClass'] = selector(bundleForClass, isClassMethod=True)
+            type_dict['bundleForClass'] = selector(bundleForClass)
             if (HAS_KVO and 
                     '__useKVO__' not in type_dict and
                     isNative(type_dict.get('willChangeValueForKey_')) and
@@ -103,14 +103,14 @@ def _add_convenience_methods(super_class, name, type_dict):
 
                     t = type_dict[nm]
                     v = selector(value, selector=t.selector,
-                        signature=t.signature, isClassMethod=t.isClassMethod)
+                        signature=t.signature)
                     v.isAlloc = t.isAlloc
 
                     type_dict[nm] = v
                 else:
                     type_dict[nm] = value
 
-    if name in CLASS_METHODS:
+    if name in CLASS_METHODS and not super_class.__isMetaClass__:
         for nm, value in CLASS_METHODS[name]:
             type_dict[nm] = value
 
@@ -477,6 +477,7 @@ def arrayWithObjects_(self, *args):
         raise ValueError, "Need None as the last argument"
     return self.arrayWithArray_(args[:-1])
 
+
 CONVENIENCE_METHODS['arrayWithObjects:'] = (
     ('arrayWithObjects_', arrayWithObjects_),
 )
@@ -488,14 +489,14 @@ def setWithObjects_(self, *args):
     return self.setWithArray_(args[:-1])
 
 CONVENIENCE_METHODS['setWithObjects:'] = (
-    ('setWithObjects_', selector(setWithObjects_, signature='@@:@', isClassMethod=0)),
+    ('setWithObjects_', selector(setWithObjects_, signature='@@:@')),
 )
 
 def setWithObjects_count_(self, args, count):
     return self.setWithArray_(args[:count])
 
 CONVENIENCE_METHODS['setWithObjects:count:'] = (
-    ('setWithObjects_count_', selector(setWithObjects_count_, signature='@@:^@i', isClassMethod=0)),
+    ('setWithObjects_count_', selector(setWithObjects_count_, signature='@@:^@i')),
 )
 
 def splitObjectsAndKeys(values):
@@ -517,7 +518,7 @@ def dictionaryWithObjectsAndKeys_(self, *values):
 
 CONVENIENCE_METHODS['dictionaryWithObjectsAndKeys:'] = (
     ('dictionaryWithObjectsAndKeys_',
-      selector(dictionaryWithObjectsAndKeys_, signature='@@:@',isClassMethod=0)),
+      selector(dictionaryWithObjectsAndKeys_, signature='@@:@')),
 )
 
 def fromkeys_dictionaryWithObjects_forKeys_(cls, keys, values=None):

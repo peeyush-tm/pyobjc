@@ -996,6 +996,21 @@ cls_get__name__(PyObject* self, void* closure __attribute__((__unused__)))
 	}
 }
 
+PyDoc_STRVAR(cls_get__isMetaClass__doc,
+	"True if the class is a meta class, False otherwise."
+);
+static PyObject*
+cls_get__isMetaClass__(PyObject* self, void* closure __attribute__((__unused__)))
+{
+	Class cls = PyObjCClass_GetClass(self);
+	if (cls && CLS_GETINFO(cls, CLS_META)) {
+		return PyBool_FromLong(1);
+	} else {
+		return PyBool_FromLong(0);
+	}
+}
+
+
 static PyGetSetDef class_getset[] = {
 		{
 				"pyobjc_classMethods",
@@ -1021,7 +1036,14 @@ static PyGetSetDef class_getset[] = {
 		NULL,
 		0
 	},
-		{ 0, 0, 0, 0, 0 }
+	{
+		"__isMetaClass__",
+		(getter)cls_get__isMetaClass__,
+		NULL,
+		cls_get__isMetaClass__doc,
+		0
+	},
+	{ 0, 0, 0, 0, 0 }
 };
 
 static PyMemberDef class_members[] = {
@@ -1278,18 +1300,9 @@ PyObjCClass_New(Class objc_class)
 
 	bases = PyTuple_New(1);
 
-#if 0
-	if (objc_class->super_class == NULL) {
-		PyTuple_SET_ITEM(bases, 0, (PyObject*)&PyObjCObject_Type);
-		Py_INCREF(((PyObject*)&PyObjCObject_Type));
-	} else {
-		PyTuple_SET_ITEM(bases, 0, 
-			PyObjCClass_New(objc_class->super_class));
-	} 
-#else
 	PyTuple_SET_ITEM(bases, 0, baseClass);
 	Py_INCREF(baseClass);
-#endif
+
 	args = PyTuple_New(3);
 	PyTuple_SetItem(args, 0, PyString_FromString(objc_class->name));
 	PyTuple_SetItem(args, 1, bases);
