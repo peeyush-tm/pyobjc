@@ -658,10 +658,14 @@ objcsel_descr_get(PyObjCNativeSelector* meth, PyObject* volatile obj, PyObject* 
 	}
 	result = PyObject_New(PyObjCNativeSelector, &PyObjCNativeSelector_Type);
 	result->sel_selector   = meth->sel_selector;
-	result->sel_signature  = PyObjCUtil_Strdup(meth->sel_signature);
-	if (result->sel_signature == NULL) {
-		Py_DECREF(result);
-		return NULL;
+	if (meth->sel_signature) {
+		result->sel_signature  = PyObjCUtil_Strdup(meth->sel_signature);
+		if (result->sel_signature == NULL) {
+			Py_DECREF(result);
+			return NULL;
+		}
+	} else {
+		result->sel_signature = NULL;
 	}
 	result->sel_flags = meth->sel_flags;
 	result->sel_class = meth->sel_class;
@@ -1364,6 +1368,7 @@ pysel_descr_get(PyObjCPythonSelector* meth, PyObject* obj, PyObject* class)
 		return NULL;
 	}
 	result->sel_self       = obj;
+	Py_XINCREF(obj);
 	result->sel_flags = meth->sel_flags;
 	result->callable = meth->callable;
 	if (result->sel_self) {

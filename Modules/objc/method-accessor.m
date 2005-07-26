@@ -60,7 +60,7 @@ find_selector(PyObject* self, char* name, int class_method)
 
 	if (strcmp(GETISA(objc_object)->name, "_NSZombie") == 0) {
 		PyErr_Format(PyExc_AttributeError,
-			"Cannot access NSProxy.%s", name);
+			"Cannot access _NSZombie.%s", name);
 		return NULL;
 	}
 
@@ -234,7 +234,7 @@ static PyObject*
 obj_getattro(ObjCMethodAccessor* self, PyObject* name)
 {
 	PyObject* result;
-	int	  class_method;
+	PyObject* classObj;
 
 	if (!PyString_Check(name)) {
 		PyErr_Format(PyExc_TypeError, 
@@ -274,6 +274,7 @@ obj_getattro(ObjCMethodAccessor* self, PyObject* name)
 	}
 
 
+	
 	result = PyObject_GenericGetAttr((PyObject*)self, name);
 	if (result == NULL) {
 		PyErr_Clear();
@@ -281,29 +282,82 @@ obj_getattro(ObjCMethodAccessor* self, PyObject* name)
 		return result;
 	}
 
-	/* First try to access through base, this way the method replacements
-	 * in objc._convenience are seen here.
-	 */
-	result = PyObject_GetAttr(self->base, name);
-	if (result == NULL) {
-		PyErr_Clear();
-	} else if (!PyObjCSelector_Check(result)) {
-		Py_DECREF(result);
-		result = NULL;
+	if (PyObjCClass_Check(self->base)) {
+		classObj = self->base;
 	} else {
-		class_method = ((PyObjCSelector*)result)->sel_flags & PyObjCSelector_kCLASS_METHOD;
-		if (!self->class_method  == !class_method) {
-			/* NOTE: ! is used to normalize the values */
-			return result;
-		} 
-		Py_XDECREF(result);
-		result = NULL;
+		classObj = (PyObject*)self->base->ob_type;
 	}
 
+	if (self->class_method) {
+
+		if (!PyObjCClass_Check(classObj)) {
+			/* Whoops, lookup on the wrong type of object */
+			PyErr_SetString(PyExc_TypeError, 
+				"expecting class object");
+		}
+
+		/* We're looking for a class method, perform a lookup on 
+		 * the class
+		 */
+		result = PyObject_GetAttr(classObj, name);
+		if (result == NULL) {
+			PyErr_Clear();
+		} else if (!PyObjCSelector_Check(result)) {
+			Py_DECREF(result);
+			result = NULL;
+		} else {
+			if (CLS_GETINFO(PyObjCSelector_GetClass(result),
+						CLS_META)) {
+				return result;
+			} 
+			Py_DECREF(result);
+			result = NULL;
+		}
+
+	} else {
+		/* Look for an instance method, perform a modified attribute
+		 * lookup on the class (basically perform something thats
+		 * very simular to objc_getattro);
+		 * We cannot use normal attribute lookup because our base
+		 * object may be a class.
+		 */
+		result = PyObjC_TypeLookup((PyTypeObject*)classObj, name);
+		if (result == NULL) {
+			PyErr_Clear();
+		} else if (!PyObjCSelector_Check(result)) {
+			Py_DECREF(result);
+			result = NULL;
+		} else {
+			descrgetfunc f;
+			PyObject* v;
+			f = result->ob_type->tp_descr_get;
+
+			if (f == NULL) {
+				printf("f==NULL\n");
+				abort();
+			}
+
+			if (PyObjCClass_Check(self->base)) {
+				v = f(result, NULL, classObj);
+			} else {
+				v = f(result, self->base, classObj);
+			}
+			if (v == NULL) {
+				printf("v==NULL\n");
+				PyErr_Print();
+				abort();
+			}
+			Py_DECREF(result);
+			return v;
+		}
+	}
+
+	/* XXX: check the code below this point */
 	result = find_selector(self->base, 
 		PyString_AS_STRING(name), self->class_method);
 	if (result == NULL) return result;
 
+#if 0
 	if (self->class_method && PyObjCObject_Check(self->base)) {
 		/* Class method */
 		((PyObjCSelector*)result)->sel_self = (PyObject*)(self->base->ob_type);
@@ -315,6 +369,7 @@ obj_getattro(ObjCMethodAccessor* self, PyObject* name)
 		((PyObjCSelector*)result)->sel_self = self->base;
 	}
 	Py_XINCREF(((PyObjCSelector*)result)->sel_self);
+#endif
 	return result;
 }
 

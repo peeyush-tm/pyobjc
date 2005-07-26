@@ -680,7 +680,8 @@ class_getattro(PyObject* self, PyObject* name)
 
 	/* Look for the attribute in the meta type */
 	if (PyString_Check(name) 
-			&& 0 == strcmp(PyString_AS_STRING(name), "__new__")) {
+			&& 0 == strcmp(PyString_AS_STRING(name), "__new__")
+	) {
 		/* Don't look for __new__ in the meta class
 		 *
 		 * XXX: this is needed to avoid picking up the __new__ in 
