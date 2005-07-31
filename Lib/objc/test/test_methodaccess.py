@@ -37,13 +37,13 @@ class MethodAccessTest (unittest.TestCase):
         self.assert_(len(d) > 10)
         self.assert_("init" in d)
 
-        #d = dir(o.pyobjc_classMethods)
-        #self.assert_(len(d) > 10)
-        #self.assert_("alloc" in d)
-
         d = dir(NSObject.pyobjc_classMethods)
         self.assert_(len(d) > 10)
         self.assert_("alloc" in d)
+
+        d = dir(NSObject.pyobjc_instanceMethods)
+        self.assert_(len(d) > 10)
+        self.assert_("init" in d)
 
     def testDict(self):
         o = NSObject.new()
@@ -56,17 +56,33 @@ class MethodAccessTest (unittest.TestCase):
         self.assert_(len(d) > 10)
         self.assert_("alloc" in d)
 
-        #d = o.pyobjc_classMethods.__dict__.keys()
-        #self.assert_(len(d) > 10)
-        #self.assert_("alloc" in d)
+        d = NSObject.pyobjc_instanceMethods.__dict__.keys()
+        self.assert_(len(d) > 10)
+        self.assert_("init" in d)
+
+        # XXX: We'd like 'd' to be immutable, but that would break
+        # ``__builtin__.dir``, see the source for more information.
 
     def testAttributes(self):
         o = NSObject.new()
 
         self.assert_(hasattr(o.pyobjc_instanceMethods, "init"))
-        #self.assert_(hasattr(o.pyobjc_classMethods, "alloc"))
+
+        self.assert_(not hasattr(o, 'pyobjc_classMethods'))
+
+        m = o.pyobjc_instanceMethods.init
+        self.assert_(isinstance(m, objc.selector))
+        self.assert_(m.im_self is o)
+        self.assert_(not m.isClassMethod)
+        self.assert_(m.definingClass is NSObject)
 
         self.assert_(hasattr(NSObject.pyobjc_classMethods, "alloc"))
+        m = NSObject.pyobjc_classMethods.alloc
+        self.assert_(isinstance(m, objc.selector))
+        self.assert_(m.im_self is NSObject)
+        self.assert_(m.definingClass is type(NSObject))
+        self.assert_(m.isClassMethod)
+
 
 class ClassAndInstanceMethods(unittest.TestCase):
     def testClassThroughInstance(self):

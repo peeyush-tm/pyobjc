@@ -16,7 +16,6 @@ find_selector(PyObject* self, char* name, int class_method)
 	volatile int   unbound_instance_method = 0;
 	char* flattened;
 
-
 	if (name[0] == '_' && name[1] == '_') {
 		/*
 		 * FIXME: Some classes (NSFault, NSFinalProxy) crash hard
@@ -185,7 +184,8 @@ make_dict(PyObject* self, int class_method)
 				if (v == NULL) {
 					v = PyObjCSelector_NewNative(
 						cls, meth->method_name,
-						meth->method_types, class_method);
+						meth->method_types, 
+						class_method);
 					if (v == NULL) {
 						Py_DECREF(res);
 						return NULL;
@@ -251,10 +251,12 @@ obj_getattro(ObjCMethodAccessor* self, PyObject* name)
 
 		/*
 		 * Ronald: I'd prefer to add the code below, because our 
-		 * __dict__ cannot be modified, but then dir() doesn't work.
+		 * __dict__ should not be modified, but then dir() doesn't work.
 		 * The current version is save enough, but might give surprising
 		 * behaviour (you can change pyobjc_instancMethods.__dict__,
 		 * but those changes have no effect).
+		 *
+		 * Python bug #1248658
 		result  = PyDictProxy_New(dict);
 		Py_DECREF(dict);
 		return result;
@@ -273,8 +275,6 @@ obj_getattro(ObjCMethodAccessor* self, PyObject* name)
 		return NULL;
 	}
 
-
-	
 	result = PyObject_GenericGetAttr((PyObject*)self, name);
 	if (result == NULL) {
 		PyErr_Clear();
@@ -288,12 +288,14 @@ obj_getattro(ObjCMethodAccessor* self, PyObject* name)
 		classObj = (PyObject*)self->base->ob_type;
 	}
 
+
 	if (self->class_method) {
 
 		if (!PyObjCClass_Check(classObj)) {
 			/* Whoops, lookup on the wrong type of object */
 			PyErr_SetString(PyExc_TypeError, 
 				"expecting class object");
+			return NULL;
 		}
 
 		/* We're looking for a class method, perform a lookup on 
@@ -325,7 +327,6 @@ obj_getattro(ObjCMethodAccessor* self, PyObject* name)
 		if (result == NULL) {
 			PyErr_Clear();
 		} else if (!PyObjCSelector_Check(result)) {
-			Py_DECREF(result);
 			result = NULL;
 		} else {
 			descrgetfunc f;
@@ -333,31 +334,23 @@ obj_getattro(ObjCMethodAccessor* self, PyObject* name)
 			f = result->ob_type->tp_descr_get;
 
 			if (f == NULL) {
-				printf("f==NULL\n");
 				abort();
 			}
 
 			if (PyObjCClass_Check(self->base)) {
-				v = f(result, NULL, classObj);
+				v = f(result, Py_None, classObj);
 			} else {
 				v = f(result, self->base, classObj);
 			}
-			if (v == NULL) {
-				printf("v==NULL\n");
-				PyErr_Print();
-				abort();
-			}
-			Py_DECREF(result);
 			return v;
 		}
 	}
 
-	/* XXX: check the code below this point */
 	result = find_selector(self->base, 
 		PyString_AS_STRING(name), self->class_method);
 	if (result == NULL) return result;
 
-#if 0
+	/* XXX: this block has no effect on the unittests! */
 	if (self->class_method && PyObjCObject_Check(self->base)) {
 		/* Class method */
 		((PyObjCSelector*)result)->sel_self = (PyObject*)(self->base->ob_type);

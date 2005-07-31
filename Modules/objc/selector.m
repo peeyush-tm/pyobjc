@@ -398,10 +398,7 @@ sel_dealloc(PyObject* object)
 
 	PyMem_Free(self->sel_signature);
 	self->sel_signature = NULL;
-	if (self->sel_self) { 
-		Py_DECREF(self->sel_self); 
-		self->sel_self = NULL;
-	}
+	Py_XDECREF(self->sel_self); self->sel_self = NULL;
 	object->ob_type->tp_free(object);
 }
 
@@ -694,9 +691,7 @@ objcsel_descr_get(PyObjCNativeSelector* meth, PyObject* volatile obj, PyObject* 
 	}
 
 	result->sel_self = obj;
-	if (result->sel_self) {
-		Py_INCREF(result->sel_self);
-	}
+	Py_XINCREF(obj);
 
 	return (PyObject*)result;
 }
