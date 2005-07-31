@@ -55,6 +55,18 @@ class TestFromObjCSuperToObjCClass(unittest.TestCase):
         self.assertEquals(newInstance.description(), u"<methods>")
         self.assertEquals(preEverythingInstance.description(), u"<methods>")
 
+    def testClassDesciptionOverride(self):
+        def description(klass):
+            return u"class-description"
+
+        self.assertNotEquals(MEClass.description(), "class-description")
+
+        objc.classAddMethods(MEClass, [classmethod(description)])
+
+        self.assertEquals(MEClass.description(), "class-description")
+
+
+
     def testNewMethod(self):
         objc.classAddMethods(MEClass, [Methods.newMethod])
 

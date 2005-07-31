@@ -216,6 +216,7 @@ classAddMethods(PyObject* self __attribute__((__unused__)),
 	struct objc_method_list *methodsToAdd;
 	struct objc_method_list *classMethodsToAdd;
 	PyObject* extraDict = NULL;
+	PyObject* extraMetaDict = NULL;
 	char* signature;
 
 	if (!PyArg_ParseTupleAndKeywords(args, keywds, 
@@ -246,14 +247,24 @@ classAddMethods(PyObject* self __attribute__((__unused__)),
 		return NULL;
 	}
 
+	extraMetaDict = PyDict_New();
+	if (extraMetaDict == NULL) {
+		Py_DECREF(extraDict);
+		return NULL;
+	}
+
 	methodsToAdd = PyObjCRT_AllocMethodList(methodCount);
 	if (methodsToAdd == NULL) {
+		Py_DECREF(extraDict);
+		Py_DECREF(extraMetaDict);
 		PyErr_NoMemory();
 		return NULL;
 	}
 
 	classMethodsToAdd = PyObjCRT_AllocMethodList(methodCount);
 	if (classMethodsToAdd == NULL) {
+		Py_DECREF(extraDict);
+		Py_DECREF(extraMetaDict);
 		free(methodsToAdd);
 		PyErr_NoMemory();
 		return NULL;
@@ -308,7 +319,16 @@ classAddMethods(PyObject* self __attribute__((__unused__)),
 			(PyObjCSelector*)aMethod);
 		
 		name = PyObject_GetAttrString(aMethod, "__name__");
-		r = PyDict_SetItem(extraDict, name, aMethod);
+
+		if (PyObjCSelector_IsClassMethod(aMethod)) {
+			PyObjCSelector* s = (PyObjCSelector*)aMethod;
+
+			s->sel_class = GETISA(s->sel_class);
+			s->sel_flags &= ~PyObjCSelector_kCLASS_METHOD;
+			r = PyDict_SetItem(extraMetaDict, name, aMethod);
+		} else {
+			r = PyDict_SetItem(extraDict, name, aMethod);
+		}
 		Py_DECREF(name); name = NULL;
 		Py_DECREF(aMethod); aMethod = NULL;
 		if (r == -1) {
@@ -334,6 +354,7 @@ classAddMethods(PyObject* self __attribute__((__unused__)),
 	if (r == -1) goto cleanup_and_return_error;
 
 	Py_DECREF(extraDict); extraDict = NULL;
+	Py_DECREF(extraMetaDict); extraMetaDict = NULL;
 
 	Py_INCREF(Py_None);
 	return Py_None;
@@ -341,6 +362,9 @@ classAddMethods(PyObject* self __attribute__((__unused__)),
 cleanup_and_return_error:
 	if (extraDict) {
 		Py_DECREF(extraDict);
+	}
+	if (extraMetaDict) {
+		Py_DECREF(extraMetaDict);
 	}
 	if (methodsToAdd) free(methodsToAdd);
 	if (classMethodsToAdd) free(classMethodsToAdd);

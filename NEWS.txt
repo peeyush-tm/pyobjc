@@ -40,7 +40,7 @@ Selector-cleanup branch
   way to fetch an unbound instance method (XXX: but what is?). 
 
   This change is not backward compatible, but this should only affect code
-  that performs introspection. 
+  that performs introspection.
 
   There is one incompatibility that could affect normal code: if you implement
   a class method and use ``super`` to call a method in a superclass you should
@@ -62,16 +62,17 @@ Selector-cleanup branch
 		myFoo = classmethod(myFoo) # if needed at all!
 
 
-  XXX: The current implementation of this is very rough and doesn't pass the 
-  unittests.
-
   TODO:
 
   * Need unittests that test the modified behaviour
 
+    - test that ``classAddMethods`` and ``setattr(aClass, aName, aMethod)`` add
+      a method to the meta-class when updating a class method.
+
   * Cleanup
 
-  * Modifying classes (addMethods and friends)
+  * Check all examples, and document the changes that were needed (if any)
+
 
 - Classes now have an ``__isMetaClass__`` attribute. This is ``True`` for
   meta classes and ``False`` otherwise.

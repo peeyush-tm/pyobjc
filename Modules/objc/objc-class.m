@@ -874,25 +874,39 @@ class_setattro(PyObject* self, PyObject* name, PyObject* value)
 			return -1;
 		}
 
-		r = PyDict_SetItem(((PyTypeObject*)self)->tp_dict, name, newVal);
-		Py_DECREF(newVal);
-		if (r == -1) {
-			free((char*)objcMethod->method_types);
-			free(methodsToAdd);
-			PyErr_NoMemory();
-			return -1;
-		}
-
-		
 		if (PyObjCSelector_IsClassMethod(newVal)) {
+			PyObjCSelector* s = (PyObjCSelector*)newVal;
+
+			s->sel_class = GETISA(s->sel_class);
+			s->sel_flags &= ~PyObjCSelector_kCLASS_METHOD;
+
+			r = PyDict_SetItem(self->ob_type->tp_dict, name, newVal);
+			Py_DECREF(newVal);
+			if (r == -1) {
+				free((char*)objcMethod->method_types);
+				free(methodsToAdd);
+				PyErr_NoMemory();
+				return -1;
+			}
+
 			PyObjCRT_ClassAddMethodList(
 					GETISA(PyObjCClass_GetClass(self)), 
 					methodsToAdd);
-		} else {
+		}  else {
+			r = PyDict_SetItem(((PyTypeObject*)self)->tp_dict, name, newVal);
+			Py_DECREF(newVal);
+			if (r == -1) {
+				free((char*)objcMethod->method_types);
+				free(methodsToAdd);
+				PyErr_NoMemory();
+				return -1;
+			}
+
 			PyObjCRT_ClassAddMethodList(
 					PyObjCClass_GetClass(self), 
 					methodsToAdd);
 		}
+
 		return 0;
 	}
 
