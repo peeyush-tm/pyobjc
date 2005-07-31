@@ -362,7 +362,6 @@ obj_getattro(ObjCMethodAccessor* self, PyObject* name)
 		((PyObjCSelector*)result)->sel_self = self->base;
 	}
 	Py_XINCREF(((PyObjCSelector*)result)->sel_self);
-#endif
 	return result;
 }
 
