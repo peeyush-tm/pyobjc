@@ -22,6 +22,7 @@ if sys.platform == 'darwin':
     class TestWeirdness(unittest.TestCase):
 
         def doWeirdness(self, className, methodToTest):
+            # XXX: This looks pretty fishy, even with the explanation above
             c = objc.lookUpClass(className)
             before = getattr(c, methodToTest)
             b = c.alloc().init()

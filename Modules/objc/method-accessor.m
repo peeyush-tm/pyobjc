@@ -308,8 +308,9 @@ obj_getattro(ObjCMethodAccessor* self, PyObject* name)
 			Py_DECREF(result);
 			result = NULL;
 		} else {
-			if (CLS_GETINFO(PyObjCSelector_GetClass(result),
-						CLS_META)) {
+			PyObject* s_self = ((PyObjCSelector*)result)->sel_self;
+
+			if (s_self != NULL && PyObjCClass_Check(s_self)) {
 				return result;
 			} 
 			Py_DECREF(result);

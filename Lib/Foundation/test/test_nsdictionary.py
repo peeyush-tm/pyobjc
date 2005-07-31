@@ -197,9 +197,9 @@ class MyDictionaryBase (NSDictionary):
 
 class MyDictionary1 (MyDictionaryBase):
     def initWithObjects_forKeys_count_(self, objects, keys, count):
-        self.count = count
-        self.objects = objects
-        self.keys = keys
+        self.k_count = count
+        self.k_objects = objects
+        self.k_keys = keys
         return self
 
 class MyDictionary2 (MyDictionaryBase):
@@ -212,9 +212,9 @@ class TestSubclassing (unittest.TestCase):
         o = PyObjC_TestClass3.makeDictFromClass_method_(MyDictionary1, 1)
 
         self.assert_(isinstance(o, MyDictionary1))
-        self.assertEquals(o.count, 4)
-        self.assertEquals(len(o.keys), 4)
-        self.assertEquals(len(o.objects), 4)
+        self.assertEquals(o.k_count, 4)
+        self.assertEquals(len(o.k_keys), 4)
+        self.assertEquals(len(o.k_objects), 4)
 
     def testDictWithObjects(self):
         o = PyObjC_TestClass3.makeDictFromClass_method_(MyDictionary2, 0)

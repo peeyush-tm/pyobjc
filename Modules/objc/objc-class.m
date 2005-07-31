@@ -211,17 +211,24 @@ _update_meta(Class class, PyObject* dict)
 			}
 
 			if (PyObjCSelector_IsClassMethod(v)){
-				r = PyDict_SetItem(type->tp_dict, k, v);
-				if (r == -1) return -1;
+				Py_INCREF(s);
 
 				r = PyDict_DelItem(dict, k);
-				if (r == -1) return -1;
+				if (r == -1) {
+					Py_DECREF(s);
+					return -1;
+				}
 
 				/* A class method is a plain method of the 
 				 * meta class 
 				 * */
 				s->sel_flags &= ~PyObjCSelector_kCLASS_METHOD;
 				s->sel_class = GETISA(s->sel_class);
+
+				r = PyDict_SetItem(type->tp_dict, k, v);
+				Py_DECREF(s);
+				if (r == -1) return -1;
+
 			}
 		} else if (PyObject_TypeCheck(v, &PyStaticMethod_Type)) {
 			/* copy staticmethod instances */
@@ -693,24 +700,25 @@ class_getattro(PyObject* self, PyObject* name)
 		meta_descr = PyObjC_TypeLookup(metatype, name);
 	}
 
-	if (meta_descr != NULL) {
+	if (meta_descr != NULL 
+		&& PyType_HasFeature(meta_descr->ob_type, Py_TPFLAGS_HAVE_CLASS)) {
 		  meta_get = meta_descr->ob_type->tp_descr_get;
 
-		  if (meta_get != NULL && PyDescr_IsData(meta_descr)) {
+		  if (meta_get != NULL  && PyDescr_IsData(meta_descr)) {
 			  return meta_get(meta_descr, 
 					  self, (PyObject*)metatype);
 		  }
-		  Py_INCREF(meta_descr);
 	}
 
 	/* No data descriptor found on the meta type. Look in tp_dict of this
 	 * type and its bases.
 	 */
 	descr = PyObjC_TypeLookup(type, name);
-	if (descr != NULL) {
+	if (descr != NULL 
+		&& PyType_HasFeature(descr->ob_type, Py_TPFLAGS_HAVE_CLASS)) {
+
 		descrgetfunc local_get = descr->ob_type->tp_descr_get;
 
-		Py_XDECREF(meta_descr);
 
 		if (local_get != NULL) {
 			/* NULL 2nd argument -> descriptor found on the
@@ -727,7 +735,6 @@ class_getattro(PyObject* self, PyObject* name)
 	 */
 	if (meta_get != NULL) {
 		result = meta_get(meta_descr, self, (PyObject*)metatype);
-		Py_DECREF(meta_descr);
 		return result;
 	}
 

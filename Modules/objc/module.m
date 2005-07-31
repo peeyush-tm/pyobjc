@@ -275,6 +275,7 @@ classAddMethods(PyObject* self __attribute__((__unused__)),
 			classObject,
 			NULL);
 		if (aMethod == NULL) {
+			PyErr_Print();
 			PyErr_SetString(PyExc_TypeError ,
 			      "All objects in methodArray must be of "
 			      "type <objc.selector>, <function>, "

@@ -34,14 +34,13 @@ class TestClassAndInstance(unittest.TestCase):
     def testClassAndInstanceClassOverrideWorkaround(self):
         self.assertEquals(PyObjC_TestClassAndInstanceClassOverride.pyobjc_classMethods.isInstance(), objc.YES)
 
-        # We'd like to see this:
+        m =  PyObjC_TestClassAndInstanceClassOverride.isInstance
         self.assertEquals(PyObjC_TestClassAndInstanceClassOverride.isInstance(), objc.YES)
 
     def testClassAndInstanceSubclassWorkaround(self):
         self.assertEquals(PyObjC_TestClassAndInstanceSubclass.alloc().init().pyobjc_instanceMethods.isInstance(), objc.YES)
         self.assertEquals(PyObjC_TestClassAndInstanceSubclass.pyobjc_classMethods.isInstance(), objc.NO)
 
-        # We'd like to see this:
         self.assertEquals(PyObjC_TestClassAndInstanceSubclass.isInstance(), objc.NO)
 
     def testClassAndInstanceWorkaround(self):
@@ -55,26 +54,26 @@ class TestClassAndInstance(unittest.TestCase):
         self.assertEquals(PyObjC_TestClassAndInstanceClassOverride.isInstance(), objc.YES)
 
     def testClassAndInstanceInstanceOverride(self):
-        # Having the next line true would be nice:
         self.assertEquals(PyObjC_TestClassAndInstanceInstanceOverride.isInstance(), objc.NO)
-        # But we'll have to settle for this one instead:
         self.assertEquals(PyObjC_TestClassAndInstanceInstanceOverride.pyobjc_classMethods.isInstance(), objc.NO)
         self.assertEquals(PyObjC_TestClassAndInstanceInstanceOverride.alloc().init().isInstance(), objc.NO)
 
     def testClassAndInstanceSubclass(self):
-        # Having the next line true would be nice:
         self.assertEquals(PyObjC_TestClassAndInstanceSubclass.isInstance(), objc.NO)
-        # But we'll have to settle for this one instead:
         self.assertEquals(PyObjC_TestClassAndInstanceSubclass.pyobjc_classMethods.isInstance(), objc.NO)
         self.assertEquals(PyObjC_TestClassAndInstanceSubclass.alloc().init().isInstance(), objc.YES)
 
     def testClassAndInstance(self):
-
-        # Having the next line true would be nice:
+        # Direct access through the class -> class method
         self.assertEquals(PyObjC_TestClassAndInstance.isInstance(), objc.NO)
-        # But we'll have to settle for this one instead:
-        self.assertEquals(PyObjC_TestClassAndInstance.pyobjc_classMethods.isInstance(), objc.NO)
+
+        # Access through an instance: instance method
         self.assertEquals(PyObjC_TestClassAndInstance.alloc().init().isInstance(), objc.YES)
+
+
+        # And the older, more verbose way of saying this:
+        self.assertEquals(PyObjC_TestClassAndInstance.pyobjc_classMethods.isInstance(), objc.NO)
+        self.assertEquals(PyObjC_TestClassAndInstance.alloc().init().pyobjc_instanceMethods.isInstance(), objc.YES)
 
     def testUnallocatable(self):
         self.assertEquals(PyObjC_TestUnallocatable.alloc(), None)

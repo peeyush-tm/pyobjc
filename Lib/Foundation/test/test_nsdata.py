@@ -97,16 +97,16 @@ class MyData2 (NSData):
 
 class MyData3 (NSData):
     def initWithBytes_length_(self, bytes, length):
-        self.bytes = bytes
-        self.length = length
+        self.k_bytes = bytes
+        self.k_length = length
         return self
 
     def bytes(self):
-        return self.bytes
+        return self.k_bytes
 
     def length(self):
         if hasattr(self, 'length'):
-            return self.length
+            return self.k_length
         return -1
 
 class MyData4 (NSData):

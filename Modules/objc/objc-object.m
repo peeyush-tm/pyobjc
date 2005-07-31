@@ -351,7 +351,9 @@ done:
 	if (res != NULL) {
 		/* class methods cannot be accessed through instances */
 		if (PyObjCSelector_Check(res) 
-				&& PyObjCSelector_IsClassMethod(res)) {
+			&& (((PyObjCSelector*)res)->sel_self) != NULL
+			&& PyObjCClass_Check(((PyObjCSelector*)res)->sel_self)){
+
 			Py_DECREF(res);
 			PyErr_Format(PyExc_AttributeError,
 			     "'%.50s' object has no attribute '%.400s'",

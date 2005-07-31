@@ -39,10 +39,8 @@ call_NSObject_alloc(PyObject* method,
 	} else {
 		RECEIVER(super) = (id)PyObjCClass_GetClass(self);
 		super.class = PyObjCSelector_GetClass(method); 
+		super.class = GETISA(super.class);
 		aSel = PyObjCSelector_GetSelector(method);
-		if (aSel == nil) {
-			return NULL;
-		}
 
 		PyObjC_DURING
 			result = objc_msgSendSuper(&super, aSel); 
@@ -141,9 +139,6 @@ call_NSObject_dealloc(PyObject* method,
 		RECEIVER(super) = PyObjCObject_GetObject(self);
 		super.class = PyObjCSelector_GetClass(method); 
 		aSel = PyObjCSelector_GetSelector(method);
-		if (aSel == nil) {
-			return NULL;
-		}
 
 		PyObjC_DURING
 			(void)objc_msgSendSuper(&super, aSel); 
@@ -241,9 +236,6 @@ call_NSObject_release(PyObject* method,
 		RECEIVER(super) = PyObjCObject_GetObject(self);
 		super.class = PyObjCSelector_GetClass(method); 
 		aSel = PyObjCSelector_GetSelector(method);
-		if (aSel == nil) {
-			return NULL;
-		}
 
 		PyObjC_DURING
 			(void)objc_msgSendSuper(&super, aSel); 
@@ -299,9 +291,6 @@ call_NSObject_retain(PyObject* method,
 		RECEIVER(super) = PyObjCObject_GetObject(self);
 		super.class = PyObjCSelector_GetClass(method); 
 		aSel = PyObjCSelector_GetSelector(method);
-		if (aSel == nil) {
-			return NULL;
-		}
 
 		PyObjC_DURING
 			retval = objc_msgSendSuper(&super, aSel); 

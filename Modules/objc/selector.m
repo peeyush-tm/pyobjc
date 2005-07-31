@@ -507,7 +507,11 @@ objcsel_repr(PyObjCNativeSelector* sel)
 {
 	PyObject *rval;
 	if (sel->sel_self == NULL) {
-		rval = PyString_FromFormat("<unbound native-selector %s in %s[%p]>", PyObjCRT_SELName(sel->sel_selector), sel->sel_class->name, sel->sel_class);
+		char* pfx = "class";
+		if (CLS_GETINFO(sel->sel_class, CLS_META)) {
+			pfx = "meta-class";
+		}
+		rval = PyString_FromFormat("<unbound native-selector %s in %s %s>", PyObjCRT_SELName(sel->sel_selector), pfx, sel->sel_class->name);
 	} else {
 		PyObject* selfrepr = PyObject_Repr(sel->sel_self);
 		if (selfrepr == NULL) {
@@ -644,7 +648,7 @@ objcsel_descr_get(PyObjCNativeSelector* meth, PyObject* volatile obj, PyObject* 
 {
 	PyObjCNativeSelector* result;
 
-	if (meth->sel_self != NULL || obj == Py_None) {
+	if ((meth->sel_self != NULL) || (obj == Py_None) || (obj == NULL)) {
 		Py_INCREF(meth);
 		return (PyObject*)meth;
 	} 
@@ -672,11 +676,6 @@ objcsel_descr_get(PyObjCNativeSelector* meth, PyObject* volatile obj, PyObject* 
 			meth->sel_selector);
 	}
 	result->sel_call_func = meth->sel_call_func;
-
-#ifdef PyObjC_COMPILING_ON_MACOSX_10_1
-	if (PyObjCRT_SameSEL(meth->sel_selector, @selector(__pyobjc_PythonObject__))) {
-	} else
-#endif
 
 	if (meth->sel_oc_signature == NULL) {
 		meth->sel_oc_signature = PyObjCMethodSignature_FromSignature(
@@ -1345,7 +1344,7 @@ pysel_descr_get(PyObjCPythonSelector* meth, PyObject* obj, PyObject* class)
 {
 	PyObjCPythonSelector* result;
 
-	if (meth->sel_self != NULL || obj == Py_None) {
+	if (meth->sel_self != NULL || obj == Py_None || obj == NULL) {
 		Py_INCREF(meth);
 		return (PyObject*)meth;
 	}
@@ -1366,9 +1365,6 @@ pysel_descr_get(PyObjCPythonSelector* meth, PyObject* obj, PyObject* class)
 	Py_XINCREF(obj);
 	result->sel_flags = meth->sel_flags;
 	result->callable = meth->callable;
-	if (result->sel_self) {
-		Py_INCREF(result->sel_self);
-	}
 	if (result->callable) {
 		Py_INCREF(result->callable);
 	}
@@ -1511,7 +1507,7 @@ PyTypeObject PyObjCPythonSelector_Type = {
 	&PyObjCSelector_Type,			/* tp_base */
 	0,					/* tp_dict */
 	(descrgetfunc)pysel_descr_get,		/* tp_descr_get */
-	0,					/* tp_descr_set */
+	(descrsetfunc)generic_descr_set,	/* tp_descr_set */
 	0,					/* tp_dictoffset */
 	0,					/* tp_init */
 	0,					/* tp_alloc */
@@ -1530,22 +1526,6 @@ char* PyObjCSelector_Signature(PyObject* obj)
 {
 	if (PyObjCSelector_Check(obj)) {
 		return ((PyObjCSelector*)obj)->sel_signature;
-
-	} else if (PyFunction_Check(obj) || PyMethod_Check(obj)) {
-		/* XXX: this could cause memory corruption later on if
-		 *  'signature' is a property or is changed before the
-		 *  result of this function is used.
-		 */
-		PyObject* signature = PyObject_GetAttrString(obj, "signature");
-
-		if (signature == NULL) {
-			return NULL;
-		} else {
-			char* retval = PyString_AsString(signature);
-
-			Py_DECREF(signature);
-			return retval;
-		}
 
 	} else {
 		PyErr_Format(PyExc_TypeError,
@@ -1571,21 +1551,6 @@ PyObjCSelector_GetSelector(PyObject* sel)
 	if (PyObjCSelector_Check(sel)) {
 		return ((PyObjCSelector*)sel)->sel_selector;
 
-	} else if (PyFunction_Check(sel) || PyMethod_Check(sel)) {
-		PyObject* selName = PyObject_GetAttrString(sel, "selector");
-
-		if (selName == NULL) {
-			return NULL;
-		} else if (!PyString_Check(selName)) {
-			PyErr_Format(PyExc_TypeError, 
-				"selector attribute is of type %s, not str",
-				selName->ob_type->tp_name);
-			Py_DECREF(selName);
-			return NULL;
-		} else {
-			return PyObjCRT_SELUID(PyString_AS_STRING(selName));
-		}
-
 	} else {
 		PyErr_Format(PyExc_TypeError, "Getting objc-selector of a '%s'",
 				sel->ob_type->tp_name);
@@ -1598,20 +1563,6 @@ int   PyObjCSelector_Required(PyObject* obj)
 {
 	if (PyObjCSelector_Check(obj)) {
 		return (PyObjCSelector_GetFlags(obj) & PyObjCSelector_kREQUIRED) != 0;
-	} else if (PyFunction_Check(obj) || PyMethod_Check(obj)) {
-		PyObject* isRequired;
-		int retval;
-		
-		isRequired = PyObject_GetAttrString(obj, "isRequired");
-		if (isRequired == NULL) {
-			PyErr_Clear();
-			return 0;
-		}
-
-		retval = PyObject_IsTrue(isRequired);
-		Py_DECREF(isRequired);
-		return retval;
-
 	} else {
 		/* XXX: raise error? */
 		return 0;
@@ -1622,20 +1573,6 @@ int   PyObjCSelector_IsClassMethod(PyObject* obj)
 {
 	if (PyObjCSelector_Check(obj)) {
 		return (PyObjCSelector_GetFlags(obj) & PyObjCSelector_kCLASS_METHOD) != 0;
-
-	} else if (PyFunction_Check(obj) || PyMethod_Check(obj)) {
-		PyObject* isClass;
-		int retval;
-		
-		isClass = PyObject_GetAttrString(obj, "isClassMethod");
-		if (isClass == NULL) {
-			PyErr_Clear();
-			return 0;
-		}
-
-		retval = PyObject_IsTrue(isClass);
-		Py_DECREF(isClass);
-		return retval;
 
 	} else {
 		/* XXX: raise error? */
@@ -1648,20 +1585,6 @@ int   PyObjCSelector_DonatesRef(PyObject* obj)
 	if (PyObjCSelector_Check(obj)) {
 		return (PyObjCSelector_GetFlags(obj) & PyObjCSelector_kDONATE_REF) != 0;
 
-	} else if (PyFunction_Check(obj) || PyMethod_Check(obj)) {
-		PyObject* doesDonate;
-		int retval;
-		
-		doesDonate = PyObject_GetAttrString(obj, "doesDonateReference");
-		if (doesDonate == NULL) {
-			PyErr_Clear();
-			return 0;
-		}
-
-		retval = PyObject_IsTrue(doesDonate);
-		Py_DECREF(doesDonate);
-		return retval;
-
 	} else {
 		/* XXX: raise error? */
 		return 0;
@@ -1672,29 +1595,6 @@ int   PyObjCSelector_GetFlags(PyObject* obj)
 {
 	if (PyObjCSelector_Check(obj)) {
 		return ((PyObjCSelector*)obj)->sel_flags;
-
-	} else if (PyFunction_Check(obj) || PyMethod_Check(obj)) {
-		int flags = 0;
-
-		if (PyObjCSelector_IsClassMethod(obj)) {
-			flags |= PyObjCSelector_kCLASS_METHOD;
-		} 
-
-		if (PyObjCSelector_DonatesRef(obj)) {
-			flags |= PyObjCSelector_kDONATE_REF;
-		}
-
-		if (PyObjCSelector_Required(obj)) {
-			flags |= PyObjCSelector_kREQUIRED;
-		}
-
-#if 0
-		if (PyObjCSelector_ReturnsUnintialized(obj)) {
-			flags |= PyObjCSelector_kRETURNS_UNINITIALIZED;
-		}
-#endif
-
-		return flags;
 
 	} else {
 		PyErr_Format(PyExc_TypeError,
@@ -1814,8 +1714,9 @@ PyObjCSelector_FromFunction(
 	if (!PyFunction_Check(callable) && !PyMethod_Check(callable) &&
 		(callable->ob_type != &PyClassMethod_Type)) {
 	
-		PyErr_SetString(PyExc_TypeError, 
-				"expecting function, method or classmethod");
+		PyErr_Format(PyExc_TypeError, 
+				"expecting function, method or classmethod, "
+				"not %s", callable->ob_type->tp_name);
 		return NULL;
 	}
 

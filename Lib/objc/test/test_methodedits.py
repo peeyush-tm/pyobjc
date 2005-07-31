@@ -46,7 +46,7 @@ class TestFromObjCSuperToObjCClass(unittest.TestCase):
         self.assertEquals(anInstance.newMethod(), u"<new-method>")
 
     def testDescriptionOverride(self):
-        objc.classAddMethods(MEClass, [Methods.description])
+        objc.classAddMethods(MEClass, [Methods.pyobjc_instanceMethods.description])
 
         self.assert_(MEClass.instancesRespondToSelector_("description"))
 
@@ -66,7 +66,7 @@ class TestFromObjCSuperToObjCClass(unittest.TestCase):
         self.assertEquals(preEverythingInstance.newMethod(), u"<new-method>")
 
     def testSubDescriptionOverride(self):
-        objc.classAddMethods(MEClass, [MethodsSub.description])
+        objc.classAddMethods(MEClass, [MethodsSub.pyobjc_instanceMethods.description])
 
         self.assert_(MEClass.instancesRespondToSelector_("description"))
 
