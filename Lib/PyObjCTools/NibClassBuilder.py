@@ -399,7 +399,7 @@ extractClasses = _nibInfo.extractClasses
 #
 
 commandline_doc = """\
-NibLoader.py [-th] nib1 [...nibN]
+nibclassbuilder [-th] nib1 [...nibN]
   Print an overview of the classes found in the nib file(s) specified,
   listing their superclass, actions and outlets as Python source. This
   output can be used as a template or a stub.
