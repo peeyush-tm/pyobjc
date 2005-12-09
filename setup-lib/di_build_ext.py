@@ -23,7 +23,10 @@ class pyobjc_build_ext (build_ext):
             fd.close()
 
     def create_cached_class_list(self):
-        sys.path.insert(0, self.build_lib)
+        if not self.inplace:
+            sys.path.insert(0, self.build_lib)
+        else:
+            sys.path.insert(0, 'Lib')
         import objc
         retval = 0
 

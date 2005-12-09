@@ -1,12 +1,5 @@
 #!/usr/bin/env python
 
-# We need at least Python 2.3
-MIN_PYTHON = (2, 3)
-
-if sys.version_info < MIN_PYTHON:
-    vstr = '.'.join(map(str, MIN_PYTHON))
-    raise SystemExit('PyObjC: Need at least Python ' + vstr)
-
 import ez_setup
 ez_setup.use_setuptools()
 
@@ -648,6 +641,8 @@ for aPackage in package_dir.keys():
         package_dir[packageName] = testDir
         packages.append(packageName)
 
+package_dir[''] = 'Lib'
+
 CLASSIFIERS = filter(None,
 """
 Development Status :: 5 - Production/Stable
@@ -706,10 +701,10 @@ dist = setup(
     license = 'MIT License',
     download_url = 'http://pyobjc.sourceforge.net/software/index.php',
     setup_requires=[
-        "py2app==dev",
+        "py2app>=0.3.dev-r610,==dev",
     ],
     install_requires=[
-        "py2app==dev",
+        "py2app>=0.3.dev-r610,==dev",
     ],
     entry_points={
         'console_scripts': [
