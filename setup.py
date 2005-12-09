@@ -1,5 +1,15 @@
 #!/usr/bin/env python
 
+# We need at least Python 2.3
+MIN_PYTHON = (2, 3)
+
+if sys.version_info < MIN_PYTHON:
+    vstr = '.'.join(map(str, MIN_PYTHON))
+    raise SystemExit('PyObjC: Need at least Python ' + vstr)
+
+import ez_setup
+ez_setup.use_setuptools()
+
 import sys
 import os
 import glob
@@ -9,14 +19,7 @@ import site
 # OS X 10.4 or later.
 # 
 # NOTE: This is an experimental feature.
-AUTO_UNIVERSAL=0
-
-# We need at least Python 2.3
-MIN_PYTHON = (2, 3)
-
-if sys.version_info < MIN_PYTHON:
-    vstr = '.'.join(map(str, MIN_PYTHON))
-    raise SystemExit('PyObjC: Need at least Python ' + vstr)
+AUTO_UNIVERSAL = 0
 
 # Add our utility library to the path
 site.addsitedir(os.path.abspath('source-deps'))
@@ -47,7 +50,7 @@ MacPython 2.3.  Users of MacPython 2.3 can install PyObjC though the
 PackageManager application.
 """
 
-from distutils.core import setup, Extension
+from setuptools import setup, Extension
 import os
 
 
@@ -631,7 +634,6 @@ packages = (
     [
         'PyObjCTools',
         'PyObjCTools.XcodeSupport',
-        'PyObjCScripts',
     ]
 )
 
@@ -699,12 +701,22 @@ dist = setup(
     ),
     packages = packages,
     package_dir = package_dir,
-    scripts = [ 'Scripts/nibclassbuilder', ],
-    extra_path = "PyObjC",
     cmdclass = extra_cmdclass,
     classifiers = CLASSIFIERS,
     license = 'MIT License',
     download_url = 'http://pyobjc.sourceforge.net/software/index.php',
+    setup_requires=[
+        "py2app==dev",
+    ],
+    install_requires=[
+        "py2app==dev",
+    ],
+    entry_points={
+        'console_scripts': [
+            "nibclassbuilder = PyObjCTools.NibClassBuilder:commandline",
+        ],
+    },
+    zip_safe=False,
 )
 
 if 'install' in sys.argv:
