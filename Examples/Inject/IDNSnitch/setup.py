@@ -1,5 +1,4 @@
-from distutils.core import setup, Extension
-import py2app
+from setuptools import setup, Extension
 
 # Plugin
 plugin = setup(
@@ -10,6 +9,8 @@ plugin_dir = plugin.plugin[0].appdir
 app = setup(
     app = ["IDNSnitch.py"],
     data_files = [plugin_dir, "English.lproj"],
+    setup_requires=["py2app"],
+    install_requires=["pyobjc"],
 )
 app_dir = app.app[0].appdir
 

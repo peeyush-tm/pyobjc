@@ -1,5 +1,4 @@
 import os
-from altgraph.compat import *
 
 class Xcode(object):
     def __init__(self, project, archive, env):
@@ -30,7 +29,8 @@ class Xcode(object):
         name = u'Main Script'
         group = self.findGroup(name)
         if len(group.children) != 1:
-            raise ValueError("Expecting exactly 1 item in %r group, found %d" % (name, len(group.children),))
+            raise ValueError("Expecting exactly 1 item in %r group, found %d"
+                % (name, len(group.children),))
         return unicode(group.children[0].path).encode('utf8')
 
     def iterNIBFiles(self):
@@ -102,6 +102,8 @@ class Xcode(object):
         resources = list(self.iterResources())
         if self.env.get('BUILD_STYLE') == 'Development':
             py2app['alias'] = True
+        py2app['setup_requires'] = ['pyobjc']
+        py2app['install_requires'] = ['pyobjc']
         py2app['dist_dir'] = self.env['BUILT_PRODUCTS_DIR']
         py2app['bdist_base'] = self.env['TARGET_TEMP_DIR']
         rval = dict(

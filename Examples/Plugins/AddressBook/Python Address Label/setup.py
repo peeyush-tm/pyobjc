@@ -8,8 +8,7 @@ To use this copy dist/PyAddressLabel.plugin to the plugin directory:
    $ mv dist/PyAddressLabel.plugin \
            ~/Library/Address\ Book\ Plug-Ins/PyAddressLabel.plugin
 """
-from distutils.core import setup
-import py2app
+from setuptools import setup
 
 infoPlist = dict(
     CFBundleName='PyAddressLabel',
@@ -27,4 +26,6 @@ setup(
         extension=".bundle",
         plist=infoPlist,
     )),
+    setup_requires=["py2app"],
+    install_requires=["pyobjc"],
 )

@@ -34,13 +34,14 @@ the "dist" dir by default.
 
 """
 
-from distutils.core import setup
-import py2app
+from setuptools import setup
+from pkg_resources import require
 import os
 import sys
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+require("pyobjc", "py2app")
 from PyObjCTools import XcodeSupport
 
 xcode = XcodeSupport.xcodeFromEnvironment(

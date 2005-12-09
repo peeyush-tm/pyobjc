@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+from pkg_resources import require
+require("altgraph")
+
 import sys
 import os
 import glob

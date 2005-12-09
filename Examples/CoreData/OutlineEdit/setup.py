@@ -4,8 +4,7 @@ Script for building the example.
 Usage:
         python setup.py py2app
 """
-from distutils.core import setup
-import py2app
+from setuptools import setup
 import os
 
 
@@ -51,4 +50,6 @@ setup(
         plist=plist,
         datamodels=['MyDocument'],
     )),
+    setup_requires=["py2app"],
+    install_requires=["pyobjc"],
 )

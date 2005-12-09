@@ -6,8 +6,7 @@ Usage:
 """
 # This is very likely incorrect, as the application is non-existant at the
 # moment.
-from distutils.core import setup
-import py2app
+from setuptools import setup
 
 import os
 import sys
@@ -46,4 +45,6 @@ setup(
     app=["packman.py"],
     data_files=glob.glob("Resources/*"),
     options=dict(py2app=dict(plist=plist)),
+    setup_requires=["py2app"],
+    install_requires=["pyobjc"],
 )

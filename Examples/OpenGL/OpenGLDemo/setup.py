@@ -9,12 +9,13 @@ try:
 except ImportError:
     raise SystemExit("This example requires pyOpenGL, which is not installed")
 
-from distutils.core import setup
-import py2app
+from setuptools import setup
 
 plist = dict(NSMainNibFile='OpenGLDemo')
 setup(
     app=['OpenGLDemo.py'],
     data_files=["OpenGLDemo.nib"],
     options=dict(py2app=dict(plist=plist)),
+    setup_requires=["py2app"],
+    install_requires=["pyobjc"],
 )
