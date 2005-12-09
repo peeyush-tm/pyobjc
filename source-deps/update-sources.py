@@ -12,8 +12,6 @@ CVS_TOOL = '/usr/bin/cvs'
 SVN_TOOL = '/usr/local/bin/svn'
 SOURCES = {
     'DocArticle': (CVS_TOOL, '-d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/docutils', 'export', '-r', 'HEAD', '-d', 'DocArticle_export', 'sandbox/bbum/DocArticle'),
-    'subprocess': (CVS_TOOL, '-d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/python', 'export', '-r', 'HEAD', '-d', 'subprocess_export', 'python/dist/src/Lib/subprocess.py'),
-    #'py2app': (SVN_TOOL, 'export', 'http://svn.red-bean.com/bob/py2app/trunk', 'py2app_export'),
 }
 
 def spawn(cmd, *args):
