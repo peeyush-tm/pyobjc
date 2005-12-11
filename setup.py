@@ -704,10 +704,12 @@ dist = setup(
         "py2app>=0.3.dev-r610,==dev",
         "bdist_mpkg>=0.3,==dev",
     ],
-    install_requires=[
-        "py2app>=0.3.dev-r610,==dev",
-        "altgraph>=0.6.6,==dev",
-    ],
+    extras_require = {
+        'XcodeSupport': [
+            "py2app>=0.3.dev-r610,==dev",
+            "altgraph>=0.6.6,==dev",
+        ],
+    },
     entry_points={
         'console_scripts': [
             "nibclassbuilder = PyObjCTools.NibClassBuilder:commandline",

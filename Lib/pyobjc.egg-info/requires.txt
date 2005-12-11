@@ -1,2 +1,5 @@
+
+
+[XcodeSupport]
 py2app>=0.3.dev-r610,==dev
 altgraph>=0.6.6,==dev
