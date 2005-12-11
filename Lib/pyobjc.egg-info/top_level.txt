@@ -16,8 +16,8 @@ AppleScriptKit
 AddressBook
 InterfaceBuilder
 AppKit
-OSAKit
-ExceptionHandling
 SenTestingKit
+ExceptionHandling
+OSAKit
 Message
 XgridFoundation
