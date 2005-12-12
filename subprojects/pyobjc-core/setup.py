@@ -63,6 +63,7 @@ dist = setup(
     author_email="pyobjc-dev@lists.sourceforge.net",
     url="http://pyobjc.sourceforge.net/",
     platforms=['MacOS X'],
+    namespace_packages=['PyObjCTools'],
     ext_modules=extensions,
     packages=packages,
     package_dir=package_dir,
