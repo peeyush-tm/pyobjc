@@ -57,10 +57,11 @@ dist = setup(
     setup_requires=[],
     install_requires=[
         'pyobjc-core',
+        "altgraph>=0.6.6,==dev",
         'py2app>=0.3.dev-r610,==dev',
         'bdist_mpkg>=0.3,==dev',
     ],
     extras_require={},
     entry_points={},
-    zip_safe=False,
+    zip_safe=True,
 )
