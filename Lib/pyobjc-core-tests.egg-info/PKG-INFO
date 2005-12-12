@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: pyobjc-core-tests
-Version: 1.3.7.dev-r1764
+Version: 1.3.7.dev-r1769
 Summary: Python<->ObjC Interoperability Module
 Home-page: http://pyobjc.sourceforge.net/
 Author: bbum, RonaldO, SteveM, LeleG, many others stretching back through the reaches of time...
