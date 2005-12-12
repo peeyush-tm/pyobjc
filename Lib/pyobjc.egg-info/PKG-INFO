@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: pyobjc
-Version: 1.3.7.dev-r1763
+Version: 1.3.7.dev-r1764
 Summary: Python<->ObjC Interoperability Module
 Home-page: http://pyobjc.sourceforge.net/
 Author: bbum, RonaldO, SteveM, LeleG, many others stretching back through the reaches of time...
@@ -22,10 +22,9 @@ Description:
         PyObjC also supports full introspection of Objective-C classes and
         direct invocation of Objective-C APIs from the interactive interpreter.
         
-        PyObjC requires MacOS X 10.2 or later.  PyObjC works both with the Apple
-        provided Python installation in MacOS X 10.2 (and later) and with
-        MacPython 2.3.  Users of MacPython 2.3 can install PyObjC though the
-        PackageManager application.
+        PyObjC requires MacOS X 10.3 or later.  PyObjC works both with the Apple
+        provided Python installation in MacOS X 10.3 (and later) and with
+        MacPython 2.3 and later.
         
 Platform: MacOS X
 Classifier: Development Status :: 5 - Production/Stable

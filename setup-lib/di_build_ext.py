@@ -3,10 +3,14 @@ import os
 import shutil
 from pyobjc_setup_utils import runtasks
 from setuptools import Distribution
+from srcpath import libpath, srcpath, buildpath, modpath
 
 build_ext = Distribution().get_command_class("build_ext")
 
-class pyobjc_build_ext (build_ext):
+def genpath(*args):
+    return buildpath('codegen', *args)
+
+class pyobjc_build_ext(build_ext):
     # Custom build_ext implementation. This differs in two ways from the
     # standard one:
     # 1. We first run the CodeGenerator script
@@ -16,7 +20,7 @@ class pyobjc_build_ext (build_ext):
 
     def create_empty_class_list(self):
         for fw in ('Fnd', 'App'):
-            fd = open('build/codegen/_%s_Classes.inc'%(fw,), 'w')
+            fd = open(genpath('_%s_Classes.inc' % (fw,)), 'w')
             fd.write('static const char* gClassNames[] = {\n')
             fd.write('\tNULL\n')
             fd.write('};\n')
@@ -26,7 +30,7 @@ class pyobjc_build_ext (build_ext):
         if not self.inplace:
             sys.path.insert(0, self.build_lib)
         else:
-            sys.path.insert(0, 'Lib')
+            sys.path.insert(0, libpath())
         import objc
         retval = 0
 
@@ -35,7 +39,7 @@ class pyobjc_build_ext (build_ext):
                 m = __import__(name)
             except ImportError:
                 continue
-            fd = open('build/codegen/_%s_Classes.inc~'%(pfx,), 'w')
+            fd = open(genpath('_%s_Classes.inc~' % (pfx,)), 'w')
             fd.write('static const char* gClassNames[] = {\n')
             for o in m.__dict__.values():
                 if not isinstance(o, objc.objc_class):
@@ -45,14 +49,14 @@ class pyobjc_build_ext (build_ext):
             fd.write('};\n')
             fd.close()
 
-            d1 = open('build/codegen/_%s_Classes.inc~'%(pfx,), 'r').read()
-            d2 = open('build/codegen/_%s_Classes.inc'%(pfx,), 'r').read()
+            d1 = open(genpath('_%s_Classes.inc~' % (pfx,)), 'r').read()
+            d2 = open(genpath('_%s_Classes.inc' % (pfx,)), 'r').read()
 
             if d1 != d2:
                 os.rename(
-                        'build/codegen/_%s_Classes.inc~'%(pfx,),
-                        'build/codegen/_%s_Classes.inc'%(pfx,)
-                    )
+                    genpath('_%s_Classes.inc~' % (pfx,)),
+                    genpath('_%s_Classes.inc' % (pfx,))
+                )
                 retval = 1
 
 
@@ -65,10 +69,12 @@ class pyobjc_build_ext (build_ext):
         # the extensions.
         compiler_saved = self.compiler
 
-        runtasks("Generating wrappers & stubs",
-            [sys.executable, "Scripts/CodeGenerators/cocoa_generator.py"])
+        runtasks("Generating wrappers & stubs", [
+            sys.executable,
+            srcpath("Scripts/CodeGenerators/cocoa_generator.py")
+        ])
 
-        if not os.path.exists('build/codegen/_Fnd_Classes.inc'):
+        if not os.path.exists(genpath('_Fnd_Classes.inc')):
             # Create a dummy classname list, to enable bootstrapping. Don't
             # do this if there already is a list, everything is better than
             # an empty list.

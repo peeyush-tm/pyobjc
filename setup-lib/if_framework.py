@@ -1,5 +1,13 @@
 import sys, os
-__all__ = ['IfFramework', 'CFLAGS', 'ALL_LDFLAGS', 'LDFLAGS', 'frameworks']
+import glob
+from setuptools import Extension
+from srcpath import srcpath, modpath, libpath, buildpath
+
+__all__ = [
+    'IfFramework', 'CFLAGS', 'ALL_LDFLAGS', 'LDFLAGS', 'frameworks',
+    'PACKAGES', 'pkg', 'deps', 'globall', 'package_version',
+    'ldflags', 'DEPENDS', 'INCFILES',
+]
 
 # If true we'll build universal binaries on systems with the 10.4u SDK running
 # OS X 10.4 or later.
@@ -12,6 +20,27 @@ gs_root = os.environ.get('GNUSTEP_SYSTEM_ROOT')
 
 ALL_LDFLAGS = {}
 LDFLAGS = []
+PACKAGES = {}
+DEPENDS = {}
+INCFILES = []
+
+def ldflags(name):
+    return ALL_LDFLAGS.get(name, [])
+
+def globall(*args):
+    res = []
+    for arg in args:
+        res.extend(glob.glob(arg))
+    return res
+
+def package_version():
+    fp = open(modpath('objc/pyobjc.h'), 'r')
+    for ln in fp.readlines():
+        if ln.startswith('#define OBJC_VERSION'):
+            fp.close()
+            return ln.split()[-1][1:-1]
+
+    raise ValueError("Version not found")
 
 def frameworks(*args):
     lst = []
@@ -19,8 +48,41 @@ def frameworks(*args):
         lst.extend(['-framework', arg])
     return lst
 
-def depends(name, fmwks=()):
+def linkswith(name, fmwks=()):
     ALL_LDFLAGS[name] = frameworks(*fmwks)
+
+INCFILES.extend(glob.glob(buildpath('codegen/*.inc')))
+
+DEPENDS.update(dict(
+    CoreFoundation=[],
+    Foundation=globall(
+        buildpath('codegen/_Fnd_*.inc'), modpath('Foundation/*.m')),
+    AppKit=globall(buildpath('codegen/_App_*.inc'), modpath('AppKit/*.m')),
+    AddressBook=INCFILES,
+    SecurityInterface=INCFILES,
+    ExceptionHandling=INCFILES,
+    PrefPanes=INCFILES,
+    InterfaceBuilder=INCFILES,
+    WebKit=INCFILES,
+    AppleScriptKit=INCFILES,
+    Automator=INCFILES,
+    CoreData=INCFILES,
+    DiscRecording=INCFILES,
+    DiscRecordingUI=INCFILES,
+    SyncServices=INCFILES,
+    XgridFoundation=INCFILES,
+    QTKit=INCFILES,
+    Quartz=INCFILES,
+    OSAKit=INCFILES,
+    SenTestingKit=INCFILES,
+))
+
+def deps(name):
+    incs = DEPENDS.get(name, [])
+    if not incs:
+        return {}
+    return dict(depends=incs)
+
 
 if gs_root is None:
     #
@@ -84,29 +146,29 @@ if gs_root is None:
         #"-fast", "-fPIC",
         ]
 
-    depends('objc',
+    linkswith('objc',
         ['Foundation', 'Carbon'])
-    depends('CoreFoundation',
+    linkswith('CoreFoundation',
         ['CoreFoundation', 'Foundation'])
-    depends('Foundation',
+    linkswith('Foundation',
         ['CoreFoundation', 'Foundation'])
-    depends('AppKit',
+    linkswith('AppKit',
         ['CoreFoundation', 'AppKit'])
-    depends('AddressBook',
+    linkswith('AddressBook',
         ['CoreFoundation', 'AddressBook', 'Foundation'])
-    depends('InterfaceBuilder',
+    linkswith('InterfaceBuilder',
         ['CoreFoundation', 'InterfaceBuilder', 'Foundation'])
-    depends('SecurityInterface',
+    linkswith('SecurityInterface',
         ['CoreFoundation', 'SecurityInterface', 'Foundation'])
-    depends('ExceptionHandling',
+    linkswith('ExceptionHandling',
         ['CoreFoundation', 'ExceptionHandling', 'Foundation'])
-    depends('PreferencePanes',
+    linkswith('PreferencePanes',
         ['CoreFoundation', 'PreferencePanes', 'Foundation'])
-    depends('SenTestingKit',
+    linkswith('SenTestingKit',
         ['SenTestingKit', 'Foundation'])
-    depends('WebKit',
+    linkswith('WebKit',
         ['WebKit', 'Foundation'])
-    depends('XgridFoundation',
+    linkswith('XgridFoundation',
         ['XgridFoundation', 'Foundation'])
 
     LDFLAGS = []
@@ -185,4 +247,25 @@ else:
     ALL_LDFLAGS['AppKit'] = ALL_LDFLAGS['objc'] + ['-lgnustep-gui']
     ALL_LDFLAGS['AddressBook'] = ALL_LDFLAGS['objc'] + ['-lAddresses']
 
-CFLAGS.append('-Ibuild/codegen/')
+CFLAGS.append('-I' + buildpath('codegen/'))
+
+def pkg(name, *extras, **options):
+    extensions = []
+    f = ldflags(name)
+    if not f:
+        f = frameworks(name, 'Foundation')
+    if not options.get('no_extension'):
+        extensions.append(Extension(
+            name + '._' + name,
+            [modpath('%s/_%s.m' % (name, name))],
+            extra_compile_args=['-I' + modpath('objc')] + CFLAGS,
+            extra_link_args=f + LDFLAGS,
+            **deps(name)))
+    extensions.extend(extras)
+            
+    if options.get('no_package'):
+        p = []
+    else:
+        p = [name]
+    packages, extensions = IfFramework(name + '.framework', p, extensions)
+    PACKAGES[name] = packages, extensions
