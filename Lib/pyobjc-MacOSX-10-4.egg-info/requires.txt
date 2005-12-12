@@ -1,2 +1,0 @@
-pyobjc-core
-pyobjc-MacOSX-10_3

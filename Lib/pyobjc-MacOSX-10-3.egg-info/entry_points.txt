@@ -1,3 +1,0 @@
-[console_scripts]
-nibclassbuilder = PyObjCTools.NibClassBuilder:commandline
-
