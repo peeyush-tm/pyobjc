@@ -1,3 +1,13 @@
+def package_version():
+    from srcpath import modpath
+    fp = open(modpath('objc/pyobjc.h'), 'r')
+    for ln in fp.readlines():
+        if ln.startswith('#define OBJC_VERSION'):
+            fp.close()
+            return ln.split()[-1][1:-1]
+
+    raise ValueError("Version not found")
+
 LONG_DESCRIPTION="""
 PyObjC is a bridge between Python and Objective-C.  It allows full
 featured Cocoa applications to be written in pure Python.  It is also

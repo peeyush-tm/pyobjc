@@ -5,7 +5,7 @@ from srcpath import srcpath, modpath, libpath, buildpath
 
 __all__ = [
     'IfFramework', 'CFLAGS', 'ALL_LDFLAGS', 'LDFLAGS', 'frameworks',
-    'PACKAGES', 'pkg', 'deps', 'globall', 'package_version',
+    'PACKAGES', 'pkg', 'deps', 'globall',
     'ldflags', 'DEPENDS', 'INCFILES',
 ]
 
@@ -32,15 +32,6 @@ def globall(*args):
     for arg in args:
         res.extend(glob.glob(arg))
     return res
-
-def package_version():
-    fp = open(modpath('objc/pyobjc.h'), 'r')
-    for ln in fp.readlines():
-        if ln.startswith('#define OBJC_VERSION'):
-            fp.close()
-            return ln.split()[-1][1:-1]
-
-    raise ValueError("Version not found")
 
 def frameworks(*args):
     lst = []

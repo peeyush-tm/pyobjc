@@ -1,0 +1,3 @@
+pyobjc-core
+py2app>=0.3.dev-r610,==dev
+bdist_mpkg>=0.3,==dev

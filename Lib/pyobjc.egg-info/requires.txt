@@ -1,5 +1,19 @@
+pyobjc-core
+pyobjc-macosx-10_3
+pyobjc-XcodeSupport
+pyobjc-macosx-10_4
 
+[pyobjc-core-tests]
+c
 
-[XcodeSupport]
-py2app>=0.3.dev-r610,==dev
-altgraph>=0.6.6,==dev
+[pyobjc-core]
+c
+
+[pyobjc-XcodeSupport]
+X
+
+[pyobjc-macosx-10_3]
+m
+
+[pyobjc-macosx-10_4]
+m

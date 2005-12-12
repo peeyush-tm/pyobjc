@@ -1,0 +1,10 @@
+SyncServices
+Quartz
+OSAKit
+QTKit
+DiscRecording
+Automator
+DiscRecordingUI
+CoreData
+AppleScriptKit
+XgridFoundation
