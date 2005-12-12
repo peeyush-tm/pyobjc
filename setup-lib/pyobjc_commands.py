@@ -2,6 +2,7 @@ import build_html
 import di_build_ext
 import di_sdist
 import di_test
+import di_build
 try:
     import pyobjc_mpkg
 except ImportError:
