@@ -54,7 +54,7 @@ extensions = []
 packages = []
 package_dir = {}
 for aPackage, value in _package_dir.items():
-    testDir = os.path.join(package_dir[value], 'test')
+    testDir = os.path.join(value, 'test')
     if os.path.isdir(testDir):
         packageName = 'PyObjCTests.%s.test' % aPackage
         package_dir[packageName] = testDir
@@ -81,5 +81,5 @@ dist = setup(
     download_url='http://pyobjc.sourceforge.net/software/index.php',
     setup_requires=["pyobjc-macosx-10_3"],
     install_requires=["pyobjc-macosx-10_3"],
-    zip_safe=False,
+    zip_safe=True,
 )

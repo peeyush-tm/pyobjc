@@ -81,5 +81,5 @@ dist = setup(
     setup_requires=["pyobjc-macosx-10_4"],
     install_requires=["pyobjc-macosx-10_4"],
     entry_points={},
-    zip_safe=False,
+    zip_safe=True,
 )
