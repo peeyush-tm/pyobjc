@@ -49,17 +49,10 @@ for name, (pkgs, exts) in PACKAGES.iteritems():
 # to be installed from a different folder
 package_dir = dict([(pkg, libpath(pkg.replace('.', '/'))) for pkg in packages])
 
-for aPackage in package_dir.keys():
-    testDir = os.path.join(package_dir[aPackage], 'test')
-    if os.path.isdir(testDir):
-        packageName = '%s.test' % aPackage
-        package_dir[packageName] = testDir
-        packages.append(packageName)
-
 package_dir[''] = libpath()
 
 dist = setup(
-    name="pyobjc-MacOSX-10_4",
+    name="pyobjc-macosx-10_4",
     version=package_version(),
     description="Python<->ObjC Interoperability Module",
     long_description=LONG_DESCRIPTION,
@@ -74,8 +67,8 @@ dist = setup(
     classifiers=CLASSIFIERS,
     license='MIT License',
     download_url='http://pyobjc.sourceforge.net/software/index.php',
-    setup_requires=["pyobjc-core", "pyobjc-MacOSX-10_3"],
-    install_requires=["pyobjc-core", "pyobjc-MacOSX-10_3"],
+    setup_requires=["pyobjc-core", "pyobjc-macosx-10_3"],
+    install_requires=["pyobjc-core", "pyobjc-macosx-10_3"],
     entry_points={},
     zip_safe=False,
 )

@@ -48,19 +48,22 @@ for name, (pkgs, exts) in PACKAGES.iteritems():
 
 # The following line is needed to allow separate flat modules
 # to be installed from a different folder
-package_dir = dict([(pkg, libpath(pkg.replace('.', '/'))) for pkg in packages])
+_package_dir = dict([(pkg, libpath(pkg.replace('.', '/'))) for pkg in packages])
 
-for aPackage in package_dir.keys():
-    testDir = os.path.join(package_dir[aPackage], 'test')
+extensions = []
+packages = []
+package_dir = {}
+for aPackage, value in _package_dir.items():
+    testDir = os.path.join(package_dir[value], 'test')
     if os.path.isdir(testDir):
-        packageName = '%s.test' % aPackage
+        packageName = 'PyObjCTests.%s.test' % aPackage
         package_dir[packageName] = testDir
         packages.append(packageName)
 
 package_dir[''] = libpath()
 
 dist = setup(
-    name="pyobjc-MacOSX-10_3",
+    name="pyobjc-macosx-10_3-tests",
     version=package_version(),
     description="Python<->ObjC Interoperability Module",
     long_description=LONG_DESCRIPTION,
@@ -69,39 +72,14 @@ dist = setup(
     url="http://pyobjc.sourceforge.net/",
     platforms=['MacOS X'],
     ext_modules=extensions,
+    namespace_packages=['PyObjCTests'],
     packages=packages,
     package_dir=package_dir,
     cmdclass=extra_cmdclass,
     classifiers=CLASSIFIERS,
     license='MIT License',
     download_url='http://pyobjc.sourceforge.net/software/index.php',
-    setup_requires=["pyobjc-core"],
-    install_requires=["pyobjc-core"],
-    entry_points={
-        'console_scripts': [
-            "nibclassbuilder = PyObjCTools.NibClassBuilder:commandline",
-        ],
-    },
+    setup_requires=["pyobjc-macosx-10_3"],
+    install_requires=["pyobjc-macosx-10_3"],
     zip_safe=False,
 )
-
-if 'install' in sys.argv:
-    import textwrap
-    print textwrap.dedent(
-    """
-    **NOTE**
-
-    Installing PyObjC with "setup.py install" *does not* install the following:
-    
-    - py2app (bdist_mpkg, modulegraph, altgraph, ...) and its tools
-    - Xcode templates
-    - Documentation
-    - Example code
-
-    The recommended method for installing PyObjC is to do:
-        
-        $ python setup.py bdist_mpkg --open
-
-    This will create and open an Installer metapackage that contains PyObjC,
-    py2app, and all the goodies!
-    """)

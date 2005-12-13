@@ -50,17 +50,10 @@ for name, (pkgs, exts) in PACKAGES.iteritems():
 # to be installed from a different folder
 package_dir = dict([(pkg, libpath(pkg.replace('.', '/'))) for pkg in packages])
 
-for aPackage in package_dir.keys():
-    testDir = os.path.join(package_dir[aPackage], 'test')
-    if os.path.isdir(testDir):
-        packageName = '%s.test' % aPackage
-        package_dir[packageName] = testDir
-        packages.append(packageName)
-
 package_dir[''] = libpath()
 
 dist = setup(
-    name="pyobjc-MacOSX-10_3",
+    name="pyobjc-macosx-10_3",
     version=package_version(),
     description="Python<->ObjC Interoperability Module",
     long_description=LONG_DESCRIPTION,
@@ -84,24 +77,3 @@ dist = setup(
     },
     zip_safe=False,
 )
-
-if 'install' in sys.argv:
-    import textwrap
-    print textwrap.dedent(
-    """
-    **NOTE**
-
-    Installing PyObjC with "setup.py install" *does not* install the following:
-    
-    - py2app (bdist_mpkg, modulegraph, altgraph, ...) and its tools
-    - Xcode templates
-    - Documentation
-    - Example code
-
-    The recommended method for installing PyObjC is to do:
-        
-        $ python setup.py bdist_mpkg --open
-
-    This will create and open an Installer metapackage that contains PyObjC,
-    py2app, and all the goodies!
-    """)

@@ -57,6 +57,8 @@ dist = setup(
     setup_requires=[],
     install_requires=[
         'pyobjc-core',
+        'pyobjc-macosx-10_3',
+        'pyobjc-macosx-10_4',
         "altgraph>=0.6.6,==dev",
         'py2app>=0.3.dev-r610,==dev',
         'bdist_mpkg>=0.3,==dev',
