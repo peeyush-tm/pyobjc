@@ -52,7 +52,7 @@ dist = setup(
     classifiers=CLASSIFIERS,
     license='MIT License',
     download_url='http://pyobjc.sourceforge.net/software/index.php',
-    install_requires=requirements,
+    install_requires=requirements[::-1],
     extras_require=extras,
     zip_safe=True,
 )

@@ -67,8 +67,8 @@ dist = setup(
     classifiers=CLASSIFIERS,
     license='MIT License',
     download_url='http://pyobjc.sourceforge.net/software/index.php',
-    setup_requires=["pyobjc_core", "pyobjc_macosx_10_3"],
-    install_requires=["pyobjc_core", "pyobjc_macosx_10_3"],
+    setup_requires=["pyobjc_core", "pyobjc_macosx_10_3"][::-1],
+    install_requires=["pyobjc_core", "pyobjc_macosx_10_3"][::-1],
     entry_points={},
     zip_safe=False,
 )

@@ -62,7 +62,7 @@ dist = setup(
         "altgraph>=0.6.6,==dev",
         'py2app>=0.3.dev-r610,==dev',
         'bdist_mpkg>=0.3,==dev',
-    ],
+    ][::-1],
     extras_require={},
     entry_points={},
     zip_safe=True,
