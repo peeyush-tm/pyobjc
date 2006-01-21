@@ -53,7 +53,7 @@ package_dir = dict([(pkg, libpath(pkg.replace('.', '/'))) for pkg in packages])
 package_dir[''] = libpath()
 
 dist = setup(
-    name="pyobjc-macosx-10_3",
+    name="pyobjc_macosx_10_3",
     version=package_version(),
     description="Python<->ObjC Interoperability Module",
     long_description=LONG_DESCRIPTION,
@@ -68,8 +68,8 @@ dist = setup(
     classifiers=CLASSIFIERS,
     license='MIT License',
     download_url='http://pyobjc.sourceforge.net/software/index.php',
-    setup_requires=["pyobjc-core"],
-    install_requires=["pyobjc-core"],
+    setup_requires=["pyobjc_core"],
+    install_requires=["pyobjc_core"],
     entry_points={
         'console_scripts': [
             "nibclassbuilder = PyObjCTools.NibClassBuilder:commandline",

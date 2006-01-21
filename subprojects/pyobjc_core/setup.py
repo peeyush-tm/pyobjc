@@ -55,7 +55,7 @@ package_dir = dict([(pkg, libpath(pkg.replace('.', '/'))) for pkg in packages])
 package_dir[''] = libpath()
 
 dist = setup(
-    name="pyobjc-core",
+    name="pyobjc_core",
     version=package_version(),
     description="Python<->ObjC Interoperability Module",
     long_description=LONG_DESCRIPTION,

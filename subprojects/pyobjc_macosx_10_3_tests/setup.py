@@ -63,7 +63,7 @@ for aPackage, value in _package_dir.items():
 package_dir[''] = libpath()
 
 dist = setup(
-    name="pyobjc-macosx-10_3-tests",
+    name="pyobjc_macosx_10_3-tests",
     version=package_version(),
     description="Python<->ObjC Interoperability Module",
     long_description=LONG_DESCRIPTION,
@@ -79,7 +79,7 @@ dist = setup(
     classifiers=CLASSIFIERS,
     license='MIT License',
     download_url='http://pyobjc.sourceforge.net/software/index.php',
-    setup_requires=["pyobjc-macosx-10_3"],
-    install_requires=["pyobjc-macosx-10_3"],
+    setup_requires=["pyobjc_macosx_10_3"],
+    install_requires=["pyobjc_macosx_10_3"],
     zip_safe=True,
 )

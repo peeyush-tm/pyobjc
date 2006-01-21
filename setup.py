@@ -19,21 +19,21 @@ packages = []
 extensions = []
 package_dir = {'': 'Lib'}
 requirements = [
-    "pyobjc-core",
-    "pyobjc-macosx-10_3",
+    "pyobjc_core",
+    "pyobjc_macosx_10_3",
 ]
 plat = pkg_resources.get_platform().split('-')
 if plat[0] == 'macosx':
     if map(int, plat[1].split('.')[:2]) > [10, 3]:
         requirements.extend([
-            'pyobjc-XcodeSupport',
-            'pyobjc-macosx-10_4',
+            'pyobjc_XcodeSupport',
+            'pyobjc_macosx_10_4',
         ])
 
 extras = {}
 for path in glob.glob('subprojects/pyobjc-*'):
     sub = os.path.basename(path)
-    name = sub[len('pyobjc-')]
+    name = sub[len('pyobjc_')]
     extras[sub] = [name]
 
 dist = setup(

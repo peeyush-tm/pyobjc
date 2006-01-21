@@ -38,7 +38,7 @@ package_dir = dict([(pkg, libpath(pkg.replace('.', '/'))) for pkg in packages])
 package_dir[''] = libpath()
 
 dist = setup(
-    name="pyobjc-XcodeSupport",
+    name="pyobjc_XcodeSupport",
     version=package_version(),
     description="Python<->ObjC Interoperability Module",
     long_description=LONG_DESCRIPTION,
@@ -56,9 +56,9 @@ dist = setup(
     download_url='http://pyobjc.sourceforge.net/software/index.php',
     setup_requires=[],
     install_requires=[
-        'pyobjc-core',
-        'pyobjc-macosx-10_3',
-        'pyobjc-macosx-10_4',
+        'pyobjc_core',
+        'pyobjc_macosx_10_3',
+        'pyobjc_macosx_10_4',
         "altgraph>=0.6.6,==dev",
         'py2app>=0.3.dev-r610,==dev',
         'bdist_mpkg>=0.3,==dev',
