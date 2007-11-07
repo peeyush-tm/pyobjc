@@ -4,6 +4,12 @@ PyObjC NEWS
 
 An overview of the relevant changes in new, and older, releases.
 
+Version 2.0.1 (...)
+-------------------
+
+- Fix crash when printing CF objects that are magic cookies.
+
+
 Version 2.0 (LEOPARD, post WWDC07)
 ----------------------------------
 
