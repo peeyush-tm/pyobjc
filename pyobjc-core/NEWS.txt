@@ -7,6 +7,9 @@ An overview of the relevant changes in new, and older, releases.
 Version 2.0.1 (...)
 -------------------
 
+- BUGFIX: ``objc.inject`` works on Leopard (at least on Intel Macs, haven't
+  tested on PPC). 
+
 - BUGFIX: don't crash when printing CF objects that are magic cookies.
 
 - BUGFIX: It is now possible to override ``respondsToSelector:`` in Python.
