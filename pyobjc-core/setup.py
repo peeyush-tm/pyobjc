@@ -1,5 +1,13 @@
 #!/usr/bin/env python
 
+# This is a crude hack to ensure that the system version of pyobjc is not on sys.path,
+# otherwise setuptools path hack trickery causes us to test using the wrong packages on the path.
+import sys
+if '/System/Library/Frameworks/Python.framework/Versions/2.5/Extras/lib/python/PyObjC' in sys.path:
+    sys.path.remove('/System/Library/Frameworks/Python.framework/Versions/2.5/Extras/lib/python/PyObjC')
+if '/System/Library/Frameworks/Python.framework/Versions/2.6/Extras/lib/python/PyObjC' in sys.path:
+    sys.path.remove('/System/Library/Frameworks/Python.framework/Versions/2.6/Extras/lib/python/PyObjC')
+
 import ez_setup
 ez_setup.use_setuptools()
 
@@ -8,6 +16,7 @@ import os
 import glob
 import site
 import platform
+
 
 if 'MallocStackLogging' in os.environ:
     del os.environ['MallocStackLogging']

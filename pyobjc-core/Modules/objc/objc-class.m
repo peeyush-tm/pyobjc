@@ -1413,7 +1413,9 @@ PyObjCClass_New(Class objc_class)
 		((PyTypeObject *)result)->tp_as_buffer = &nsmutabledata_as_buffer;
 	} else if (strcmp(className, "NSBlock") == 0) {
 		((PyTypeObject *)result)->tp_basicsize = sizeof(PyObjCBlockObject);
+#if (PY_VERSION_HEX >= 0x02060000)
 		PyType_Modified((PyTypeObject*)result);
+#endif
 		PyType_Ready((PyTypeObject *)result);
 	}
 
