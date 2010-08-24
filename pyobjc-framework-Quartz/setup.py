@@ -52,12 +52,12 @@ subpackages = [ "Quartz.%s"%(fn,) for fn in os.listdir('Lib/Quartz') if os.path.
 
 setup(
     name='pyobjc-framework-Quartz',
-    version="2.3.1",
+    version="2.3.2a0",
     description = "Wrappers for the Quartz frameworks on Mac OS X",
     packages = [ "Quartz" ] + subpackages,
     install_requires = [ 
-        'pyobjc-core>=2.3.1',
-        'pyobjc-framework-Cocoa>=2.3.1',
+        'pyobjc-core>=2.3.2a0',
+        'pyobjc-framework-Cocoa>=2.3.2a0',
     ],
     ext_modules = [
         # CoreVideo
