@@ -1,0 +1,18 @@
+build
+BridgeSupport
+dist
+.DS_Store
+__pycache__
+build-support/checkouts
+build-support/virtualenvs
+build-support/cache
+autom4te.cache
+
+syntax: glob
+*.so
+*.egg-info
+*.dSYM
+*.pyc
+*.pyo
+unittest2-*.egg
+*.swp
