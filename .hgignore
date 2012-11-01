@@ -1,0 +1,14 @@
+build
+dist
+.DS_Store
+__pycache__
+autom4te.cache
+
+syntax: glob
+*.so
+*.egg-info
+*.dSYM
+*.pyc
+*.pyo
+unittest2-*.egg
+*.swp
