@@ -1,6 +1,8 @@
-======================
-API Notes for CoreText
-======================
+API Notes: CoreText framework
+=============================
+
+API Notes
+---------
 
 * ``CTFontCreateWithQuickdrawInstance``
 

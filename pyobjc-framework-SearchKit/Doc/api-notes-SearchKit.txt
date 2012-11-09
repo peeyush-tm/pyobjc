@@ -1,5 +1,9 @@
-API Notes for the SearchKit framework
--------------------------------------
+API Notes: SearchKit framework
+==============================
+
+API Notes
+---------
+
 
 SKIndexClose
 ............

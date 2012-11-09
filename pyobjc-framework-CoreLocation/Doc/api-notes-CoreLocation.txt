@@ -1,5 +1,8 @@
-API Notes for the CoreLocation framework
-=========================================
+API Notes: CoreLocation framework
+=================================
+
+API Notes
+---------
 
 The entire CoreLocation framework is supported
 

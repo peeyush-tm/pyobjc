@@ -1,6 +1,8 @@
-=================================
-API Notes for the QTKit framework
-=================================
+API Notes: QTKit framework
+==========================
+
+API Notes
+---------
 
 * Functions ``QTMakeTimeWithTimeRecord`` and ``QTGetTimeRecord`` are not 
   supported.

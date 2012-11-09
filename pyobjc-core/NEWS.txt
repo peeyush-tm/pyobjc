@@ -1,8 +1,48 @@
-===========
-PyObjC NEWS
-===========
+What's new in PyObjC
+====================
 
 An overview of the relevant changes in new, and older, releases.
+
+Version 2.5b1
+-------------
+
+.. note::
+
+   Version 2.5 is currently in development and hasn't been released
+   yet.
+
+- Issue #22: Reimplement support for bridgesupport files
+
+  This reintroduces ``objc.parseBridgeSupport`` and 
+  ``objc.initFrameworkWrapper``, both are reimplemented in Python 
+  (previous version used C code)
+
+  .. note::
+
+     The implementation is currently barely tested and therefore likely
+     contains bugs.
+
+- Add explicit deprecation warnings to ``objc.CFToObject`` and
+  ``objc.ObjectToCF``. Both functions barely function at all and will
+  be removed with PyObjC 3.0.
+
+- ``objc.CFToObject`` and ``objc.ObjectToCF`` are no longer available
+  when using Python 3.x, the APIs are used for MacPython support and
+  that part of the standard library is not available with Python 3.x.
+
+- ``objc.splitStruct`` is renamed to ``objc.splitStructSignature`` 
+  and now actually works. The old name is temporarily available as
+  an alias.
+
+- Fix refcounting leak in ``objc.splitSignature``.
+
+- ``objc._loadFunctionList`` is renamed to ``objc.loadFunctionList``
+  and is fully documented. The old name is temporarily available as
+  an alias.
+
+- Improved documentation
+
+
 
 Version 2.4.1
 -------------
@@ -119,7 +159,7 @@ Version 2.4
 
 - Introduced a way to compile bridgesupport data and lazily load wrappers.
 
-  Avoid using "from Cocoa import *" to get the most benefits from this,
+  Avoid using "from Cocoa import \*" to get the most benefits from this,
   use either "import Cocoa" or "from Cocoa import NSObject".
 
 - ``objc.initFrameworkWrapper`` is now deprecated, switch to the new
@@ -285,9 +325,9 @@ Version 2.3
   in Apple's frameworks.
 
 - The PyObjCTest testsuite now supports version-specific tests: for
-  Python 2.x it will load modules whose name starts with 'test2_' and for
-  Python 3.x those starting with 'test3_'. For both versions it will
-  load test modules whose name starts with 'test_' as well.
+  Python 2.x it will load modules whose name starts with 'test2\_' and for
+  Python 3.x those starting with 'test3\_'. For both versions it will
+  load test modules whose name starts with 'test\_' as well.
 
 - Renamed the assertion functions in ``PyObjCTools.TestSupport``, added
   ``assertFoo`` methods and deprecated the ``failIfFoo`` and ``failUnlessFoo``
@@ -405,7 +445,7 @@ Version 2.2 (2009-11-24)
     such as an ``NSArray``, and there are no direct references to the block from
     Python.
 
-.. __: http://llvm.org/svn/llvm-project/cfe/trunk/docs/BlockImplementation.txt
+.. __: http://clang.llvm.org/docs/Block-ABI-Apple.txt
 
 - ``objc.inject`` is no longer support. This was code that had no real relation
   to the rest of PyObjC and was only working in 32-bit mode with little reason
@@ -1970,7 +2010,7 @@ Version 0.9 (May-02-2003)
 - The module AppKit.NibClassBuilder has been moved to the package
   PyObjCTools.
 
-- Usage of libFFI (http://sources.redhat.com/libffi) is now mandatory. The
+- Usage of libFFI (http://sourceware.org/libffi/) is now mandatory. The
   setup.py gives the impression that it isn't, but we do *not* support 
   non-FFI builds.
 
