@@ -1,23 +1,31 @@
-==================================
-API Notes for the AppKit framework
-==================================
+API Notes: AppKit framework
+===========================
+
+API Notes
+---------
+
+API Extensions
+...............
+
+See :doc:`/api/module-PyObjCTools.AppCategories` for same extensions for
+the APIs from the AppKit framework.
 
 ``NSColorSpace``
-----------------
+................
 
 * ``-initWithColorSyncProfile:`` and ``colorSyncProfile``
 
   These methods are not supported.
 
 ``NSEvent``
------------
+...........
 
 * ``-initWithEventRef:`` and ``-eventRef``
 
   These methods are not supported
 
 ``NSGradient``
---------------
+..............
 
 * ``-initWithColorsAndLocations:``
 
@@ -25,19 +33,19 @@ API Notes for the AppKit framework
 
 
 ``NSDrawBitmap``
-----------------
+................
 
 This function is deprecated and is not supported by PyObjC. Use an ``NSBitmapImageRep`` instead.
 
 ``NSImage``
------------
+...........
 
 * ``initWithIconRef:``
 
   This method is not yet supported.
 
 ``NSMovie``
------------
+...........
 
 NOTE: This class is deprecated by Apple, use ``QTMovie`` instead.
 
@@ -46,51 +54,51 @@ NOTE: This class is deprecated by Apple, use ``QTMovie`` instead.
   These methods are not supported.
 
 ``NSMovieView``
----------------
+...............
 
 * ``-movieController``
 
   This method is not supported.
 
 ``NSPrintInfo``
----------------
+................
 
 * ``-PMPrintSession``, ``-PMPageFormat``, ``-PMPrintSettings``
 
-  These methods are not yet supported.
+  These methods are not supported.
 
 ``NSQuickDrawView``
--------------------
+...................
 
 * ``-qdPort``
 
   This method is not supported.
 
 ``NSGlyphInfoAtIndex``
-----------------------
+......................
 
 This function is not supported.
 
 ``NSTypesetterGlyphInfo``
--------------------------
+.........................
 
 This structure is not supported, and therefore the method ``-baseOfTypesetterGlyphInfo`` and 
 ``-typesetterLaidOneGlyph`` of ``NSSimpleHorizontalTypesetter`` are not supported as well.
 
 ``NSWindow``
-------------
+............
 
 Methods ``-initWithWindowRef:`` and ``-windowRef`` are not supported.
 
 ``NSInputStream``
-------------------
+.................
 
 * ``getBuffer:length:``
 
    This method is not supported
 
 ``NSBitmapImageRep``
---------------------
+....................
 
 * ``-initWithBitmapDataPlanes:pixelsWide:pixelsHigh:bitsPerSample:samplesPerPixel:hasAlpha:isPlanar:colorSpaceName:bitmapFormat:bytesPerRow:bitsPerPixel:``
 
@@ -98,7 +106,7 @@ Methods ``-initWithWindowRef:`` and ``-windowRef`` are not supported.
   has not been written yet.
 
 ``NSDictionaryOfVariableBindings``
-----------------------------------
+...................................
 
 This is a helper macro that cannot be implemented with the same interface in Python.
 

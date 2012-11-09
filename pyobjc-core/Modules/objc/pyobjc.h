@@ -5,7 +5,7 @@
  * Central include file for PyObjC. 
  */
 
-#define OBJC_VERSION "2.4.1b1"
+#define OBJC_VERSION "2.5.0b1"
 
 // Loading in AppKit on Mac OS X 10.3 results in
 // a bit less than 1500 classes.
@@ -118,7 +118,6 @@ static inline PyObject* _PyObjCTuple_GetItem(PyObject* tuple, Py_ssize_t idx)
 #include "bundle-variables.h"
 #include "function.h"
 #include "varlist.h"
-#include "parsexml.h"
 #include "objc_super.h"
 #include "fsref.h"
 #include "fsspec.h"
