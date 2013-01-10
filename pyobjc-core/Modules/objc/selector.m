@@ -532,6 +532,46 @@ objcsel_repr(PyObject* _self)
 	return rval;
 }
 
+static PyObject* objcsel_richcompare(PyObject* a, PyObject* b, int op)
+{
+	if (op == Py_EQ || op == Py_NE) {
+		if (PyObjCNativeSelector_Check(a) && PyObjCNativeSelector_Check(b)) {
+			PyObjCNativeSelector* sel_a = (PyObjCNativeSelector*)a;
+			PyObjCNativeSelector* sel_b = (PyObjCNativeSelector*)b;
+			int same = 1;
+
+			if (sel_a->sel_selector != sel_b->sel_selector) {
+				same = 0;
+			}
+			if (sel_a->sel_class != sel_b->sel_class) {
+				same = 0;
+			}
+			if (sel_a->sel_self != sel_b->sel_self) {
+				same = 0;
+			}
+			if ((op == Py_EQ && !same) || (op == Py_NE && same)) {
+				Py_INCREF(Py_False);
+				return Py_False;
+			} else {
+				Py_INCREF(Py_False);
+				return Py_True;
+			}
+
+		} else {
+			if (op == Py_EQ) {
+				Py_INCREF(Py_False);
+				return Py_False;
+			} else {
+				Py_INCREF(Py_False);
+				return Py_True;
+			}
+		}
+	} else {
+		PyErr_SetString(PyExc_TypeError, "Cannot use '<', '<=', '>=' and '>' with objc.selector");
+		return NULL;
+	}
+}
+
 
 static PyObject*
 objcsel_call(PyObject* _self, PyObject* args, PyObject* kwds)
@@ -673,6 +713,10 @@ objcsel_descr_get(PyObject* _self, PyObject* volatile obj, PyObject* class)
 	/* Bind 'self' */
 	if (meth->sel_flags & PyObjCSelector_kCLASS_METHOD) {
 		obj = class;
+	} else {
+		if (obj && PyObjCClass_Check(obj)) {
+			obj = NULL;
+		}
 	}
 	result = PyObject_New(PyObjCNativeSelector, &PyObjCNativeSelector_Type);
 	result->sel_selector   = meth->sel_selector;
@@ -742,7 +786,7 @@ PyTypeObject PyObjCNativeSelector_Type = {
  	0,					/* tp_doc */
  	0,					/* tp_traverse */
  	0,					/* tp_clear */
-	0,					/* tp_richcompare */
+	objcsel_richcompare,			/* tp_richcompare */
 	0,					/* tp_weaklistoffset */
 	0,					/* tp_iter */
 	0,					/* tp_iternext */
@@ -782,7 +826,7 @@ PyObjCSelector_FindNative(PyObject* self, const char* name)
 	PyObject* retval;
 
 	NSMethodSignature* methsig;
-	char  buf[1024];
+	char  buf[2048]; /* 1024  XXX: yes, some signatures are actually longer than 1K bytes */
 
 	if (PyObjCObject_Check(self)) {
 		if (PyObjCClass_HiddenSelector((PyObject*)Py_TYPE(self), sel, NO)) {
@@ -836,11 +880,12 @@ PyObjCSelector_FindNative(PyObject* self, const char* name)
 			}
 		}
 
+
 		NS_DURING
-			if ([cls instancesRespondToSelector:sel]) {
-				methsig = [cls instanceMethodSignatureForSelector:sel];
+			if ([cls respondsToSelector:sel]) {
+				methsig = [cls methodSignatureForSelector:sel];
 				retval = PyObjCSelector_NewNative(cls, sel, 
-					PyObjC_NSMethodSignatureToTypeString(methsig, buf, sizeof(buf)), 0);
+					PyObjC_NSMethodSignatureToTypeString(methsig, buf, sizeof(buf)), 1);
 			} else if ((Object_class != nil) && (cls != Object_class) && nil != (methsig = [(NSObject*)cls methodSignatureForSelector:sel])) {
 				retval = PyObjCSelector_NewNative(cls, sel, 
 					PyObjC_NSMethodSignatureToTypeString(
@@ -851,6 +896,8 @@ PyObjCSelector_FindNative(PyObject* self, const char* name)
 				retval = NULL;
 			}
 		NS_HANDLER
+			PyObjCErr_FromObjC(localException);
+			PyErr_Print();
 			PyErr_Format(PyExc_AttributeError,
 				"No attribute %s", name);
 			retval = NULL;
@@ -909,13 +956,15 @@ PyObjCSelector_NewNative(Class class,
 	const char* native_signature = signature;
 	char* repl_sig;
 
+
 	repl_sig = PyObjC_FindReplacementSignature(class, selector);
 	if (repl_sig) {
 		signature = repl_sig;
 	}
 
 	if (signature == NULL) {
-		PyErr_SetString(PyObjCExc_Error, "Selector with NULL or too long signature");
+		PyErr_Format(PyExc_RuntimeError, 
+			"PyObjCSelector_NewNative: nil signature for %s", sel_getName(selector));
 		return NULL;
 	}
 
@@ -1479,6 +1528,13 @@ PyObjCSelector_DefaultSelector(const char* methname)
 	 * Also if the name starts and ends with two underscores, return
 	 * it unmodified. This avoids mangling of Python's special methods.
 	 *
+	 * Also don't rewrite two underscores between name elements, such
+	 * as '__pyobjc__setItem_' -> '__pyobjc__setitem:'
+	 *
+	 * Also: when the name starts with two capital letters and an underscore
+	 * don't replace the underscore, the 'XX_' prefix is a common way to
+	 * namespace selectors.
+	 *
 	 * Both are heuristics and could be the wrong choice, but either 
 	 * form is very unlikely to exist in ObjC code.
 	 */
@@ -1495,10 +1551,21 @@ PyObjCSelector_DefaultSelector(const char* methname)
 		cur++;
 	}
 
+	if (isupper(cur[0]) && isupper(cur[1]) && cur[2] == '_') {
+		cur += 3;
+	}
+
 	/* Replace all other underscores by colons */
 	cur = strchr(cur, '_');
 	while (cur != NULL) {
-		*cur = ':';
+		if (cur[1] == '_' && cur[2] && cur[2] != '_') {
+			/* Don't translate double underscores between
+			 * name elements.
+			 */
+			cur += 2;
+		} else {
+			*cur = ':';
+		}
 		cur = strchr(cur, '_');
 	}
 	return sel_registerName(buf);

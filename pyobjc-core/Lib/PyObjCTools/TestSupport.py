@@ -270,6 +270,13 @@ class TestCase (_unittest.TestCase):
         if any(x is tp for x in _nscftype):
             self.fail(message or "%r is not a unique CFTypeRef type"%(tp,))
 
+        # NOTE: Don't test if this is a subclass of one of the known
+        #       CF roots, this tests is mostly used to ensure that the
+        #       type is distinct from one of those roots.
+        #  XXX: With the next two lines enabled there are spurious test
+        #       failures when a CF type is toll-free bridged to an
+        #       (undocumented) Cocoa class. It might be worthwhile to
+        #       look for these, but not in the test suite.
         #if not issubclass(tp, _nscftype):
         #    self.fail(message or "%r is not a CFTypeRef subclass"%(tp,))
 
@@ -761,6 +768,10 @@ class TestCase (_unittest.TestCase):
 
 
 
+    if not hasattr(_unittest.TestCase, 'assertStartswith'):
+        def assertStartswith(self, value, test, message = None): # pragma: no cover
+            if not value.startswith(test):
+                self.fail(message or "%r does not start with %r"%(value, test))
 
     if not hasattr(_unittest.TestCase, 'assertIs'): # pragma: no cover
         def assertIs(self, value, test, message = None):
@@ -859,6 +870,7 @@ class TestCase (_unittest.TestCase):
             _gc.collect()
             del p
             _gc.collect()
+
 
 main = _unittest.main
 

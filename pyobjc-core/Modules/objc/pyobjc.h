@@ -5,7 +5,7 @@
  * Central include file for PyObjC. 
  */
 
-#define OBJC_VERSION "2.6b1"
+#define OBJC_VERSION "3.0a1"
 
 // Loading in AppKit on Mac OS X 10.3 results in
 // a bit less than 1500 classes.
@@ -79,6 +79,7 @@ static inline PyObject* _PyObjCTuple_GetItem(PyObject* tuple, Py_ssize_t idx)
 #endif
 #endif
 
+#include "arc-runtime.h"
 #include "objc-runtime-compat.h"
 #include "proxy-registry.h"
 #include "objc_support.h"
@@ -143,7 +144,6 @@ static inline PyObject* _PyObjCTuple_GetItem(PyObject* tuple, Py_ssize_t idx)
 extern BOOL PyObjC_useKVO;
 extern BOOL PyObjC_nativeProperties;
 extern int PyObjC_VerboseLevel;
-extern int PyObjC_HideProtected;
 #if PY_MAJOR_VERSION == 2
 extern int PyObjC_StrBridgeEnabled;
 #endif

@@ -432,6 +432,7 @@ CFLAGS.extend([
     #"-Wno-missing-method-return-type", # XXX
     "-Wno-import",
     "-DPyObjC_BUILD_RELEASE=%02d%02d"%(tuple(map(int, get_os_level().split('.')))),
+    "-fvisibility=hidden",
     #"-Warray-bounds", # XXX: Needed to avoid False positives for PyTuple access macros
     ])
 
@@ -446,6 +447,12 @@ if '-O0' in get_config_var('CFLAGS'):
         if isinstance(vars[k], str) and '-O0' in vars[k]:
             vars[k] = vars[k].replace('-O0', '-O1')
 
+vars = get_config_vars()
+for k in vars: # XXX
+    if isinstance(vars[k], str) and '-O2' in vars[k]:
+        vars[k] = vars[k].replace('-O2', '-O1')
+
+
 OBJC_LDFLAGS = frameworks('CoreFoundation', 'Foundation', 'Carbon')
 
 if not os.path.exists('/usr/include/objc/runtime.h'):
@@ -455,6 +462,7 @@ if not os.path.exists('/usr/include/objc/runtime.h'):
 # a binary that runs on other releases of the OS without using a particular SDK.
 CFLAGS.extend(['-isysroot', '/'])
 OBJC_LDFLAGS.extend(['-isysroot', '/'])
+#OBJC_LDFLAGS.append("-fvisibility=hidden")
 CFLAGS.append('-Ibuild/codegen/')
 
 # Patch distutils: it needs to compile .S files as well.
