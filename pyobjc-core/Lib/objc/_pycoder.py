@@ -1,9 +1,6 @@
 """
 Implementation of NSCoding for OC_PythonObject and friends
 
-NOTE: this only works with a keyed archiver, not with a plain archiver. It
-should be easy enough to change this later on if needed.
-
 A minor problem with NSCoding support is that NSCoding restores
 graphs recusively while Pickle does so depth-first (more of less).
 This can cause problems when the object state contains the
@@ -99,7 +96,7 @@ def save_reduce(coder, func, args,
         coder.encodeObject_forKey_(state, kSTATE)
 
     else:
-        coder.__pyobjc__encodeInt_(kOP_REDUCE)
+        coder.encodeValueOfObjCType_at_(objc._C_INT, kOP_REDUCE)
         coder.encodeObject_(func)
         coder.encodeObject_(args)
         if listitems is None:
@@ -129,7 +126,7 @@ if sys.version_info[0] == 2:
             coder.encodeObject_forKey_(args, kARGS)
 
         else:
-            coder.__pyobjc__encodeInt32_(kOP_INST)
+            coder.encodeValueOfObjCType_at_(objc._C_INT, kOP_INST)
             coder.encodeObject_(cls)
             coder.encodeObject_(args)
 
@@ -149,35 +146,14 @@ if sys.version_info[0] == 2:
 
     encode_dispatch[InstanceType] = save_inst
 
-
-def save_none(coder, obj):      # pragma: no cover
-    # NOTE: function isn't actually used because "None" is passed to 'encodeWithObject...' as 
-    #       a null pointer, and that won't trigger a callback to 'pyobjectEncode'.
-    if coder.allowsKeyedCoding():
-        coder.encodeInt_forKey_(kOP_NONE, kKIND)
-    else:
-        coder.__pyobjc__encodeInt_(kOP_NONE)
-encode_dispatch[type(None)] = save_none
-
-def save_bool(coder, obj): # pragma: no cover
-    # NOTE: function isn't actually used because "None" is passed to 'encodeWithObject...' as 
-    #       an NSNumber value, and that won't trigger a callback to 'pyobjectEncode'.
-    if coder.allowsKeyedCoding():
-        coder.encodeInt_forKey_(kOP_BOOL, kKIND)
-        coder.encodeBool_forKey_(bool(obj), kVALUE)
-    else:
-        coder.__pyobjc__encodeInt_(kOP_BOOL)
-        coder.__pyobjc__encodeBool_(bool(obj))
-encode_dispatch[bool] = save_bool
-
 if sys.version_info[0] == 2:
     def save_int(coder, obj):
         if coder.allowsKeyedCoding():
             coder.encodeInt_forKey_(kOP_INT, kKIND)
             coder.encodeInt64_forKey_(obj, kVALUE)
         else:
-            coder.__pyobjc__encodeInt_(kOP_INT)
-            coder.__pyobjc__encodeInt64_(obj)
+            coder.encodeValueOfObjCType_at_(objc._C_INT, kOP_INT)
+            coder.encodeValueOfObjCType_at_(objc._C_LNG_LNG, obj)
     encode_dispatch[int] = save_int
 
     def save_long(coder, obj):
@@ -188,7 +164,7 @@ if sys.version_info[0] == 2:
             coder.encodeInt_forKey_(kOP_LONG, kKIND)
             coder.encodeObject_forKey_(encoded, kVALUE)
         else:
-            coder.__pyobjc__encodeInt_(kOP_LONG)
+            coder.encodeValueOfObjCType_at_(objc._C_INT, kOP_LONG)
             coder.encodeObject_(encoded)
 
     encode_dispatch[long] = save_long
@@ -199,7 +175,7 @@ else: # pragma: no cover (py3k)
             coder.encodeInt_forKey_(kOP_LONG, kKIND)
             coder.encodeObject_forKey_(unicode(repr(obj)), kVALUE)
         else:
-            coder.__pyobjc__encodeInt_(kOP_LONG)
+            coder.encodeValueOfObjCType_at_(objc._C_INT, kOP_LONG)
             coder.encodeObject_(unicode(repr(obj)))
     encode_dispatch[int] = save_int
 
@@ -210,61 +186,10 @@ def save_float(coder, obj):
         coder.encodeInt_forKey_(kOP_FLOAT_STR, kKIND)
         coder.encodeObject_forKey_(unicode(repr(obj)), kVALUE)
     else:
-        coder.__pyobjc__encodeInt_(kOP_FLOAT_STR)
+        coder.encodeValueOfObjCType_at_(objc._C_INT, kOP_FLOAT_STR)
         coder.encodeObject_(unicode(repr(obj)))
     #coder.encodeDouble_forKey_(obj, kVALUE)
 encode_dispatch[float] = save_float
-
-def save_string(coder, obj): # pragma: no cover
-    # String values passed to NSArchiver as instances of OC_PythonUnicode,
-    # a subclass of NSString that can be encoded without calling back to 
-    # pyobjectEncode. Subklasses of str and unicode will call back to pyobjectEncode,
-    # but the actual string data is still a str/unicode that is encoded without
-    # calling this function.
-    if coder.allowsKeyedCoding():
-        coder.encodeInt_forKey_(kOP_STRING, kKIND)
-        coder.encodeBytes_length_forKey_(obj, len(obj), kVALUE)
-    else:
-        encodeInt_(kOP_STRING)
-        coder.encodeBytes_length_(obj, len(obj))
-
-encode_dispatch[str] = save_string
-
-
-def save_tuple(coder, obj): # pragma: no cover
-    # Tuples are saved by C code in OC_PythonArray.
-    if coder.allowsKeyedCoding():
-        coder.encodeInt_forKey_(kOP_TUPLE, kKIND)
-        coder.encodeObject_forKey_(NSArray.arrayWithArray_(obj), kVALUE)
-
-    else:
-        coder.__pyobjc__encodeInt_(kOP_TUPLE)
-        coder.encodeObject_(NSArray.arrayWithArray_(obj))
-encode_dispatch[tuple] = save_tuple
-
-def save_list(coder, obj): # pragma: no cover
-    # Lists are saved by C code in OC_PythonArray.
-    if coder.allowsKeyedCoding():
-        coder.encodeInt_forKey_(kOP_LIST, kKIND)
-        coder.encodeObject_forKey_(NSArray.arrayWithArray_(obj), kVALUE)
-
-    else:
-        coder.__pyobjc__encodeInt_(kOP_LIST)
-        coder.encodeObject_(NSArray.arrayWithArray_(obj))
-encode_dispatch[list] = save_list
-
-def save_dict(coder, obj): # pragma: no cover
-    # Dicts are saved by C code in OC_PythonDict
-    if coder.allowsKeyedCoding():
-        coder.encodeInt_forKey_(kOP_DICT, kKIND)
-        v = NSDictionary.dictionaryWithDictionary_(obj)
-        coder.encodeObject_forKey_(v, kVALUE)
-    else:
-        coder.__pyobjc__encodeInt_(kOP_DICT)
-        v = NSDictionary.dictionaryWithDictionary_(obj)
-        coder.encodeObject_(v)
-
-encode_dispatch[dict] = save_dict
 
 def save_global(coder, obj, name=None):
     if name is None:
@@ -303,11 +228,11 @@ def save_global(coder, obj, name=None):
 
     else:
         if code:
-            coder.__pyobjc__encodeInt_(kOP_GLOBAL_EXT)
-            coder.__pyobjc__encodeInt_(code)
+            coder.encodeValueOfObjCType_at_(objc._C_INT, kOP_GLOBAL_EXT)
+            coder.encodeValueOfObjCType_at_(objc._C_INT, code)
 
         else:
-            coder.__pyobjc__encodeInt_(kOP_GLOBAL)
+            coder.encodeValueOfObjCType_at_(objc._C_INT, kOP_GLOBAL)
             coder.encodeObject_(unicode(module))
             coder.encodeObject_(unicode(name))
 
@@ -320,27 +245,11 @@ encode_dispatch[type] = save_global
 
 decode_dispatch = {}
 
-def load_none(coder, setValue): #pragma: no cover
-    # Decoding 'None' doesn't trigger Python code, for NSArchiver
-    # 'None' is a nil pointer.
-    return None
-decode_dispatch[kOP_NONE] = load_none
-
-def load_bool(coder, setValue): # pragma: no cover
-    # Decoding booleans doesn't trigger python code because
-    # they are stored in the archive as NSNumber instances.
-    if coder.allowsKeyedCoding():
-        return coder.decodeBoolForKey_(kVALUE)
-    else:
-        return coder.__pyobjc__decodeBool()
-
-decode_dispatch[kOP_BOOL] = load_bool
-
 def load_int(coder, setValue):
     if coder.allowsKeyedCoding():
         return int(coder.decodeInt64ForKey_(kVALUE))
     else:
-        return int(coder.__pyobjc__decodeInt64())
+        return int(coder.decodeValueOfObjCType_at_(objc._C_LNG_LNG, None))
 decode_dispatch[kOP_INT] = load_int
 
 def load_long(coder, setValue):
@@ -366,36 +275,12 @@ def load_float_str(coder, setValue):
         return float(coder.decodeObject())
 decode_dispatch[kOP_FLOAT_STR] = load_float_str
 
-def load_tuple(coder, setValue): # pragma: no cover
-    # Tuples are decoded in OC_PythonArray
-    if coder.allowsKeyedCoding():
-        return tuple(coder.decodeObjectForKey_(kVALUE))
-    else:
-        return tuple(coder.decodeObject())
-
-decode_dispatch[kOP_TUPLE] = load_tuple
-
-def load_list(coder, setValue): # pragma: no cover
-    # Lists are decoded in OC_PythonArray
-    if coder.allowsKeyedCoding():
-        return list(coder.decodeObjectForKey_(kVALUE))
-    else:
-        return list(coder.decodeObject())
-decode_dispatch[kOP_LIST] = load_list
-
-def load_dict(coder, setValue): # pragma: no cover
-    # Dicts are decoded in OC_PythonDict
-    if coder.allowsKeyedCoding():
-        return dict(coder.decodeObjectForKey_(kVALUE))
-    else:
-        return dict(coder.decodeObject())
-decode_dispatch[kOP_DICT] = load_dict
 
 def load_global_ext(coder, setValue):
     if coder.allowsKeyedCoding():
         code = coder.decodeIntForKey_(kCODE)
     else:
-        code = coder.__pyobjc__decodeInt()
+        code = coder.decodeValueOfObjCType_at_(objc._C_INT, None)
     nil = []
     obj = copyreg._extension_cache.get(code, nil)
     if obj is not nil:
@@ -477,7 +362,9 @@ def load_inst(coder, setValue):
         inst_dict = value.__dict__
         for k in state:
             v = state[k]
-            if type(k) == str:
+            if type(k) == objc.pyobjc_unicode:
+                inst_dict[intern(str(k))] = v
+            elif type(k) == str:
                 inst_dict[intern(k)] = v
             else:
                 inst_dict[k] = v
@@ -485,6 +372,8 @@ def load_inst(coder, setValue):
 
     if slotstate:
         for k, v in slotstate.items():
+            if isinstance(k, objc.pyobjc_unicode):
+                k = unicode(k)
             setattr(value, intern(k), v)
 
     return value
@@ -565,9 +454,9 @@ def pyobjectEncode(self, coder):
         return
 
     # Check for a class with a custom metaclass
-    # XXX: pickle.py catches TypeError here, that's for
-    #      compatibility with ancient versions of Boost 
-    #      (before Python 2.2) and is not needed here.
+    # NOTE: pickle.py catches TypeError here, that's for
+    #       compatibility with ancient versions of Boost 
+    #       (before Python 2.2) and is not needed here.
     issc = issubclass(t, type)
 
     if issc:
@@ -613,7 +502,7 @@ def pyobjectDecode(coder, setValue):
     if coder.allowsKeyedCoding():
         tp = coder.decodeIntForKey_(kKIND)
     else:
-        tp = coder.__pyobjc__decodeInt()
+        tp = coder.decodeValueOfObjCType_at_(objc._C_INT, None)
     f = decode_dispatch.get(tp)
     if f is None:
         raise UnpicklingError("Unknown object kind: %s"%(tp,))

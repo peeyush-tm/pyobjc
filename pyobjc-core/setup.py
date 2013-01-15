@@ -304,6 +304,7 @@ def _working_compiler(executable):
         p = subprocess.Popen([
             executable, '-c', fp.name] + cflags,
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p.communicate()
         exit = p.wait()
         if exit != 0:
             return False
@@ -435,7 +436,9 @@ CFLAGS.extend([
     #"-Wno-missing-method-return-type", # XXX
     "-Wno-import",
     "-DPyObjC_BUILD_RELEASE=%02d%02d"%(tuple(map(int, get_os_level().split('.')))),
+    "-fvisibility=hidden",
     #"-Warray-bounds", # XXX: Needed to avoid False positives for PyTuple access macros
+    "-Wshorten-64-to-32",
     ])
 
 ## Arghh, a stupid compiler flag can cause problems. Don't
@@ -451,7 +454,22 @@ if '-O0' in get_config_var('CFLAGS'):
 
 OBJC_LDFLAGS = frameworks('CoreFoundation', 'Foundation', 'Carbon')
 
+if 0:
+    # XXX: This block is enabled for two reasons:
+    # 1) Testsuite crashes with an incomplete testcase (python2.7, OSX 10.8)
+    # 2) There should be a build-time check to see if these options are supported
+
+    # Enable more optimization. 
+    vars = get_config_vars()
+    for k in vars: # XXX
+        if isinstance(vars[k], str) and '-O2' in vars[k]:
+            vars[k] = vars[k].replace('-O2', '-O4')
+    OBJC_LDFLAGS.append("-fvisibility=hidden")
+    CFLAGS.append("-fcatch-undefined-behavior")
+
 if not os.path.exists('/usr/include/objc/runtime.h'):
+    # XXX: fixme: this ^^^ should test for a header file in the location
+    #      that the compiler will use, which might not be here (Xcode 4.5, no unix tools)
     CFLAGS.append('-DNO_OBJC2_RUNTIME')
 
 # Force compilation with the local SDK, compilation of PyObC will result in

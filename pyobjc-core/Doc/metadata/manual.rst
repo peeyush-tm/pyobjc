@@ -446,20 +446,6 @@ Metadata for Objective-C methods and classes
    Register *type* as a dict-like type that will be bridged to Objective-C as an NSDictionary subclass.
 
 
-.. function:: addConvenienceForSelector(selector, methods)
-
-    Add a list of method to every class that has *selector* as a selector.
-    These additional methods are not added to the Objective-C class, but are 
-    only visibile in Python code.
-
-    The *methods* argument is a list of tuples (methodname, function).
-
-   .. deprecated:: 2.5
-
-      This function is deprecated, future versions of PyObjC will use a different way
-      to initialize classes that will require us to remove this function.
-
-
 .. function:: addConvenienceForClass(classname, method)
 
     Add a list of method the named class when that class is initialized, the class
@@ -468,6 +454,29 @@ Metadata for Objective-C methods and classes
 
     The *methods* argument is a list of tuples (methodname, function).
 
+.. function:: addConvenienceForBasicMapping(classname[, readonly])
+
+   Add ``__getitem__``, ``get``, and for writable classes, ``__setitem__``,
+   ``update`` (TDB: clearer description), to a class that implements the
+   basic Cocoa mapping protocol: ``objectForKey:``, ``setObject:forKey:``,
+   ``removeObject:forKey:``.
+
+   .. note::
+
+      This uses :func:`addConvenienceForClass` to actually add the conveniences,
+      and therefore will add the convenience methods regardless of the actual
+      existance of the Cocoa mapping selectors.
+
+   .. versionadded:: 3.0
+
+.. function:: addConvenienceForBasicSequence(classname[, readonly])
+
+   Like :func:`addConvenienceForBasicMapping`, but for sequences with
+   ``count`` and ``objectAtIndex:`` selectors.
+
+   .. warning:: ``readonly==False`` is not supported at the moment.
+
+   .. versionadded:: 3.0
 
 .. function:: setSignatureForSelector(class_name, selector, signature)
 

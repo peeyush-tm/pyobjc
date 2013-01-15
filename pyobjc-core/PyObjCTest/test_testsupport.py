@@ -322,6 +322,8 @@ class TestTestSupport (TestCase):
         self.assertRaises(AssertionError, self.assertIsCFType, long)
         self.assertRaises(AssertionError, self.assertIsCFType, objc.lookUpClass('NSCFType'))
 
+        # 'assertIsCFType' primarily tests that a type is either tollfree bridged, or
+        # has a distinct type that is different from the default NSCFType 'placeholder' type.
         self.assertIsCFType(objc.lookUpClass('NSObject'))
         #self.assertRaises(AssertionError, self.assertIsCFType, objc.lookUpClass('NSObject'))
 

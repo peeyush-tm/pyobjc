@@ -253,15 +253,13 @@ object_dealloc(PyObject* obj)
 
 
 static inline PyObject*
-_type_lookup(PyTypeObject* tp, PyObject* name)
+_type_lookup(PyTypeObject* tp, PyObject* name, PyObject* name_bytes)
 {
 	Py_ssize_t i, n;
 	PyObject *mro, *base, *dict;
 	PyObject *descr = NULL;
-	PyObject* protDict;
 	PyObject* res;
-
-	/* FIXME: Support for method name cache */
+	SEL	  sel = PyObjCSelector_DefaultSelector(PyBytes_AsString(name_bytes));
 
 	/* Look in tp_dict of types in MRO */
 	mro = tp->tp_mro;
@@ -276,18 +274,15 @@ _type_lookup(PyTypeObject* tp, PyObject* name)
 
 		if (PyObjCClass_Check(base)) {
 			PyObjCClass_CheckMethodList(base, 0);
-			protDict = ((PyObjCClassObject*)base)->protectedMethods;
 			dict = ((PyTypeObject *)base)->tp_dict;
 
 		} else if (PyType_Check(base)) {
-			protDict = NULL;
 			dict = ((PyTypeObject *)base)->tp_dict;
 
 
 #if PY_MAJOR_VERSION == 2
 		} else if (PyClass_Check(base)) {
 			dict = ((PyClassObject*)base)->cl_dict;
-			protDict = NULL;
 #endif
 		} else {
 			return NULL;
@@ -298,15 +293,148 @@ _type_lookup(PyTypeObject* tp, PyObject* name)
 			break;
 		}
 
-		if (protDict) {
-			descr = PyDict_GetItem(protDict, name);
-			if (descr != NULL) {
-				break;
+		if (PyObjCClass_Check(base)) {
+			/* Check if the name is a selector that
+			 * is not cached yet 
+			 *
+			 * Skip hidden methods.
+			 *
+			 * XXX: Once this works try to avoid calling class_getInstanceMethod too often
+			 */
+			if (!PyObjCClass_HiddenSelector(base, sel, NO)) {
+				descr = PyObjCClass_TryResolveSelector(base, name, sel);
+				if (descr) {
+					return descr;
+				} else if (PyErr_Occurred()) {
+					return NULL;
+				}
 			}
 		}
 	}
 
 	return descr;
+}
+
+static inline PyObject*
+_type_lookup_harder(PyTypeObject* tp, PyObject* name, PyObject* name_bytes)
+	/* XXX: Name needs changing.
+	 *      Second pass through the class hierarchy when _type_lookup failed and the name is not in __dict__
+	 *      Used to look for selectors that cannot be found using the default translation from Python to ObjC
+	 *      (for example 'some_methodWithArg:andArg').
+	 *
+	 *      The assumption is that user code is not buggy, and hence it is acceptable to take an expensive
+	 *      path once in a while.
+	 * XXX: May need to cache the found methods in subclasses as well to be 100% reliable, add test
+	 *      that first finds the method in a superclass, then loads a shared library with a subclass that
+	 *      also defines the method. This should find the subclass method (but might not with current code).
+	 */
+{
+	Py_ssize_t i, n;
+	PyObject *mro, *base;
+	PyObject *descr = NULL;
+	PyObject* res;
+	char selbuf[2048];
+	char* sel_name;
+
+	/* Look in tp_dict of types in MRO */
+	mro = tp->tp_mro;
+	if (mro == NULL) {
+		return NULL;
+	}
+	res = NULL;
+	assert(PyTuple_Check(mro));
+	n = PyTuple_GET_SIZE(mro);
+	for (i = 0; i < n; i++) {
+		Class cls;
+		Method*   methods;
+		unsigned int method_count, j;
+		base = PyTuple_GET_ITEM(mro, i);
+
+		if (!PyObjCClass_Check(base)) {
+			continue;
+		}
+
+		cls = PyObjCClass_GetClass(base);
+
+		methods = class_copyMethodList(cls, &method_count);
+		for (j = 0; j < method_count; j++) {
+			Method m = methods[j];
+			if (PyObjCClass_HiddenSelector(base, method_getName(m), NO)) {
+				continue;
+			}
+
+			sel_name = (char*)PyObjC_SELToPythonName(
+						method_getName(m), 
+						selbuf, 
+						sizeof(selbuf));
+			if (sel_name == NULL) continue;
+
+			if (strcmp(sel_name, PyBytes_AS_STRING(name_bytes)) == 0) {
+				/* Create (unbound) selector */
+				descr = PyObjCSelector_NewNative(
+						cls, method_getName(m), 
+						method_getTypeEncoding(m), 0);
+				free(methods);
+				if (descr == NULL) {
+					return NULL;
+				}
+
+
+				/* add to __dict__ 'cache' */
+				if (PyDict_SetItem(((PyTypeObject*)base)->tp_dict, name, descr) == -1) {
+					Py_DECREF(descr);
+					return NULL;
+				}
+				
+				/* and return as a borrowed reference */
+				Py_DECREF(descr);
+				return descr;
+			}
+		}
+		free(methods);
+	}
+
+	return descr;
+}
+
+PyObject*
+PyObjCClass_TryResolveSelector(PyObject* base, PyObject* name, SEL sel)
+{
+	Class cls = PyObjCClass_GetClass(base);
+	PyObject* dict = ((PyTypeObject *)base)->tp_dict;
+	Method m = class_getInstanceMethod(cls, sel);
+	if (m) {
+#ifndef PyObjC_FAST_BUT_INEXACT
+		int use = 1;
+		Class sup = class_getSuperclass(cls);
+		if (sup) {
+			Method m_sup = class_getInstanceMethod(sup, sel);
+			if (m_sup == m) {
+				use = 0;
+			}
+		}
+		if (!use) return NULL;
+#endif
+
+		/* Create (unbound) selector */
+		PyObject* result = PyObjCSelector_NewNative(
+				cls, sel, method_getTypeEncoding(m), 0);
+		if (result == NULL) {
+			return NULL;
+		}
+
+
+		/* add to __dict__ 'cache' */
+		if (PyDict_SetItem(dict, name, result) == -1) {
+			Py_DECREF(result);
+			return NULL;
+		}
+		
+		/* and return as a borrowed reference */
+		Py_DECREF(result);
+		return result;
+	}
+	return NULL;
 }
 
 static PyObject** _get_dictptr(PyObject* obj)
@@ -319,7 +447,6 @@ static PyObject** _get_dictptr(PyObject* obj)
 	assert(obj_object != nil);
 	return (PyObject**)(((char*)obj_object) + dictoffset);
 }
-
 
 static PyObject *
 object_getattro(PyObject *obj, PyObject * volatile name)
@@ -401,9 +528,10 @@ object_getattro(PyObject *obj, PyObject * volatile name)
 			}
 
 // XXX: You'd expect the code below works, but it actually doesn't. Need to check why.
-//			Py_DECREF(Py_TYPE(obj));
-//			Py_TYPE(obj) = tp;
-//			
+			Py_DECREF(Py_TYPE(obj));
+			Py_TYPE(obj) = tp;
+			Py_INCREF(tp);
+			
 
 			PyObjCClass_CheckMethodList((PyObject*)tp, 0);
 			dict = tp->tp_dict;
@@ -422,7 +550,7 @@ object_getattro(PyObject *obj, PyObject * volatile name)
 
 	/* replace _PyType_Lookup */
 	if (descr == NULL) {
-		descr = _type_lookup(tp, name);
+		descr = _type_lookup(tp, name, bytes);
 	}
 
 	f = NULL;
@@ -434,6 +562,11 @@ object_getattro(PyObject *obj, PyObject * volatile name)
 		f = Py_TYPE(descr)->tp_descr_get;
 		if (f != NULL && PyDescr_IsData(descr)) {
 			res = f(descr, obj, (PyObject*)Py_TYPE(obj));
+			if (res == NULL && !PyErr_Occurred()) {
+				PyErr_SetString(PyObjCExc_Error, 
+					"Descriptor getter returned NULL "
+					"without raising an exception");
+			}
 			goto done;
 		}
 	}
@@ -477,8 +610,31 @@ object_getattro(PyObject *obj, PyObject * volatile name)
 		}
 	}
 
+	if (descr == NULL) {
+		/*
+		 * The method cannot be found in the regular path. 
+		 * Assume that the user knows what he's doing and is looking
+		 * for a method where the selector does not conform to the
+		 * naming convention that _type_lookup expects.
+		 */
+		descr = _type_lookup_harder(tp, name, bytes);
+		if (descr != NULL 
+#if PY_MAJOR_VERSION == 2
+			&& PyType_HasFeature(Py_TYPE(descr), Py_TPFLAGS_HAVE_CLASS)
+#endif
+		    ) {
+			f = Py_TYPE(descr)->tp_descr_get;
+		}
+	}
+
+
 	if (f != NULL) {
 		res = f(descr, obj, (PyObject*)Py_TYPE(obj));
+		if (res == NULL && !PyErr_Occurred()) {
+			PyErr_SetString(PyObjCExc_Error, 
+				"Descriptor getter returned NULL "
+				"without raising an exception");
+		}
 		goto done;
 	}
 
@@ -563,7 +719,7 @@ object_setattro(PyObject *obj, PyObject *name, PyObject *value)
 			_UseKVO((NSObject *)obj_inst, obj_name, YES);
 		}
 	}
-	descr = _type_lookup(tp, name);
+	descr = _type_lookup(tp, name, bytes);
 	f = NULL;
 	if (descr != NULL 
 #if PY_MAJOR_VERSION == 2
@@ -740,6 +896,24 @@ meth_reduce(PyObject* self __attribute__((__unused__)))
 }
 
 static PyObject*
+meth_sizeof(PyObject* self __attribute__((__unused__)))
+{
+	/* Basis __sizeof__ implementation for Cocoa objects. 
+	 * This doesn't return the correct size for collections (such as NSArray),
+	 * but is better than the default implementation
+	 */
+	if (PyObjCObject_GetObject(self) == nil) {
+		return PyLong_FromSize_t(Py_TYPE(self)->tp_basicsize);
+
+	} else {
+		return PyLong_FromSize_t(
+				  Py_TYPE(self)->tp_basicsize
+				+ class_getInstanceSize(object_getClass(PyObjCObject_GetObject(self)))
+			);
+	}
+}
+
+static PyObject*
 as_cobject(PyObject* self)
 {
 	if (PyObjCObject_GetObject(self) == nil) {
@@ -749,8 +923,8 @@ as_cobject(PyObject* self)
 	return PyCapsule_New(PyObjCObject_GetObject(self), "objc.__object__", NULL);
 }
 
-static PyObject*
-get_c_void_p(void)
+PyObject*
+PyObjC_get_c_void_p(void)
 {
 static  PyObject* c_void_p = NULL;
 	if (c_void_p == NULL) {
@@ -779,7 +953,7 @@ as_ctypes_voidp(PyObject* self)
 		return Py_None;
 	}
 
-	c_void_p = get_c_void_p();
+	c_void_p = PyObjC_get_c_void_p();
 	if (c_void_p == NULL) {
 		return NULL;
 	}
@@ -787,6 +961,67 @@ as_ctypes_voidp(PyObject* self)
 	return PyObject_CallFunction(c_void_p, "k", (long)PyObjCObject_GetObject(self));
 }
 
+
+/* 
+ * Implementation of __dir__, which is the hook used by dir() on python 2.6 or later.
+ */
+static PyObject* 
+meth_dir(PyObject* self)
+{
+	PyObject* result;
+	Class     cls;
+	Method*   methods;
+	unsigned int method_count, i;
+	char      selbuf[2048];
+
+
+	/* Start of with keys in __dict__ */
+	result = PyDict_Keys(Py_TYPE(self)->tp_dict);
+	if (result == NULL) {
+		return NULL;
+	}
+
+	cls = object_getClass(PyObjCObject_GetObject(self));
+	while (cls != NULL) {
+		/* Now add all instance method names */
+		methods = class_copyMethodList(cls, &method_count);
+		for (i = 0; i < method_count; i++) {
+			char* name;
+			PyObject* item;
+
+			/* Check if the selector should be hidden */
+			if (PyObjCClass_HiddenSelector((PyObject*)Py_TYPE(self),  /* XXX */
+						method_getName(methods[i]), NO)) {
+				continue;
+			}
+
+			name = (char*)PyObjC_SELToPythonName(
+						method_getName(methods[i]), 
+						selbuf, 
+						sizeof(selbuf));
+			if (name == NULL) continue;
+
+			item = PyText_FromString(name);
+			if (item == NULL) {
+				free(methods);
+				Py_DECREF(result);
+				return NULL;
+			}
+
+			if (PyList_Append(result, item) == -1) {
+				free(methods);
+				Py_DECREF(result);
+				Py_DECREF(item);
+				return NULL;
+			}
+			Py_DECREF(item);
+		}
+		free(methods);
+
+		cls = class_getSuperclass(cls);
+	}
+	return result;
+}
 
 
 
@@ -808,6 +1043,18 @@ static PyMethodDef obj_methods[] = {
 		(PyCFunction)as_ctypes_voidp,
 		METH_NOARGS,
 		"Return a ctypes.c_void_p representing this object"
+	},
+	{
+		"__sizeof__",
+		(PyCFunction)meth_sizeof,
+		METH_NOARGS,
+		0
+	},
+	{
+		"__dir__",
+		(PyCFunction)meth_dir,
+		METH_NOARGS,
+		"dir() hook, don't call directly"
 	},
 	{
 		NULL,
@@ -907,7 +1154,7 @@ PyObjCClassObject PyObjCObject_Type = {
 
 
 #endif /* Python 3 */
-   }, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+   }, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
 /*

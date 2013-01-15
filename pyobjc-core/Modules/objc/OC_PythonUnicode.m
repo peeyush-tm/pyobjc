@@ -25,6 +25,11 @@
 
 -(PyObject*)__pyobjc_PythonObject__
 {
+	if (value == NULL) {
+		/* XXX: hack */
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
 	Py_INCREF(value);
 	return value;
 }
@@ -521,7 +526,6 @@
 			result = [OC_PythonUnicode class];
 		}
 	PyObjC_END_WITH_GIL
-
 	return result;
 }
 

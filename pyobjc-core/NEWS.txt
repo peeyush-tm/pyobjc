@@ -3,10 +3,98 @@ What's new in PyObjC
 
 An overview of the relevant changes in new, and older, releases.
 
+Version 3.0
+-----------
+
+   The 3.0 branch is currently highly experimental, don't uses this version!
+
+* Removed support for hiding "protected" methods, :func:`objc.setHideProtected` is gone,
+  it complicated the code without real advantages.
+
+  Reasons for this:
+
+  * There were some conflicts because a class implemented two selectors that caused
+    the same python method to be added to the class *__dict__*. Which one was added
+    was basicly random.
+
+  * The functionality required PyObjC to maintain a full *__dict__* for classes, even
+    when most Cocoa methods were never called. Ensuring that the contents of *__dict__*
+    is correct in the face of Objective-C categories and class patches required some
+    *very* expensive code.
+
+  As a side effect of this some classes may no longer have the convenience methods they
+  had in earlier releases (in particular classes that are not mentioned in Apple's 
+  documentation).
+
+* Issue #3: The bridge now lazily looks for Objective-C methods as they are used from Python, instead
+  of trying to maintain a class *__dict__* that mirrors the method list of the Objective-C
+  class.
+
+  Maintaining the *__dict__* was *very* expensive, on every method call the bridge would
+  check if the method list had changed and there is no cheap way to perform that check.
+
+  .. note:: 
+     I haven't done performance tests at this time, it is not yet clear if this work will 
+     make the bridge more efficient or that there are other more important bottlenecks.
+
+* The default translation from a python name to a selector was slightly changed:
+
+  * double underscores inside the name are no translated to colons, that is 'foo__bar_' is translated to 'foo__bar:', not 'foo::bar:'
+
+  * if the Python name start with two uppercase letters and an underscore, that first underscore is not translated into
+    an colon. Two leading capitals are often used as a way to add some kind of namespacing
+    to selector names (and avoid conflicts when a method with the same name is added later by the library provider)
+
+* Added *__new__* method to NSString, it is now possible to explictly convert a python string to a Cocoa
+  string with ``NSString(someString)``
+
+* Added *__eq__* and *__ne__* methods to native selector objects, which mean you can now
+  check if two method objects are the same using 'sel1 == sel2'. This works both for bound
+  and unbound selectors.
+
+* NSData.bytes() could raise an exception on some version of Python 3 when the data object is empty.
+  The function now returns an empty bytes object instead.
+
+* NSMutableData.mutableBytes() raises an exception when the data object has a 0-sized buffer.
+  (see also the previous bullet)
+
+* Add attribute *__objclass__* to :class:`objc.selector` instances as an alias for *definingClass*. The name
+  *__objclass__* is used by builtin method objects for the same purpose as *definingClass*. 
+  
+  The new attribute is needed to ensure that ``help(NSObject)`` works (although all methods are shown as
+  data descriptors, not methods)
+
+* :class`objc.selector` no longer implements *__set__*, which means it is now classified as a method
+  descriptor by the :mod:`inspec` module, which gives nicer output in :mod:`pydoc`.
+
+  This doesn't change any functionality beyond that, it is still possible to overwrite methods and not
+  possible to delete them.
+
+* :class:`objc.native_selector` and :class:`objc.function` now have a (minimal) docstring with information 
+  object.  This makes :func:`help <pydoc.help>` for Cocoa classes and functions more usefull.
+
+  As a side-effect of this the docstring is no longer writeable.
+
+* It should now be possible to write tuples with more than INT_MAX elements to an NSArchive. Those archives
+  cannot be read back by older versions of PyObjC (or python running in 32-bit mode), but archives that 
+  contain only smaller tuples can be read back by earlier versions.
+
+* Issue #38: Struct wrappers and opaque pointer types now implement support for :func:`sys.getsizeof`,
+  as do :class:`objc.FSRef`, :class:`objc.FSSpec`, and Objective-C classes.
+
+  The size of Objective-C instances is not entirely correct, and cannot be. The :func:`sizeof <sys.sizeof>` function
+  only reports the size of the proxy object and the basic size of the Objective-C object. It does not
+  report additional buffers used by the object, which for example means that a too low size is reported
+  for Cocoa containers like NSArray.
+
+* Opaque pointer objects now have a method "__c_void_p__" that returns a :class:`ctypes.void_p` for
+  the same pointer.
+
+
 Version 2.6
 -----------
 
-.. note:: 
+.. note::
 
    This is version currently in development and has not been released yet
 
@@ -14,12 +102,12 @@ Version 2.5.1
 -------------
 
 - PyObjC could crash when calling a method that is dynamicly generated
-  (that is, the selector is not present in the class according to the 
-  Objective-C runtime but the instance responds to it anyway). 
+  (that is, the selector is not present in the class according to the
+  Objective-C runtime but the instance responds to it anyway).
 
   The cases that used to crash now raise :exc:`objc.error` instead.
 
-  .. note:: 
+  .. note::
      It is highly unlikely that real code would run into this, found
      while working on PyObjC 3.x.
 

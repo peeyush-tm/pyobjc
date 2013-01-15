@@ -26,7 +26,6 @@
 
 
 int PyObjC_VerboseLevel = 0;
-int PyObjC_HideProtected = 1;
 BOOL PyObjC_useKVO = YES;
 BOOL PyObjC_nativeProperties = NO;
 
@@ -449,28 +448,6 @@ static 	char* keywords[] = { NULL };
 	return PyObjC_NSNumberWrapper;
 }
 
-PyDoc_STRVAR(setHideProtected_doc,
-	"setHideProtected(bool) -> None\n"
-	"\n"
-	"If true methods whose name starts with an underscore will not "
-	"visible for introspection using dir() or the class __dict__.");
-static PyObject* 
-setHideProtected(PyObject* self __attribute__((__unused__)), PyObject* args, PyObject* kwds)
-{
-static 	char* keywords[] = { "flag", NULL };
-	PyObject* o;
-
-	if (!PyArg_ParseTupleAndKeywords(args, kwds, "O",
-			keywords, &o)) {
-		return NULL;
-	}
-
-	PyObjC_HideProtected = PyObject_IsTrue(o);
-
-	Py_INCREF(Py_None);
-	return Py_None;
-}
-
 
 PyDoc_STRVAR(setObjCPointerIsError_doc,
 	"setObjCPointerIsError(bool) -> None\n"
@@ -730,8 +707,6 @@ static	Py_ssize_t	curClassCount = -1;
 
 		if (nm[0] == '%') {
 			/* skip, posed-as type */
-		} else if (PyObjC_HideProtected && nm[0] == '_') {
-			/* Skip private classes */
 		} else if (strcmp(nm, "Object") == 0 
 				|| strcmp(nm, "List") == 0
 				|| strcmp(nm, "Protocol") == 0) {
@@ -1933,6 +1908,65 @@ static char* keywords[] = { "name", "type", "magic", NULL };
 }
 
 
+static PyObject* callable_doc_function = NULL;
+
+PyObject* PyObjC_callable_docstr_get(PyObject* callable, void* closure __attribute__((__unused__)))
+
+{
+	if (callable_doc_function == NULL) {
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+	return PyObject_CallFunction(callable_doc_function, "O", callable);
+}
+
+static PyObject* 
+set_callable_doc(PyObject* mod __attribute__((__unused__)), PyObject* hook)
+{
+	Py_INCREF(hook);
+	Py_XDECREF(callable_doc_function);
+	callable_doc_function = hook;
+	Py_INCREF(Py_None);
+	return Py_None;
+}
+
+static PyObject*
+name_for_signature(PyObject* mod __attribute__((__unused__)), PyObject* signature)
+{
+	char* typestr;
+	if (!PyBytes_Check(signature)) {
+		PyErr_Format(PyExc_TypeError, "type encoding must be a bytes string, not a '%s' object",
+				Py_TYPE(signature)->tp_name);
+		return NULL;
+	}
+	typestr = PyBytes_AS_STRING(signature);
+	if (typestr[0] == _C_STRUCT_B) {
+		PyTypeObject* type = (PyTypeObject*)PyObjC_FindRegisteredStruct(typestr, PyBytes_GET_SIZE(signature));
+		if (type == NULL) {
+			Py_INCREF(Py_None);
+			return Py_None;
+		} else {
+#if PY_MAJOR_VERSION == 2
+			return PyString_FromString(type->tp_name);
+#else
+			return PyUnicode_FromString(type->tp_name);
+#endif
+		}
+	}
+	if (typestr[0] == _C_PTR) {
+		const char* name = PyObjCPointerWrapper_Describe(typestr);
+		if (name != NULL) {
+#if PY_MAJOR_VERSION == 2
+			return PyString_FromString(name);
+#else
+			return PyUnicode_FromString(name);
+#endif
+		}
+	}
+	Py_INCREF(Py_None);
+	return Py_None;
+}
+
 static PyMethodDef mod_methods[] = {
 	{
 		"_setClassSetUpHook",
@@ -1982,7 +2016,6 @@ static PyMethodDef mod_methods[] = {
 	{ "setVerbose", (PyCFunction)setVerbose, METH_VARARGS|METH_KEYWORDS, setVerbose_doc },
 	{ "setObjCPointerIsError", (PyCFunction)setObjCPointerIsError, METH_VARARGS|METH_KEYWORDS, setObjCPointerIsError_doc },
 	{ "setUseKVOForSetattr", (PyCFunction)setUseKVOForSetattr, METH_VARARGS|METH_KEYWORDS, setUseKVOForSetattr_doc },
-	{ "setHideProtected", (PyCFunction)setHideProtected, METH_VARARGS|METH_KEYWORDS, setHideProtected_doc },
 	{ "getVerbose", (PyCFunction)getVerbose, METH_VARARGS|METH_KEYWORDS, getVerbose_doc },
 	{ "getObjCPointerIsError", (PyCFunction)getObjCPointerIsError, METH_VARARGS|METH_KEYWORDS, getObjCPointerIsError_doc },
 	{ "pyobjc_id", (PyCFunction)pyobjc_id, METH_VARARGS|METH_KEYWORDS, pyobjc_id_doc },
@@ -2060,6 +2093,10 @@ static PyMethodDef mod_methods[] = {
 
 	{ "_loadConstant", (PyCFunction)PyObjC_LoadConstant,
 		METH_VARARGS|METH_KEYWORDS, "(PRIVATE)" },
+	{ "_setCallableDoc", (PyCFunction)set_callable_doc,
+		METH_O, "private function" },
+	{ "_nameForSignature", (PyCFunction)name_for_signature,
+		METH_O, "private function" },
 
 	{ 0, 0, 0, 0 } /* sentinel */
 };
@@ -2146,7 +2183,9 @@ PyObjC_MODULE_INIT(_objc)
 		PyObjC_INITERROR();
 	}
 
-
+	if (PyType_Ready(&PyObjCMetaClass_Type) < 0) {
+		PyObjC_INITERROR();
+	}
 	if (PyType_Ready(&PyObjCClass_Type) < 0) {
 		PyObjC_INITERROR();
 	}
@@ -2204,6 +2243,13 @@ PyObjC_MODULE_INIT(_objc)
 		PyObjC_INITERROR();
 	}
 
+	if (PyObjC_setup_nsdata() < 0) {
+		PyObjC_INITERROR();
+	}
+	if (PyObjC_setup_nscoder() < 0) {
+		PyObjC_INITERROR();
+	}
+
 	if (PyObjCCFType_Setup() == -1) {
 		PyObjC_INITERROR();
 	}
@@ -2220,6 +2266,9 @@ PyObjC_MODULE_INIT(_objc)
 	}
 	/* use PyDict_SetItemString for the retain, non-heap types can't be dealloc'ed */
 
+	if (PyDict_SetItemString(d, "objc_meta_class", (PyObject*)&PyObjCMetaClass_Type) < 0) {
+		PyObjC_INITERROR();
+	}
 	if (PyDict_SetItemString(d, "objc_class", (PyObject*)&PyObjCClass_Type) < 0) {
 		PyObjC_INITERROR();
 	}
@@ -2439,6 +2488,7 @@ PyObjC_MODULE_INIT(_objc)
 	if (PyModule_AddStringConstant(m, "platform", "MACOSX") < 0) {
 		PyObjC_INITERROR();
 	}
+
 
 	PyEval_InitThreads();
 	if (![NSThread isMultiThreaded]) {

@@ -616,7 +616,7 @@ get_method_for_selector(PyObject *obj, SEL aSelector)
 {
 	Method		   m;
 
-	m = class_getInstanceMethod(self, sel);
+	m = class_getClassMethod(self, sel);
 	if (m) {
 		/* A real Objective-C method */
 		return [NSMethodSignature 
@@ -820,7 +820,7 @@ get_method_for_selector(PyObject *obj, SEL aSelector)
 	int		   err;
 	PyObject*          args = NULL;
 	volatile unsigned int       i;
-	unsigned int       argcount;      
+	NSUInteger         argcount;      
 	Py_ssize_t	   retsize;
 	char*              retbuffer;
 
@@ -1225,7 +1225,7 @@ static  PyObject* setKeyFunc = NULL;
 -(NSUInteger)hash
 {
     PyObjC_BEGIN_WITH_GIL
-        int rval;
+        Py_hash_t rval;
         rval = PyObject_Hash([self pyObject]);
         if (rval == -1) {
             PyErr_Clear();
@@ -1513,6 +1513,8 @@ static CFTypeID _NSObjectTypeID;
 void PyObjC_encodeWithCoder(PyObject* pyObject, NSCoder* coder)
 {
 	if (PyObjC_Encoder != NULL) {
+		NSException* exc = nil;
+
 		PyObjC_BEGIN_WITH_GIL
 			PyObject* cdr = PyObjC_IdToPython(coder);
 			if (cdr == NULL) {
@@ -1522,11 +1524,18 @@ void PyObjC_encodeWithCoder(PyObject* pyObject, NSCoder* coder)
 			PyObject* r = PyObject_CallFunction(PyObjC_Encoder, "OO", pyObject, cdr);
 			Py_DECREF(cdr);
 			if (r == NULL) {
-            			PyObjC_GIL_FORWARD_EXC();
+				exc = PyObjCErr_AsExc();
+            			// PyObjC_GIL_FORWARD_EXC();
+
+			} else {
+				Py_DECREF(r);
 			}
-			Py_DECREF(r);
 
 		PyObjC_END_WITH_GIL
+
+		if (exc != nil) {
+			[exc raise];
+		}
 
 	} else {
 		[NSException raise:NSInvalidArgumentException

@@ -454,7 +454,7 @@ class TestBridgeSupportParser (TestCase):
         for item in self.iter_framework_dir('/System/Library/Frameworks'):
             yield item
 
-    def test_system_bridgesupport(self):
+    def test_system_bridgesupport(self): # XXX
         with filterWarnings("ignore", RuntimeWarning):
             # Check that all system bridgesupport files can be processed correctly
             for fn in self.iter_system_bridgesupport_files():
@@ -1318,7 +1318,7 @@ class TestParseBridgeSupport (TestCase):
             self.assertIsInstance(typestr, bytes)
             self.assertIsInstance(doc, (str, type(None)))
             self.assertEqual(len(objc.splitSignature(typestr)), 1)
-            self.assertTrue(typestr.startswith(objc._C_PTR))
+            self.assertStartswith(typestr, objc._C_PTR)
             return '<pointer %r>'%(name,)
 
         def createStructType(name, typestr, fieldnames, doc=None, pack=-1):
@@ -1977,9 +1977,9 @@ class TestInitFrameworkWrapper (TestCase):
                     "Test", "/Library/Framework/Test.framework", "com.apple.Test", g,
                     inlineTab=inlineTab, scan_classes=False)
 
-            self.assertEquals(load_calls, [])
-            self.assertEquals(parse_calls, [])
-            self.assertEquals(g, {})
+            self.assertEqual(load_calls, [])
+            self.assertEqual(parse_calls, [])
+            self.assertEqual(g, {})
 
             # 8. framework_identifier is not None, cannot find through identifier
             resources = {}
@@ -1998,10 +1998,10 @@ class TestInitFrameworkWrapper (TestCase):
                     "Test", "/Library/Framework/Test.framework", "com.apple.Test", g,
                     inlineTab=inlineTab, scan_classes=False)
 
-            self.assertEquals(load_calls, [
+            self.assertEqual(load_calls, [
                 (Bundle(calls=[('Test', 'bridgesupport', 'BridgeSupport')]), 'Test', g, '/Library/Framework/Test.framework', SENTINEL, False),
             ])
-            self.assertEquals(parse_calls, [])
+            self.assertEqual(parse_calls, [])
 
             load_calls = []
             parse_calls = []
@@ -2015,10 +2015,10 @@ class TestInitFrameworkWrapper (TestCase):
                     "Test", "/Library/Framework/Test.framework", "com.apple.Test", g,
                     inlineTab=inlineTab)
 
-            self.assertEquals(load_calls, [
+            self.assertEqual(load_calls, [
                 (Bundle(calls=[('Test', 'bridgesupport', 'BridgeSupport')]), 'Test', g, '/Library/Framework/Test.framework', SENTINEL, True),
             ])
-            self.assertEquals(parse_calls, [])
+            self.assertEqual(parse_calls, [])
 
 
             # XXX: The following path's aren't properly tested at the moment:
@@ -2037,15 +2037,15 @@ class TestInitFrameworkWrapper (TestCase):
 
             return_value = False
             exception  = None
-            self.assertEquals(bridgesupport.safe_resource_exists("a", "b"), False)
+            self.assertEqual(bridgesupport.safe_resource_exists("a", "b"), False)
 
             return_value = True
             exception  = None
-            self.assertEquals(bridgesupport.safe_resource_exists("a", "b"), True)
+            self.assertEqual(bridgesupport.safe_resource_exists("a", "b"), True)
 
             return_value = True
             exception  = ImportError
-            self.assertEquals(bridgesupport.safe_resource_exists("a", "b"), False)
+            self.assertEqual(bridgesupport.safe_resource_exists("a", "b"), False)
 
 
     def test_real_loader(self):

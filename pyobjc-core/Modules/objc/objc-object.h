@@ -42,9 +42,10 @@ PyObject* _PyObjCObject_NewDeallocHelper(id objc_object);
 
 PyObject* PyObjCObject_GetAttr(PyObject* object, PyObject* key);
 PyObject* PyObjCObject_GetAttrString(PyObject* object, char* key);
-
-
 PyObject* PyObjCObject_NewTransient(id objc_object, int* cookie);
 void PyObjCObject_ReleaseTransient(PyObject* proxy, int cookie);
+
+PyObject* PyObjC_get_c_void_p(void);
+
 
 #endif /* PyObjC_OBJC_OBJECT_H */

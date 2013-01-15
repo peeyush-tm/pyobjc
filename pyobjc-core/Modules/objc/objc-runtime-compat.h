@@ -16,8 +16,6 @@
  *  - PyObjC_class_addMethodList is not a function in the ObjC 2.0 runtime API,
  *    but added here to (a) get semantics that are slightly nicer for what
  *    we do and (b) can be implemented efficiently on the "1.0" runtime.
- *  - PyObjC_methodlist_magic is meant to be used to determine if a class has
- *    changed in some way (such by loading a category). 
  *  - Modifying a created but not yet registered class should be done using
  *    the preclass_* functions, not the regular ones because it isn't possible
  *    to emulate the entire ObjC 2.0 API on Tiger.
@@ -95,6 +93,7 @@ extern const char* (*PyObjC_object_getClassName)(id obj);
 
 extern Method* (*PyObjC_class_copyMethodList)(Class, unsigned int*);
 extern const char* (*PyObjC_class_getName)(Class);
+extern size_t (*PyObjC_class_getInstanceSize)(Class);
 extern Class (*PyObjC_class_getSuperclass)(Class);
 extern BOOL (*PyObjC_class_addMethod)(Class, SEL, IMP, const char*);
 extern BOOL (*PyObjC_class_addMethodList)(Class, 
@@ -110,8 +109,6 @@ extern IMP (*PyObjC_method_getImplementation)(Method m);
 extern IMP (*PyObjC_method_setImplementation)(Method m, IMP imp);
 
 extern BOOL (*PyObjC_sel_isEqual)(SEL, SEL);
-
-extern size_t (*PyObjC_methodlist_magic)(Class cls);
 
 extern const char*  (*PyObjC_ivar_getName)(Ivar);
 extern const char*  (*PyObjC_ivar_getTypeEncoding)(Ivar);
@@ -152,6 +149,7 @@ extern void (*PyObjC_object_setIvar)(id obj, Ivar ivar, id value);
 
 #define class_copyMethodList 		PyObjC_class_copyMethodList
 #define class_getName 			PyObjC_class_getName
+#define class_getInstanceSize 		PyObjC_class_getInstanceSize
 #define class_getSuperclass 		PyObjC_class_getSuperclass
 #define class_addMethod	 		PyObjC_class_addMethod
 #define class_addMethodList		PyObjC_class_addMethodList
@@ -197,8 +195,6 @@ extern void (*PyObjC_object_setIvar)(id obj, Ivar ivar, id value);
 extern BOOL PyObjC_class_addMethodList(Class class, 
 		struct PyObjC_method* list, unsigned int count);
 
-
-extern size_t PyObjC_methodlist_magic(Class cls);
 
 #define class_addMethodList	PyObjC_class_addMethodList
 

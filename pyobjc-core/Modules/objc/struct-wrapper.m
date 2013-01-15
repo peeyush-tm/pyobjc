@@ -219,6 +219,16 @@ struct_reduce(PyObject* self)
 }
 
 static PyObject*
+struct_sizeof(PyObject* self)
+{
+	Py_ssize_t res;
+
+	res = Py_TYPE(self)->tp_basicsize;
+	return PyLong_FromSsize_t(res);
+}
+
+
+static PyObject*
 struct_copy(PyObject* self)
 {
 	PyObject* result;
@@ -477,6 +487,12 @@ static PyMethodDef struct_methods[] = {
 		METH_NOARGS,
 		NULL,
 	},
+	{
+		"__sizeof__",
+		(PyCFunction)struct_sizeof,
+		METH_NOARGS,
+		NULL,
+	},
 	/* NamedTuple interface */
 	{
 		"_asdict", 
@@ -729,7 +745,7 @@ struct_init(
 
 	if (kwds != NULL) {
 		PyObject* keys;
-		int i, len;
+		Py_ssize_t i, len;
 
 		keys = PyDict_Keys(kwds);
 		if (keys == NULL) {
@@ -1039,7 +1055,7 @@ static struct StructTypeObject StructTemplate_Type = {
     {
 	PyVarObject_HEAD_INIT(NULL, 0)
 	"objc.StructTemplate",			/* tp_name */
-	sizeof (PyObject*),			/* tp_basicsize */
+	sizeof(PyObject),			/* tp_basicsize */
 	0,					/* tp_itemsize */
   
 	/* methods */
@@ -1159,7 +1175,7 @@ PyObjC_MakeStructType(
 	}
 	Py_REFCNT(result) = 1;
 	result->base.tp_members = members;
-	result->base.tp_basicsize = sizeof(PyObject) + numFields*sizeof(PyObject*);
+	result->base.tp_basicsize = sizeof(PyObject) + (numFields*sizeof(PyObject*));
 	if (PyDict_SetItemString(result->base.tp_dict, "_fields", fields)==-1){
 		Py_DECREF(fields);
 		PyMem_Free(members);
@@ -1179,8 +1195,6 @@ PyObjC_MakeStructType(
 		}
 	}
 
-	/* XXX: Add _fields to tp_dict (NamedTuple interface */
-
 	result->pack = pack;
 
 	if (PyType_Ready((PyTypeObject*)result) == -1) {
@@ -1197,6 +1211,24 @@ PyObjC_MakeStructType(
  */
 
 static PyObject* structRegistry = NULL;
+
+PyObject* PyObjC_FindRegisteredStruct(const char* signature, Py_ssize_t len)
+{
+	PyObject* type;
+	PyObject* v;
+
+	v = PyText_FromStringAndSize(signature, len);
+	type = PyDict_GetItem(structRegistry, v);
+	Py_DECREF(v);
+	if (type == NULL) {
+		PyErr_Clear();
+		return NULL;
+	}
+	Py_INCREF(type);
+	return type;
+}
+
+
 
 PyObject* 
 PyObjC_CreateRegisteredStruct(const char* signature, Py_ssize_t len, const char** objc_encoding, Py_ssize_t* ppack)
@@ -1388,8 +1420,6 @@ PyObjC_RegisterStructType(
 	if (pack != -1) {
 		/* Store custom struct packing as an attribute of the type
 		 * object, to be able to  fetch it when depythonifying the object.
-		 *
-		 * XXX: Need a cleaner method for doing this.
 		 */
 		v = Py_BuildValue(Py_ARG_SIZE_T, pack);
 		if (v == NULL) {

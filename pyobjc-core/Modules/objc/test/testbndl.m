@@ -518,8 +518,8 @@ static char* g_charps[] = {
 - (char*)charpArg:(char*)arg
 {
 static 	char buf[1024];
-	int len = strlen(arg);
-	int i;
+	size_t len = strlen(arg);
+	size_t i;
 
 	for (i = 0; i < len; i++) {
 		buf[len - i - 1] = arg[i];
@@ -758,7 +758,7 @@ static 	char buf[1024];
 - (char*)passInCharp:(char**)arg
 {
 	/* Yes this is leaking, but we're only testing method calling */
-	int len = strlen(*arg);
+	size_t len = strlen(*arg);
 	char* res = malloc(len * 2 + 1);
 	char* p;
 	char* q;
@@ -780,7 +780,7 @@ static 	char buf[1024];
 - (void)passInOutCharp:(char**)arg
 {
 	/* Yes this is leaking, but we're only testing method calling */
-	int len = strlen(*arg);
+	size_t len = strlen(*arg);
 	char* res = malloc(len * 2 + 1);
 	char* p;
 	char* q;
@@ -1937,7 +1937,7 @@ static struct PyModuleDef mod_module = {
 
 PyObject* PyInit_testbndl(void);
 
-PyObject*
+PyObject* __attribute__((__visibility__("default")))
 PyInit_testbndl(void)
 
 #else
@@ -1947,7 +1947,7 @@ PyInit_testbndl(void)
 
 void inittestbndl(void);
 
-void
+void __attribute__((__visibility__("default")))
 inittestbndl(void)
 #endif
 {

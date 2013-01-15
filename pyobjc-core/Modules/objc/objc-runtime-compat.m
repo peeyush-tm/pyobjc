@@ -273,44 +273,6 @@ compat_objc_disposeClassPair(Class cls)
 }
 
 
-static size_t 
-compat_methodlist_magic(Class cls)
-{
-	void* iterator = NULL;
-	struct objc_method_list* mlist;
-	size_t res = 0, cnt = 0;
-
-        if (cls == NULL) return -1;
-
-	while ( (mlist = class_nextMethodList(cls, &iterator )) != NULL ) {
-		res += mlist->method_count;
-		cnt++;
-	}
-
-	return (cnt << 16) | (res & 0xFFFF);
-}
-
-#ifndef NO_OBJC2_RUNTIME
-static size_t 
-objc20_methodlist_magic(Class cls)
-{
-	Method* methods;
-	unsigned int count;
-	unsigned int i;
-	size_t result;
-
-	methods = class_copyMethodList(cls, &count);
-	result = 0;
-	for (i = 0; i < count; i++) {
-		result = (1000003*result) ^ ((size_t)(
-				method_getImplementation(methods[i])) >> 3);
-	}
-	result = result | (count << 16);
-	free(methods);
-	return result;
-}
-#endif
-
 static Class 
 compat_object_setClass(id obj, Class cls)
 {
@@ -441,6 +403,12 @@ static const char*
 compat_class_getName(Class cls)
 {
 	return cls->name;
+}
+
+static size_t
+compat_class_getInstanceSize(Class cls)
+{
+	return cls->instance_size;
 }
 
 static Class 
@@ -830,6 +798,7 @@ const char* (*PyObjC_object_getClassName)(id obj) = NULL;
 
 Method* (*PyObjC_class_copyMethodList)(Class, unsigned int*) = NULL;
 const char*  (*PyObjC_class_getName)(Class) = NULL;
+const size_t  (*PyObjC_class_getInstanceSize)(Class) = NULL;
 Class (*PyObjC_class_getSuperclass)(Class) = NULL;
 BOOL (*PyObjC_class_addMethod)(Class, SEL, IMP, const char*) = NULL;
 BOOL (*PyObjC_class_addMethodList)(Class,
@@ -844,8 +813,6 @@ IMP (*PyObjC_method_setImplementation)(Method m, IMP imp) = NULL;
 const char *(*PyObjC_method_getTypeEncoding)(Method m) = NULL;
 
 BOOL (*PyObjC_sel_isEqual)(SEL, SEL) = NULL;
-
-size_t (*PyObjC_methodlist_magic)(Class cls);
 
 const char*  (*PyObjC_ivar_getName)(Ivar) = NULL;
 const char*  (*PyObjC_ivar_getTypeEncoding)(Ivar) = NULL;
@@ -898,20 +865,6 @@ BOOL PyObjC_class_addMethodList(Class cls,
 	return YES;
 }
 
-size_t PyObjC_methodlist_magic(Class cls)
-{
-	/* This is likely to be much slower than compat_methodlist_magic,
-	 * but should works on the 64-bit runtime. Hopefully a callback will
-	 * be added to the 2.0 runtime that will take away the need for this
-	 * function...
-	 */
-	Method* methods;
-	unsigned int count;
-
-	methods = class_copyMethodList(cls, &count);
-	free(methods);
-	return (size_t)count;
-}
 
 #endif
 
@@ -1105,7 +1058,6 @@ void PyObjC_SetupRuntimeCompat(void)
 	 * use the compat implementation.
 	 */
 	PyObjC_class_addMethodList  = compat_class_addMethodList;
-	PyObjC_methodlist_magic     = compat_methodlist_magic;
 	PyObjC_objc_disposeClassPair   = compat_objc_disposeClassPair;
 	PyObjC_preclass_addMethod   = compat_preclass_addMethod;
 	PyObjC_preclass_addIvar     = compat_preclass_addIvar;
@@ -1127,12 +1079,6 @@ void PyObjC_SetupRuntimeCompat(void)
 		PyObjC_preclass_addProtocol= compat_preclass_addProtocol;
 	}
 
-
-	if (class_copyMethodList) {
-		PyObjC_methodlist_magic = objc20_methodlist_magic;
-	} else {
-		PyObjC_methodlist_magic = compat_methodlist_magic;
-	}
 
 #   define SETUP(funcname) \
 	if ((funcname) == NULL) { \
@@ -1165,6 +1111,7 @@ void PyObjC_SetupRuntimeCompat(void)
 	SETUP(class_copyProtocolList);
 	SETUP(class_copyMethodList);
 	SETUP(class_getName);
+	SETUP(class_getInstanceSize);
 	SETUP(class_isMetaClass);
 
 	SETUP(method_getName);

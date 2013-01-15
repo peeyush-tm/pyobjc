@@ -265,6 +265,22 @@ base_selector(PyObject* _self, void* closure __attribute__((__unused__)))
 	return PyBytes_FromString(sel_getName(self->sel_selector));
 }
 
+PyDoc_STRVAR(base_name_doc, "Name for the method");
+static PyObject*
+base_name(PyObject* _self, void* closure __attribute__((__unused__)))
+{
+	PyObjCSelector* self = (PyObjCSelector*)_self;
+	char buf[2048];
+	const char* name;
+	name = PyObjC_SELToPythonName(
+		self->sel_selector, buf, sizeof(buf));
+#if PY_MAJOR_VERSION == 2
+	return PyString_FromString(name);
+#else
+	return PyUnicode_FromString(name);
+#endif
+}
+
 PyDoc_STRVAR(base_class_doc, "Objective-C Class that defines the method");
 static PyObject*
 base_class(PyObject* _self, void* closure __attribute__((__unused__)))
@@ -297,7 +313,6 @@ base_required(PyObject* _self, void* closure __attribute__((__unused__)))
 
 
 
-
 static PyGetSetDef base_getset[] = {
 	{
 		"isHidden",
@@ -322,6 +337,13 @@ static PyGetSetDef base_getset[] = {
 	},
 	{ 
 		"definingClass", 
+		base_class, 
+		0,
+		base_class_doc, 
+		0
+	},
+	{ 
+		"__objclass__", 
 		base_class, 
 		0,
 		base_class_doc, 
@@ -357,9 +379,9 @@ static PyGetSetDef base_getset[] = {
 	},
 	{ 
 		"__name__",  
-		base_selector, 
+		base_name, 
 		0, 
-		base_selector_doc,
+		base_name_doc,
 		0
 	},
 	{ 0, 0, 0, 0, 0 }
@@ -387,6 +409,10 @@ sel_dealloc(PyObject* object)
 	Py_TYPE(object)->tp_free(object);
 }
 
+#if 0
+/* This isn't needed and causes selectors to be classified as *data* instead 
+ * of *method* selectors.
+ */
 static int
 base_descr_set(
 		PyObject* self __attribute__((__unused__)), 
@@ -400,6 +426,7 @@ base_descr_set(
 	}
 	return -1;
 }
+#endif
 
 
 PyDoc_STRVAR(base_selector_type_doc,
@@ -481,7 +508,12 @@ PyTypeObject PyObjCSelector_Type = {
 	0,					/* tp_base */
 	0,					/* tp_dict */
 	0,					/* tp_descr_get */
+#if 0
+	/* See above */
 	base_descr_set,				/* tp_descr_set */
+#else
+	0, 					/* tp_descr_set */
+#endif
 	0,					/* tp_dictoffset */
 	0,					/* tp_init */
 	0,					/* tp_alloc */
@@ -532,6 +564,46 @@ objcsel_repr(PyObject* _self)
 	return rval;
 }
 
+static PyObject* objcsel_richcompare(PyObject* a, PyObject* b, int op)
+{
+	if (op == Py_EQ || op == Py_NE) {
+		if (PyObjCNativeSelector_Check(a) && PyObjCNativeSelector_Check(b)) {
+			PyObjCNativeSelector* sel_a = (PyObjCNativeSelector*)a;
+			PyObjCNativeSelector* sel_b = (PyObjCNativeSelector*)b;
+			int same = 1;
+
+			if (sel_a->sel_selector != sel_b->sel_selector) {
+				same = 0;
+			}
+			if (sel_a->sel_class != sel_b->sel_class) {
+				same = 0;
+			}
+			if (sel_a->sel_self != sel_b->sel_self) {
+				same = 0;
+			}
+			if ((op == Py_EQ && !same) || (op == Py_NE && same)) {
+				Py_INCREF(Py_False);
+				return Py_False;
+			} else {
+				Py_INCREF(Py_False);
+				return Py_True;
+			}
+
+		} else {
+			if (op == Py_EQ) {
+				Py_INCREF(Py_False);
+				return Py_False;
+			} else {
+				Py_INCREF(Py_False);
+				return Py_True;
+			}
+		}
+	} else {
+		PyErr_SetString(PyExc_TypeError, "Cannot use '<', '<=', '>=' and '>' with objc.selector");
+		return NULL;
+	}
+}
+
 
 static PyObject*
 objcsel_call(PyObject* _self, PyObject* args, PyObject* kwds)
@@ -549,7 +621,7 @@ objcsel_call(PyObject* _self, PyObject* args, PyObject* kwds)
 	}
 
 	if (pyself == NULL) {
-		int       argslen;
+		Py_ssize_t       argslen;
 		argslen = PyTuple_Size(args);
 		if (argslen < 1) {
 			PyErr_SetString(PyExc_TypeError,
@@ -673,6 +745,10 @@ objcsel_descr_get(PyObject* _self, PyObject* volatile obj, PyObject* class)
 	/* Bind 'self' */
 	if (meth->sel_flags & PyObjCSelector_kCLASS_METHOD) {
 		obj = class;
+	} else {
+		if (obj && PyObjCClass_Check(obj)) {
+			obj = NULL;
+		}
 	}
 	result = PyObject_New(PyObjCNativeSelector, &PyObjCNativeSelector_Type);
 	result->sel_selector   = meth->sel_selector;
@@ -715,6 +791,17 @@ objcsel_descr_get(PyObject* _self, PyObject* volatile obj, PyObject* class)
 	return (PyObject*)result;
 }
 
+PyDoc_STRVAR(objcsel_docstring_doc, "The document string for a method");
+static PyGetSetDef objcsel_getset[] = {
+	{
+		"__doc__",
+		PyObjC_callable_docstr_get,
+		0,
+		objcsel_docstring_doc,
+		0
+	},
+	{ 0, 0, 0, 0, 0 }
+};
 
 
 PyTypeObject PyObjCNativeSelector_Type = {
@@ -742,13 +829,13 @@ PyTypeObject PyObjCNativeSelector_Type = {
  	0,					/* tp_doc */
  	0,					/* tp_traverse */
  	0,					/* tp_clear */
-	0,					/* tp_richcompare */
+	objcsel_richcompare,			/* tp_richcompare */
 	0,					/* tp_weaklistoffset */
 	0,					/* tp_iter */
 	0,					/* tp_iternext */
 	0,					/* tp_methods */
 	0,					/* tp_members */
-	0,					/* tp_getset */
+	objcsel_getset,				/* tp_getset */
 	&PyObjCSelector_Type,			/* tp_base */
 	0,					/* tp_dict */
 	objcsel_descr_get,			/* tp_descr_get */
@@ -782,7 +869,7 @@ PyObjCSelector_FindNative(PyObject* self, const char* name)
 	PyObject* retval;
 
 	NSMethodSignature* methsig;
-	char  buf[1024];
+	char  buf[2048]; /* 1024  XXX: yes, some signatures are actually longer than 1K bytes */
 
 	if (PyObjCObject_Check(self)) {
 		if (PyObjCClass_HiddenSelector((PyObject*)Py_TYPE(self), sel, NO)) {
@@ -836,11 +923,12 @@ PyObjCSelector_FindNative(PyObject* self, const char* name)
 			}
 		}
 
+
 		NS_DURING
-			if ([cls instancesRespondToSelector:sel]) {
-				methsig = [cls instanceMethodSignatureForSelector:sel];
+			if ([cls respondsToSelector:sel]) {
+				methsig = [cls methodSignatureForSelector:sel];
 				retval = PyObjCSelector_NewNative(cls, sel, 
-					PyObjC_NSMethodSignatureToTypeString(methsig, buf, sizeof(buf)), 0);
+					PyObjC_NSMethodSignatureToTypeString(methsig, buf, sizeof(buf)), 1);
 			} else if ((Object_class != nil) && (cls != Object_class) && nil != (methsig = [(NSObject*)cls methodSignatureForSelector:sel])) {
 				retval = PyObjCSelector_NewNative(cls, sel, 
 					PyObjC_NSMethodSignatureToTypeString(
@@ -851,6 +939,8 @@ PyObjCSelector_FindNative(PyObject* self, const char* name)
 				retval = NULL;
 			}
 		NS_HANDLER
+			PyObjCErr_FromObjC(localException);
+			PyErr_Print();
 			PyErr_Format(PyExc_AttributeError,
 				"No attribute %s", name);
 			retval = NULL;
@@ -909,13 +999,15 @@ PyObjCSelector_NewNative(Class class,
 	const char* native_signature = signature;
 	char* repl_sig;
 
+
 	repl_sig = PyObjC_FindReplacementSignature(class, selector);
 	if (repl_sig) {
 		signature = repl_sig;
 	}
 
 	if (signature == NULL) {
-		PyErr_SetString(PyObjCExc_Error, "Selector with NULL or too long signature");
+		PyErr_Format(PyExc_RuntimeError, 
+			"PyObjCSelector_NewNative: nil signature for %s", sel_getName(selector));
 		return NULL;
 	}
 
@@ -1479,6 +1571,13 @@ PyObjCSelector_DefaultSelector(const char* methname)
 	 * Also if the name starts and ends with two underscores, return
 	 * it unmodified. This avoids mangling of Python's special methods.
 	 *
+	 * Also don't rewrite two underscores between name elements, such
+	 * as '__pyobjc__setItem_' -> '__pyobjc__setitem:'
+	 *
+	 * Also: when the name starts with two capital letters and an underscore
+	 * don't replace the underscore, the 'XX_' prefix is a common way to
+	 * namespace selectors.
+	 *
 	 * Both are heuristics and could be the wrong choice, but either 
 	 * form is very unlikely to exist in ObjC code.
 	 */
@@ -1494,11 +1593,25 @@ PyObjCSelector_DefaultSelector(const char* methname)
 	while (*cur == '_') {
 		cur++;
 	}
+ 
+	if (isupper(cur[0]) && isupper(cur[1]) && cur[2] == '_') {
+		cur += 3;
+	}
 
 	/* Replace all other underscores by colons */
 	cur = strchr(cur, '_');
 	while (cur != NULL) {
-		*cur = ':';
+		if (cur[1] == '_' && cur[2] && cur[2] != '_' && cur[-1] != '_') {
+			/* Don't translate double underscores between
+			 * name elements.
+			 *
+			 * NOTE: cur[-1] is save because we've skipped leading
+			 * underscores earlier in this function.
+			 */
+			cur += 2;
+		} else {
+			*cur = ':';
+		}
 		cur = strchr(cur, '_');
 	}
 	return sel_registerName(buf);

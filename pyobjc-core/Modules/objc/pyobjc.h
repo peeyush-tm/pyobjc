@@ -5,7 +5,7 @@
  * Central include file for PyObjC. 
  */
 
-#define OBJC_VERSION "2.6b1"
+#define OBJC_VERSION "3.0a1"
 
 // Loading in AppKit on Mac OS X 10.3 results in
 // a bit less than 1500 classes.
@@ -51,6 +51,18 @@ static inline PyObject* _PyObjCTuple_GetItem(PyObject* tuple, Py_ssize_t idx)
 /* PyObjC_ERROR_ABORT: If defined an internal error will result in an abort() */
 #define	PyObjC_ERROR_ABORT 1
 
+/* PyObjC_FAST_BUT_INEXACT: If defined the method lookup will add a selector
+ * to the __dict__ of the class of the object that you looked up the selector,
+ * when it it is not defined the selector is added to the dict of the class that
+ * actually defines the method.
+ *
+ * The latter is slightly more correct when using objc.super on arbitrary classes,
+ * but does result in more calls to the objc runtime and appears to be slower.
+ *
+ * NOTE: Option is present for performance testing.
+ */
+/*#define PyObjC_FAST_BUT_INEXACT 1*/
+
 
 #include <objc/objc-runtime.h>
 #include <objc/objc.h>
@@ -79,6 +91,7 @@ static inline PyObject* _PyObjCTuple_GetItem(PyObject* tuple, Py_ssize_t idx)
 #endif
 #endif
 
+#include "arc-runtime.h"
 #include "objc-runtime-compat.h"
 #include "proxy-registry.h"
 #include "objc_support.h"
@@ -143,7 +156,6 @@ static inline PyObject* _PyObjCTuple_GetItem(PyObject* tuple, Py_ssize_t idx)
 extern BOOL PyObjC_useKVO;
 extern BOOL PyObjC_nativeProperties;
 extern int PyObjC_VerboseLevel;
-extern int PyObjC_HideProtected;
 #if PY_MAJOR_VERSION == 2
 extern int PyObjC_StrBridgeEnabled;
 #endif
@@ -158,6 +170,7 @@ int PyObjCAPI_Register(PyObject* module);
 #include "corefoundation.h"
 #include "closure_pool.h"
 #include "block_support.h"
+#include "helpers.h"
 
 extern PyObject* PyObjCMethodAccessor_New(PyObject* base, int class_method);
 
@@ -185,6 +198,7 @@ PyObject* PyObjC_SockAddrToPython(void*);
 /* module.m */
 extern PyObject* PyObjC_TypeStr2CFTypeID;
 extern PyObject* PyObjC_AdjustSelf(PyObject* self);
+extern PyObject* PyObjC_callable_docstr_get(PyObject* callable, void* closure);
 
 
 

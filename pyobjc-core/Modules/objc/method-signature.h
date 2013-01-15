@@ -52,12 +52,12 @@ struct _PyObjC_ArgDescr {
 struct _PyObjCMethodSignature {
 	PyObject_VAR_HEAD
 
-	const char* signature;
-	int  arrayArg;
-	BOOL variadic:1;
-	BOOL null_terminated_array:1;
-	BOOL		free_result:1;
-	PyObject*   suggestion;
+	const char* 		signature;
+	int  			arrayArg;
+	unsigned char		variadic:1;
+	unsigned char		null_terminated_array:1;
+	unsigned char		free_result:1;
+	PyObject*   		suggestion;
 	struct _PyObjC_ArgDescr rettype;
 	struct _PyObjC_ArgDescr argtype[1];
 };

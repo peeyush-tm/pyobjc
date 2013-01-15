@@ -41,16 +41,21 @@ static PyMethodDef func_methods[] = {
 	{ 0, 0, 0, 0 }
 };
 
+PyDoc_STRVAR(func_docstring_doc, "The document string for a method");
+static PyGetSetDef func_getset[] = {
+	{
+		"__doc__",
+		PyObjC_callable_docstr_get,
+		0,
+		func_docstring_doc,
+		0
+	},
+	{ 0, 0, 0, 0, 0 }
+};
+
 
 
 static PyMemberDef func_members[] = {
-	{
-		"__doc__",
-		T_OBJECT,
-		offsetof(func_object, doc),
-		READONLY,
-		NULL
-	},
 	{
 		"__name__",
 		T_OBJECT,
@@ -118,7 +123,7 @@ func_call(PyObject* s, PyObject* args, PyObject* kwds)
 	Py_ssize_t plain_count;
 	Py_ssize_t argbuf_len;
 	int r;
-	int cif_arg_count;
+	Py_ssize_t cif_arg_count;
 	BOOL variadicAllArgs = NO;
 
 	unsigned char* argbuf = NULL;
@@ -204,7 +209,7 @@ func_call(PyObject* s, PyObject* args, PyObject* kwds)
 	}
 
 	if (variadicAllArgs) {
-		r = ffi_prep_cif(&cif, FFI_DEFAULT_ABI, cif_arg_count,
+		r = ffi_prep_cif(&cif, FFI_DEFAULT_ABI, (int)cif_arg_count,
 			signature_to_ffi_return_type(self->methinfo->rettype.type), arglist);
 		if (r != FFI_OK) {
 			PyErr_Format(PyExc_RuntimeError,
@@ -277,6 +282,14 @@ func_dealloc(PyObject* s)
 	PyObject_Free(s);
 }
 
+static PyObject *
+func_descr_get(PyObject *self, PyObject *obj __attribute__((__unused__)), PyObject *type __attribute__((__unused__)))
+{
+	Py_INCREF(self);
+	return self;
+}
+
+
 PyTypeObject PyObjCFunc_Type =
 {
 	PyVarObject_HEAD_INIT(&PyType_Type, 0)
@@ -310,10 +323,10 @@ PyTypeObject PyObjCFunc_Type =
 	0,					/* tp_iternext */
 	func_methods,				/* tp_methods */
 	func_members,				/* tp_members */
-	0,					/* tp_getset */
+	func_getset,				/* tp_getset */
 	0,					/* tp_base */
 	0,					/* tp_dict */
-	0,					/* tp_descr_get */
+	func_descr_get,				/* tp_descr_get */
 	0,					/* tp_descr_set */
 	0,					/* tp_dictoffset */
 	0,					/* tp_init */

@@ -715,11 +715,11 @@ PyObjCRT_AlignOfType (const char *type)
 
 	case _C_UNION_B:
 	{
-		int maxalign = 0;
+		Py_ssize_t maxalign = 0;
 		type++;
 		while (*type != _C_UNION_E)
 		{
-			int item_align = PyObjCRT_AlignOfType(type);
+			Py_ssize_t item_align = PyObjCRT_AlignOfType(type);
 			if (item_align == -1) return -1;
 			maxalign = MAX (maxalign, item_align);
 			type = PyObjCRT_SkipTypeSpec (type);
@@ -898,7 +898,7 @@ PyObjCRT_SizeOfType (const char *type)
 
 	case _C_BFLD:
 		{
-			int i = strtol(type+1, NULL, 10);
+			long i = strtol(type+1, NULL, 10);
 			return (i+7)/8;
 		}
 		break;
@@ -2116,7 +2116,7 @@ const char* type, PyObject* argument, void* datum)
 		r = depythonify_signed_int_value(argument, "char",
 			&temp, CHAR_MIN, CHAR_MAX);
 		if (r == 0) {
-			*(int*)datum = temp;
+			*(int*)datum = (int)temp;
 		}
 		return r;
 	
@@ -2151,7 +2151,7 @@ const char* type, PyObject* argument, void* datum)
 		r = depythonify_signed_int_value(argument, "char",
 			&temp, CHAR_MIN, CHAR_MAX);
 		if (r == 0) {
-			*(int*)datum = temp;
+			*(int*)datum = (int)temp;
 		}
 		return r;
 
@@ -2187,7 +2187,7 @@ const char* type, PyObject* argument, void* datum)
 		r = depythonify_unsigned_int_value(argument, "unsigned char",
 			&utemp, UCHAR_MAX);
 		if (r == 0) {
-			*(unsigned int*)datum = utemp;
+			*(unsigned int*)datum = (unsigned int)utemp;
 		}
 		return r;
 
@@ -2195,7 +2195,7 @@ const char* type, PyObject* argument, void* datum)
 		r = depythonify_signed_int_value(argument, "short",
 			&temp, SHRT_MIN, SHRT_MAX);
 		if (r == 0) {
-			*(int*)datum = temp;
+			*(int*)datum = (int)temp;
 		}
 		return r;
 
@@ -2203,7 +2203,7 @@ const char* type, PyObject* argument, void* datum)
 		r = depythonify_unsigned_int_value(argument, "unsigned short",
 			&utemp, USHRT_MAX);
 		if (r == 0) {
-			*(unsigned int*)datum = utemp;
+			*(unsigned int*)datum = (unsigned int)utemp;
 		}
 		return r;
 
@@ -2431,7 +2431,7 @@ depythonify_c_value (const char *type, PyObject *argument, void *datum)
 		r = depythonify_signed_int_value(argument, "int",
 			&temp, INT_MIN, INT_MAX);
 		if (r == 0) {
-			*(int*)datum = temp;
+			*(int*)datum = (int)temp;
 		}
 		return r;
 
@@ -2439,7 +2439,7 @@ depythonify_c_value (const char *type, PyObject *argument, void *datum)
 		r = depythonify_unsigned_int_value(argument, "unsigned int",
 			&utemp, UINT_MAX);
 		if (r == 0) {
-			*(unsigned int*)datum = utemp;
+			*(unsigned int*)datum = (unsigned int)utemp;
 		}
 		return r;
 
@@ -2447,7 +2447,7 @@ depythonify_c_value (const char *type, PyObject *argument, void *datum)
 		r = depythonify_signed_int_value(argument, "long",
 			&temp, LONG_MIN, LONG_MAX);
 		if (r == 0) {
-			*(long*)datum = temp;
+			*(long*)datum = (long)temp;
 		}
 		return r;
 
@@ -2455,7 +2455,7 @@ depythonify_c_value (const char *type, PyObject *argument, void *datum)
 		r = depythonify_unsigned_int_value(argument, "unsigned long",
 			&utemp, ULONG_MAX);
 		if (r == 0) {
-			*(unsigned long*)datum = utemp;
+			*(unsigned long*)datum = (unsigned long)utemp;
 		}
 		return r;
 
@@ -2928,3 +2928,118 @@ BOOL PyObjC_signatures_compatible(const char* type1, const char* type2)
 		}
 	}
 }
+
+static const char* type_name(const char* type)
+{
+	switch (*type) {
+	case '"':
+		/* Embedded name in ivar or compound type */
+		type++;
+		while (*type != '\0' && *type != '"') type++;
+		break;
+
+	/* The following are one character type codes */
+	case _C_UNDEF:		return "<unknown>";
+	case _C_CLASS:		return "Class";
+	case _C_SEL:		return "SEL";
+	case _C_CHR:		return "char";
+	case _C_UCHR:		return "unsigned char";
+	case _C_CHARPTR:	return "char*";
+#ifdef _C_ATOM
+	case _C_ATOM:		return "<atom>";
+#endif
+#ifdef _C_BOOL
+	case _C_BOOL:		return "bool";
+#endif
+	case _C_SHT:		return "short";
+	case _C_USHT:		return "unsigned short";
+	case _C_INT:		return "int";
+	case _C_UINT:		return "unsigned int";
+	case _C_LNG:		return "long";
+	case _C_ULNG:		return "unsigned long";
+	case _C_FLT:		return "float";
+	case _C_DBL:		return "double";
+	case _C_VOID:		return "void";
+	case _C_LNG_LNG:	return "long long";
+	case _C_ULNG_LNG:	return "unsigned long";
+	case _C_UNICHAR:	return "UniChar";
+	case _C_CHAR_AS_TEXT:	return "char(text)";
+	case _C_CHAR_AS_INT:	return "int8_t";
+	case _C_NSBOOL:		return "BOOL";
+	case _C_ID:		return "id";
+	case _C_PTR:
+				if (type[1] == '?') {
+					return "<function>";
+				}
+				break;
+	}
+	return NULL;
+}
+
+size_t describe_type(const char* type, char* buf, size_t buflen)
+{
+	const char* name;
+
+	if (*type == '"') {
+		type++;
+		while (*type != '\0' && *type != '"') type++;
+	}
+
+	name = type_name(type);
+	if (name != NULL) {
+		return snprintf(buf, buflen, "%s", name);
+	}
+
+	return snprintf(buf, buflen, "<TODO>");
+}
+
+#if 0
+	switch (*type) {
+	case _C_BFLD: 
+	case _C_ARY_B:
+		/* skip digits, typespec and closing ']' */
+
+		while (isdigit (*++type));
+		type = PyObjCRT_SkipTypeSpec (type);
+		assert (type == NULL || *type == _C_ARY_E);
+		if (type) type++;
+		break;
+  
+	case _C_STRUCT_B:
+		/* skip name, and elements until closing '}'  */
+		while (*type != _C_STRUCT_E && *type++ != '='); 
+		while (type && *type != _C_STRUCT_E) {
+			if (*type == '"') {
+				/* embedded field names */
+				type = strchr(type+1, '"');
+				if (type != NULL) {
+					type++;
+				} else {
+					return NULL;
+				}
+			}
+			type = PyObjCRT_SkipTypeSpec (type);
+		}
+		if (type) type++;
+		break;
+
+	case _C_UNION_B:
+		/* skip name, and elements until closing ')'  */
+		while (*type != _C_UNION_E && *type++ != '='); 
+		while (type && *type != _C_UNION_E) { 
+			if (*type == '"') {
+				/* embedded field names */
+				type = strchr(type+1, '"');
+				if (type != NULL) {
+					type++;
+				} else {
+					return NULL;
+				}
+			}
+			type = PyObjCRT_SkipTypeSpec (type); 
+		}
+		if (type) type++;
+		break;
+  
+	case _C_PTR:
+#endif
