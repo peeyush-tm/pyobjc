@@ -3,10 +3,18 @@ What's new in PyObjC
 
 An overview of the relevant changes in new, and older, releases.
 
+Version 2.6
+-----------
+
+.. note:: 
+   This is version currently in development and has not been released yet
+
+
 Version 2.5.2
 -------------
 
 -
+
 
 Version 2.5.1
 -------------
@@ -18,7 +26,6 @@ Version 2.5.1
   The cases that used to crash now raise :exc:`objc.error` instead.
 
   .. note:: 
-
      It is highly unlikely that real code would run into this, found
      while working on PyObjC 3.x.
 
@@ -45,7 +52,7 @@ Version 2.5.1
   python code.
 
 - Opaque pointer types now can be constructed with a "c_void_p" keyword  
-  argument that contains a :type:`ctypes.c_void_p` value for the pointer.
+  argument that contains a :class:`ctypes.c_void_p` value for the pointer.
 
   This is the reverse of the *__c_void_p__()* method that was added
   earlier.
