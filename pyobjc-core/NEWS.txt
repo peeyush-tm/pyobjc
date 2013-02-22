@@ -3,11 +3,19 @@ What's new in PyObjC
 
 An overview of the relevant changes in new, and older, releases.
 
+Version 2.6
+-----------
+
+.. note::
+   This is version currently in development and has not been released yet
+
+
 Version 2.5.2
 -------------
 
 - "easy_install pyobjc" always tried to install the FSEvents binding,
   even when running on OSX 10.4 (where that API is not available).
+
 
 Version 2.5.1
 -------------
