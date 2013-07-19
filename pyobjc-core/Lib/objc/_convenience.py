@@ -18,7 +18,7 @@ TODO:
 
 """
 from objc._objc import _setClassExtender, selector, lookUpClass, currentBundle, repythonify, splitSignature, _block_call
-from objc._objc import registerMetaDataForSelector
+from objc._objc import registerMetaDataForSelector, _C_NSInteger, _C_ID
 import sys
 import warnings
 import collections
@@ -707,16 +707,16 @@ registerMetaDataForSelector(b"NSObject", b"sortUsingFunction:context:",
             arguments={
                 2:  {
                         'callable': {
-                            'reval': 'i',
+                            'reval': { 'type': _C_NSInteger },
                             'arguments': {
-                                0: { 'type': b'@' },
-                                1: { 'type': b'@' },
-                                2: { 'type': b'@' },
+                                0: { 'type': _C_ID },
+                                1: { 'type': _C_ID },
+                                2: { 'type': _C_ID },
                             }
                         },
                         'callable_retained': False,
                 },
-                3:  { 'type': b'@' },
+                3:  { 'type': _C_ID },
             },
         ))
 
