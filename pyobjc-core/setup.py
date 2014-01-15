@@ -180,6 +180,8 @@ class oc_test (test.test):
                 skip=len(getattr(result, 'skipped', [])),
             )
             print("SUMMARY: %s"%(summary,))
+            if summary['fails'] or summary['errors'] or summary['xpass']:
+                sys.exit(1)
 
         finally:
             self.remove_from_sys_path()
@@ -456,8 +458,8 @@ if not os.path.exists('/usr/include/objc/runtime.h'):
 
 # Force compilation with the local SDK, compilation of PyObC will result in
 # a binary that runs on other releases of the OS without using a particular SDK.
-CFLAGS.extend(['-isysroot', '/'])
-OBJC_LDFLAGS.extend(['-isysroot', '/'])
+#CFLAGS.extend(['-isysroot', '/'])
+#OBJC_LDFLAGS.extend(['-isysroot', '/'])
 CFLAGS.append('-Ibuild/codegen/')
 
 # Patch distutils: it needs to compile .S files as well.
