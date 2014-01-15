@@ -11,6 +11,21 @@ Version 2.5.2
 
 - ``objc.ObjCPointer`` didn't implement *__getattribute__*.
 
+- The exception you get when setting an attribute with the same name
+  as a selector on an instance now mentions the (Objective-C) name
+  of the selector, which should make it easier to debug the problem.
+
+  As an example::
+
+     >>> from Cocoa import NSObject
+     >>>
+     >>> obj = NSObject.alloc().init()
+     >>> obj.description = 42
+
+  The exception on the last line now mentions the name ``description``.
+
+  Added based on a question on the pyobjc-dev list.
+
 Version 2.5.1
 -------------
 
