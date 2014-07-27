@@ -11,7 +11,7 @@ except ImportError:
 
 import os
 
-VERSION="3.0.2"
+VERSION="3.1"
 
 # Note 1: the requires list is split into a number
 # of lists because not all framework wrappers can
@@ -21,7 +21,7 @@ VERSION="3.0.2"
 # packaged into an egg file because of this.
 
 REQUIRES=[
-        'py2app>=0.8',
+        'py2app>=0.9',
         'pyobjc-core=='+VERSION,
         'pyobjc-framework-AddressBook=='+VERSION,
         'pyobjc-framework-AppleScriptKit=='+VERSION,
