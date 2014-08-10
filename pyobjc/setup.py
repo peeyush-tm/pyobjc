@@ -11,7 +11,7 @@ except ImportError:
 
 import os
 
-VERSION="3.0.2"
+VERSION="3.1"
 
 # Note 1: the requires list is split into a number
 # of lists because not all framework wrappers can
@@ -21,7 +21,7 @@ VERSION="3.0.2"
 # packaged into an egg file because of this.
 
 REQUIRES=[
-        'py2app>=0.8',
+        'py2app>=0.9',
         'pyobjc-core=='+VERSION,
         'pyobjc-framework-AddressBook=='+VERSION,
         'pyobjc-framework-AppleScriptKit=='+VERSION,
@@ -91,6 +91,29 @@ DEL_REQUIRES_10_8=[
         'pyobjc-framework-InterfaceBuilderKit=',
 ]
 
+REQUIRES_10_9=[
+        'pyobjc-framework-CoreBluetooth=='+VERSION,
+        #'pyobjc-framework-MapKit=='+VERSION,
+        #'pyobjc-framework-MediaAccessibility=='+VERSION,
+        #'pyobjc-framework-MediaLibrary=='+VERSION,
+        #'pyobjc-framework-SpriteKit=='+VERSION,
+        #'pyobjc-framework-GameController=='+VERSION,
+        #'pyobjc-framework-AVKit=='+VERSION,
+]
+DEL_REQUIRES_10_9=[
+        'pyobjc-framework-Message=',
+        'pyobjc-framework-ServerNotification=',
+]
+
+REQUIRES_10_10=[
+        'pyobjc-framework-CloudKit=='+VERSION,
+        'pyobjc-framework-CryptoTokenKit=='+VERSION,
+        'pyobjc-framework-FinderSync=='+VERSION,
+        'pyobjc-framework-MultipeerConnectivity=='+VERSION,
+]
+DEL_REQUIRES_10_10=[
+]
+
 import platform
 rel = tuple(map(int, platform.mac_ver()[0].split('.')[:2]))
 if rel >= (10, 5):
@@ -107,6 +130,20 @@ if rel >= (10, 7):
 if rel >= (10, 8):
     REQUIRES.extend(REQUIRES_10_8)
     for name in DEL_REQUIRES_10_8:
+        for line in REQUIRES:
+            if line.startswith(name):
+                REQUIRES.remove(line)
+                continue
+if rel >= (10, 9):
+    REQUIRES.extend(REQUIRES_10_9)
+    for name in DEL_REQUIRES_10_9:
+        for line in REQUIRES:
+            if line.startswith(name):
+                REQUIRES.remove(line)
+                continue
+if rel >= (10, 10):
+    REQUIRES.extend(REQUIRES_10_10)
+    for name in DEL_REQUIRES_10_10:
         for line in REQUIRES:
             if line.startswith(name):
                 REQUIRES.remove(line)
