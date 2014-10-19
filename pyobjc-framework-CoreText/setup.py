@@ -7,23 +7,15 @@ These wrappers don't include documentation, please check Apple's documention
 for information on how to use this framework and PyObjC's documentation
 for general tips and tricks regarding the translation between Python
 and (Objective-)C frameworks
-
-NEWS
-====
-
-2.4
----
-
-* The wrappers now cover all useful functionality (see the documentation
-  for the exceptions)
 '''
 from pyobjc_setup import setup, Extension
 
 setup(
     min_os_level='10.5',
     name='pyobjc-framework-CoreText',
-    version="3.0.2",
+    version="3.1",
     description = "Wrappers for the framework CoreText on Mac OS X",
+    long_description=__doc__,
     packages = [ "CoreText" ],
     ext_modules = [
             Extension('CoreText._manual',
@@ -32,11 +24,11 @@ setup(
             ),
     ],
     setup_requires = [
-        'pyobjc-core>=3.0.2',
+        'pyobjc-core>=3.1',
     ],
     install_requires = [
-        'pyobjc-core>=3.0.2',
-        'pyobjc-framework-Cocoa>=3.0.2',
-        'pyobjc-framework-Quartz>=3.0.2',
+        'pyobjc-core>=3.1',
+        'pyobjc-framework-Cocoa>=3.1',
+        'pyobjc-framework-Quartz>=3.1',
     ],
 )
