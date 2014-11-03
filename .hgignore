@@ -1,0 +1,17 @@
+build
+dist
+.DS_Store
+__pycache__
+autom4te.cache
+htmlcov
+.coverage
+new-bindings
+
+syntax: glob
+*.so
+*.egg-info
+*.dSYM
+*.pyc
+*.pyo
+unittest2-*.egg
+*.swp
