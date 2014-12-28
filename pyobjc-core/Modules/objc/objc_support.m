@@ -191,7 +191,7 @@
 @end /* PyObjCSupport */
 
 
-#if PyObjC_BUILD_RELEASE < 1008
+#if PyObjC_BUILD_RELEASE < 1008 || !defined(__LP64__)
 @interface Object (PyObjCSupport)
 -(PyObject*)__pyobjc_PythonObject__;
 -(PyObject*)__pyobjc_PythonTransient__:(int*)cookie;
@@ -606,7 +606,7 @@ PyObjCRT_NextField(const char *type)
                         "Unexpected NULL while parsing union encoding type");
             }
             return NULL;
-        } else if (unlikely(*type != _C_STRUCT_E)) {
+        } else if (unlikely(*type != _C_UNION_E)) {
             PyErr_Format(PyObjCExc_InternalError,
                 "PyObjCRT_SkipTypeSpec: Got '0x%x' at end of union encoding, expecting '0x%x'", *type, _C_UNION_E);
             return NULL;
