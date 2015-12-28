@@ -273,7 +273,7 @@ def min_sdk_level(release):
             def testSnowLeopardSDK(self):
                 pass
     """
-    v = (objc.PyObjC_BUILD_RELEASE / 100, objc.PyObjC_BUILD_RELEASE % 100)
+    v = (objc.PyObjC_BUILD_RELEASE // 100, objc.PyObjC_BUILD_RELEASE % 100)
     return onlyIf(v >= os_level_key(release), "Requires build with SDK %s or later"%(release,))
 
 def max_sdk_level(release):
