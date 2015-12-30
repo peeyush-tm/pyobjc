@@ -1,0 +1,19 @@
+// objective.metadata exceptions file, see its document
+// for information on how to update this file.
+{
+ "definitions": {
+  "classes": {},
+  "formal_protocols": {},
+  "functions": {},
+  "informal_protocols": {},
+  "externs": {
+    "MLPhotosSloMoGroupTypeIdentifier": { "typestr": "@" },
+    "MLPhotosBurstGroupTypeIdentifier": { "typestr": "@" },
+    "MLPhotosFacesAlbumTypeIdentifier": { "typestr": "@" },
+    "MLPhotosAllPhotosAlbumTypeIdentifier": { "typestr": "@" },
+    "MLPhotosTimelapseGroupTypeIdentifier": { "typestr": "@" },
+    "MLPhotosFrontCameraGroupTypeIdentifier": { "typestr": "@" },
+    "MLPhotosScreenshotGroupTypeIdentifier": { "typestr": "@" }
+  }
+ }
+}
