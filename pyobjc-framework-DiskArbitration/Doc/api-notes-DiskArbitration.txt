@@ -1,0 +1,34 @@
+API Notes: DiskArbitration framework
+====================================
+
+
+API Notes
+---------
+
+The entire framework is available from Python.
+
+
+DADiskCreateFromIOMedia
+.......................
+
+This function cannot be called from Python because IOKit is not yet
+wrapped.
+
+DADiskCopyIOMedia
+.................
+
+This function cannot be called from Python because IOKit is not yet
+wrapped.
+
+DASessionSetDispatchQueue
+.........................
+
+This function cannot be called from Python because dispatch queues
+aren't avaible through PyObjC at the moment.
+
+
+``DAUnregisterCallback`` and ``DAUnregisterApprovalCallback``
+.............................................................
+
+The *callback* argument should be the result of calling ``objc.callbackPointer``
+on the function that was used to register a callback.
