@@ -1,0 +1,24 @@
+API Notes: SpriteKit framework
+===============================
+
+Apple documentation
+-------------------
+
+The full API is described in `Apple's documentation`__, both
+the C and Objective-C APIs are available (but see the `API Notes`_ below).
+
+.. __: https://developer.apple.com/library/mac/documentation/UserExperience/Conceptual/SpriteKit/SpriteKit.html
+
+
+API Notes
+---------
+
+* ``vector_float3``: Values of this type are represented as tuples of 3 floats in Python.
+
+* ``+[SKFieldNode customFieldWithEvaluationBlock:]``
+
+  This method is not supported yet (requires changes to the core bridge)
+
+.. note::
+
+   This framework is only available on OSX 10.9 and later and requires a 64-bit binary.
